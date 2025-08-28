@@ -1,5 +1,6 @@
 # Miscellaneous
 *.class
+<<<<<<< HEAD
 *.log
 *.pyc
 *.swp
@@ -46,6 +47,8 @@ app.*.map.json
 /android/app/release
 # Miscellaneous
 *.class
+=======
+>>>>>>> 37a0cdafe21a869017e81f2973bc8abdcb9877ac
 *.lock
 *.log
 *.pyc
