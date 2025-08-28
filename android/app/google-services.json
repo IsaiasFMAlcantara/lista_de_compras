@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "743629179345",
+    "project_id": "listas-de-compras-3f1d8",
+    "storage_bucket": "listas-de-compras-3f1d8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:743629179345:android:ddeafa68cb710cd13bf8f0",
+        "android_client_info": {
+          "package_name": "com.example.lista_compras"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuutqFY8gz-eaDcixmUXqik3Tw0Xi75d8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
