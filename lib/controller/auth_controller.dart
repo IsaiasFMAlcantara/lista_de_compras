@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,7 @@ class AuthController extends GetxController {
         userModel.value = UserModel.fromMap(doc.data()!);
       }
     } catch (e) {
-      print('Erro ao carregar modelo de usuário: $e');
+      log('Erro ao carregar modelo de usuário: $e');
       Get.snackbar('Erro', 'Não foi possível carregar os dados do usuário.');
     }
   }
@@ -92,7 +93,7 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {
-      print('Erro desconhecido no login: $e');
+      log('Erro desconhecido no login: $e');
       Get.snackbar(
         'Erro',
         'Ocorreu um erro desconhecido.',
@@ -147,7 +148,7 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {
-      print('Erro desconhecido no cadastro: $e');
+      log('Erro desconhecido no cadastro: $e');
       Get.snackbar(
         'Erro',
         'Ocorreu um erro desconhecido.',
@@ -171,7 +172,7 @@ class AuthController extends GetxController {
       // Atualiza o modelo de usuário no controller localmente
       userModel.value = newUser;
     } catch (e) {
-      print('Erro ao criar usuário no Firestore: $e');
+      log('Erro ao criar usuário no Firestore: $e');
       Get.snackbar('Erro', 'Não foi possível salvar os dados do usuário no Firestore.');
     }
   }
@@ -212,7 +213,7 @@ class AuthController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {
-      print('Erro desconhecido ao redefinir senha: $e');
+      log('Erro desconhecido ao redefinir senha: $e');
       Get.snackbar(
         'Erro',
         'Ocorreu um erro desconhecido.',
@@ -227,7 +228,7 @@ class AuthController extends GetxController {
     try {
       await _auth.signOut();
     } catch (e) {
-      print('Erro ao fazer logout: $e');
+      log('Erro ao fazer logout: $e');
       Get.snackbar(
         'Erro',
         'Ocorreu um erro ao sair. Tente novamente.',
