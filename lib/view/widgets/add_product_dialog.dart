@@ -15,7 +15,7 @@ class AddProductDialog extends StatelessWidget {
     final Rx<XFile?> imageFile = Rx<XFile?>(null);
 
     return AlertDialog(
-      title: const Text('Adicionar Novo Produto'),
+      title: Text('Adicionar Novo Produto', style: Theme.of(context).textTheme.titleLarge),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -27,7 +27,7 @@ class AddProductDialog extends StatelessWidget {
             const SizedBox(height: 20),
             Obx(
               () => imageFile.value == null
-                  ? const Text('Nenhuma imagem selecionada.')
+                  ? Text('Nenhuma imagem selecionada.', style: Theme.of(context).textTheme.bodyMedium)
                   : Image.file(File(imageFile.value!.path), height: 100),
             ),
             const SizedBox(height: 10),

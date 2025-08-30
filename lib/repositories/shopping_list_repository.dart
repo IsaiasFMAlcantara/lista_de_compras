@@ -21,8 +21,9 @@ class ShoppingListRepository {
         });
   }
 
-  Future<void> addList(Map<String, dynamic> listData) async {
-    await _firestore.collection('lists').add(listData);
+  Future<String> addList(Map<String, dynamic> listData) async {
+    DocumentReference docRef = await _firestore.collection('lists').add(listData);
+    return docRef.id;
   }
 
   Future<void> updateList(

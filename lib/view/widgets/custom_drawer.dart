@@ -26,17 +26,16 @@ class CustomDrawer extends StatelessWidget {
               accountName: Text(userName),
               accountEmail: Text(userEmail),
               currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,
                 child: Text(
                   initial,
-                  style: const TextStyle(
-                    fontSize: 40.0,
-                    color: Colors.blue,
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
                   ), // Cor do texto para contraste
                 ),
               ),
-              decoration: const BoxDecoration(
-                color: Colors.blue, // Cor de fundo do header
+              decoration: BoxDecoration( // Removed const because color is dynamic
+                color: Theme.of(context).colorScheme.primary, // Cor de fundo do header
               ),
             );
           }),

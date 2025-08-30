@@ -1,1 +1,50 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"listas-de-compras-3f1d8","appId":"1:743629179345:android:ddeafa68cb710cd13bf8f0","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"listas-de-compras-3f1d8","configurations":{"android":"1:743629179345:android:ddeafa68cb710cd13bf8f0","web":"1:743629179345:web:7588089bfdf413333bf8f0"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "listas-de-compras-3f1d8",
+          "appId": "1:743629179345:android:ddeafa68cb710cd13bf8f0",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "listas-de-compras-3f1d8",
+          "configurations": {
+            "android": "1:743629179345:android:ddeafa68cb710cd13bf8f0",
+            "web": "1:743629179345:web:7588089bfdf413333bf8f0"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    },
+    {
+      "source": "lista-de-compras",
+      "codebase": "lista-de-compras",
+      "ignore": [
+        "venv",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "runtime": "python313"
+    }
+  ]
+}

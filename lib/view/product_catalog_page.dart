@@ -36,7 +36,7 @@ class ProductCatalogPage extends StatelessWidget {
                 CircleAvatar(
                   radius: 40,
                   backgroundImage: NetworkImage(product.imageUrl),
-                  backgroundColor: Colors.grey[200],
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
                 const SizedBox(height: 12),
                 Padding(
@@ -46,6 +46,7 @@ class ProductCatalogPage extends StatelessWidget {
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.titleMedium, // Use theme text style
                   ),
                 ),
               ],

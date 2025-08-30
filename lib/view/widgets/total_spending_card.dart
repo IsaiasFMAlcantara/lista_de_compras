@@ -31,7 +31,7 @@ class TotalSpendingCard extends StatelessWidget {
               () => Text(
                 currencyFormat.format(controller.totalSpending.value),
                 style: Get.textTheme.headlineMedium?.copyWith(
-                  color: Colors.blue,
+                  color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -89,7 +89,7 @@ class ListDetailsPage extends StatelessWidget {
               ),
               title: Text(
                 item.name,
-                style: TextStyle(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   decoration: item.isCompleted
                       ? TextDecoration.lineThrough
                       : TextDecoration.none,
@@ -153,7 +153,7 @@ class ListDetailsPage extends StatelessWidget {
 
     Get.dialog(
       AlertDialog(
-        title: const Text('Editar Lista'),
+        title: Text('Editar Lista', style: Theme.of(context).textTheme.titleLarge),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -187,6 +187,7 @@ class ListDetailsPage extends StatelessWidget {
                     selectedDate.value == null
                         ? 'Sem data de compra'
                         : 'Data: ${DateFormat('dd/MM/yyyy').format(selectedDate.value!)}',
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   IconButton(
                     icon: const Icon(Icons.calendar_today),
@@ -240,9 +241,10 @@ class ListDetailsPage extends StatelessWidget {
   ) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Arquivar Lista'),
-        content: const Text(
+        title: Text('Arquivar Lista', style: Theme.of(context).textTheme.titleLarge),
+        content: Text(
           'Tem certeza que deseja arquivar esta lista? Ela não será mais exibida na tela principal.',
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         actions: [
           TextButton(
@@ -269,9 +271,10 @@ class ListDetailsPage extends StatelessWidget {
   ) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Finalizar Compra'),
-        content: const Text(
+        title: Text('Finalizar Compra', style: Theme.of(context).textTheme.titleLarge),
+        content: Text(
           'Tem certeza que deseja finalizar esta compra? A lista será movida para o seu histórico.',
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         actions: [
           TextButton(
@@ -302,7 +305,7 @@ class ListDetailsPage extends StatelessWidget {
 
     Get.dialog(
       AlertDialog(
-        title: const Text('Adicionar Novo Item'),
+        title: Text('Adicionar Novo Item', style: Theme.of(context).textTheme.titleLarge),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -378,7 +381,7 @@ class ListDetailsPage extends StatelessWidget {
 
     Get.dialog(
       AlertDialog(
-        title: const Text('Editar Item'),
+        title: Text('Editar Item', style: Theme.of(context).textTheme.titleLarge),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -445,9 +448,10 @@ class ListDetailsPage extends StatelessWidget {
   ) {
     Get.dialog(
       AlertDialog(
-        title: const Text('Remover Item'),
-        content: const Text(
+        title: Text('Remover Item', style: Theme.of(context).textTheme.titleLarge),
+        content: Text(
           'Tem certeza que deseja remover este item da lista?',
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         actions: [
           TextButton(

@@ -91,7 +91,11 @@ class ShoppingListController extends GetxController {
             : null,
       };
 
-      await _shoppingListRepository.addList(listData); // Use repository method
+      String newListId = await _shoppingListRepository.addList(listData); // Use repository method and get ID
+
+      if (purchaseDate != null) {
+        await _scheduleNotification(newListId, name, purchaseDate);
+      }
 
       Get.snackbar('Sucesso', 'Lista "$name" criada!');
     } catch (e) {
@@ -209,12 +213,48 @@ class ShoppingListController extends GetxController {
         'updatedAt': now,
         'lastUpdatedBy': user.uid,
       });
+
+      if (newPurchaseDate != null) {
+        await _scheduleNotification(list.id, newName, newPurchaseDate);
+      }
+
       Get.snackbar('Sucesso', 'Lista atualizada com sucesso!');
     } catch (e) {
       Get.snackbar('Erro', 'Não foi possível atualizar a lista.');
       log(e.toString());
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  // Schedules a notification for a shopping list
+  Future<void> _scheduleNotification(
+    String listId,
+    String listName,
+    DateTime purchaseDate,
+  ) async {
+    final user = _authController.userModel.value;
+    if (user == null || user.fcmToken == null) {
+      log('Usuário não logado ou sem FCM Token para agendar notificação.');
+      return;
+    }
+
+    try {
+      await FirebaseFirestore.instance.collection('scheduled_notifications').add({
+        'userId': user.id,
+        'listId': listId,
+        'listName': listName,
+        'fcmToken': user.fcmToken,
+        'scheduleTime': Timestamp.fromDate(purchaseDate),
+        'sent': false, // Flag to indicate if notification has been sent
+        'createdAt': Timestamp.now(),
+      });
+      log('Notificação agendada para a lista $listName em $purchaseDate');
+    } catch (e) {
+      log('Erro ao agendar notificação: $e');
+    } finally {
+      // Ensure Firestore is imported for Timestamp
+      // import 'package:cloud_firestore/cloud_firestore.dart';
     }
   }
 }

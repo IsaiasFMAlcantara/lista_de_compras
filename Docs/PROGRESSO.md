@@ -14,6 +14,7 @@ Este arquivo rastreia o que foi concluído e quais são os próximos objetivos n
 ## ⚙️ Observações Técnicas (Análise de Código)
 
 Durante a análise do código (`flutter analyze`), **nenhum problema foi encontrado**. O código está limpo e segue as diretrizes de análise.
+- **Centralização de Design:** O plano é centralizar toda a parte de beleza (design/front-end) do projeto em um arquivo `theme.dart` para facilitar a manutenção e padronização visual.
 
 ## ✅ Concluído
 
@@ -100,6 +101,7 @@ Após a conclusão das funcionalidades essenciais, estas são as etapas proposta
 ### 1. Arquitetura de Notificações Agendadas via Firebase
 
 **Objetivo:** Enviar uma notificação push para o usuário na data de compra agendada em uma lista.
+- **Status Atual:** A configuração do lado do cliente (Flutter) para agendar notificações no Firestore está concluída. A implementação e o deploy da função Firebase (backend) para enviar as notificações estão pendentes devido a dificuldades no setup do ambiente Python.
 
 **Arquitetura Proposta:**
 

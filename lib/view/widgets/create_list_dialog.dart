@@ -16,7 +16,7 @@ class CreateListDialog extends StatelessWidget {
     final List<String> categories = ['Mercado', 'Farmácia', 'Loja', 'Outros'];
 
     return AlertDialog(
-      title: const Text('Criar Nova Lista'),
+      title: Text('Criar Nova Lista', style: Theme.of(context).textTheme.titleLarge),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -50,6 +50,7 @@ class CreateListDialog extends StatelessWidget {
                   selectedDate.value == null
                       ? 'Sem data de compra'
                       : 'Data: ${DateFormat('dd/MM/yyyy').format(selectedDate.value!)}',
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 IconButton(
                   icon: const Icon(Icons.calendar_today),

@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:lista_compras/model/user_model.dart';
 import 'package:lista_compras/routers.dart';
 import 'package:lista_compras/repositories/auth_repository.dart'; // Import the new repository
+import 'package:firebase_messaging/firebase_messaging.dart'; // Import Firebase Messaging
 
 class AuthController extends GetxController {
   // Inject AuthRepository
@@ -47,6 +48,7 @@ class AuthController extends GetxController {
     } else {
       // Se o usuário logou, carrega os dados do Firestore e vai para a home
       await _loadUserModel(user.uid);
+      await _updateFCMToken(user.uid); // Update FCM token
       Get.offAllNamed(AppRoutes.homePage);
     }
   }
@@ -248,5 +250,18 @@ class AuthController extends GetxController {
 
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
+  }
+
+  // Method to update the user's FCM token in Firestore
+  Future<void> _updateFCMToken(String uid) async {
+    try {
+      String? token = await FirebaseMessaging.instance.getToken();
+      if (token != null) {
+        await _authRepository.updateUserFCMToken(uid, token);
+        log('FCM Token updated for user $uid: $token');
+      }
+    } catch (e) {
+      log('Erro ao atualizar FCM Token: $e');
+    }
   }
 }

@@ -50,4 +50,11 @@ class AuthRepository {
     }
     return null;
   }
+
+  // New method to update FCM token
+  Future<void> updateUserFCMToken(String uid, String? fcmToken) async {
+    await _firestore.collection('users').doc(uid).update({
+      'fcmToken': fcmToken,
+    });
+  }
 }
