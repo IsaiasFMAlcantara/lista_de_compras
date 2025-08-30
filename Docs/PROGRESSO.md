@@ -13,16 +13,7 @@ Este arquivo rastreia o que foi concluído e quais são os próximos objetivos n
 
 ## ⚙️ Observações Técnicas (Análise de Código)
 
-Durante a análise do código (`flutter analyze`), foram identificados os seguintes pontos:
-
-- **Avisos de Estilo (`info`):**
-  - Nomes de arquivos como `HomePage.dart` e `LoginPage.dart` não seguem a convenção `lower_case_with_underscores`. Isso é uma questão de estilo e pode ser corrigido em uma fase de refatoração de código.
-
-- **Avisos (`warning`):**
-  - `Unnecessary cast` em `lib/view/list_details_page.dart`. Este é um aviso sobre um "cast" desnecessário, mas o código é funcionalmente correto.
-
-- **Erro Persistente (`error`):**
-  - `The named parameter 'price' isn't defined` em `lib/view/list_details_page.dart`. Este erro é incomum, pois o parâmetro `price` está corretamente definido na função `addItem` do `ShoppingItemController`. Tudo indica que é um falso positivo do analisador ou um bug na ferramenta, pois o código está logicamente correto e funcional. Não impede a execução do aplicativo.
+Durante a análise do código (`flutter analyze`), **nenhum problema foi encontrado**. O código está limpo e segue as diretrizes de análise.
 
 ## ✅ Concluído
 
@@ -81,22 +72,69 @@ Durante a análise do código (`flutter analyze`), foram identificados os seguin
     - [x] Implementar a funcionalidade de **editar** um item.
     - [x] Implementar a funcionalidade de **remover** um item.
 
+- **Histórico de Compras (Concluído):**
+    - [x] **Objetivo:** Permitir que o usuário "finalize" uma lista e visualize compras passadas.
+    - [x] **Tarefas:**
+        - [x] Implementar a funcionalidade de "finalizar" uma lista (mudando seu status e movendo para o histórico).
+        - [x] Criar uma tela para visualizar o histórico de compras.
+
+- **Análise de Gastos (Concluído):**
+    - [x] **Objetivo:** Fornecer uma visão geral dos gastos do usuário, com filtro por período e gráfico de pizza por categoria.
+    - [x] **Tarefas:**
+        - [x] Adicionar campo `category` ao `ShoppingListModel` e UI de criação/edição de listas.
+        - [x] Criar a tela de "Análise de Gastos" com filtros de data, valor total e gráfico de pizza por categoria.
+
 ## 🚧 Próximos Passos
 
 As próximas grandes funcionalidades a serem desenvolvidas, conforme nosso `PROGRESSO.md` e `requisitos.md`, são:
 
-1.  **Histórico de Compras:**
-    *   **Objetivo:** Permitir que o usuário "finalize" uma lista e visualize compras passadas.
-    *   **Tarefas:**
-        *   Implementar a funcionalidade de "finalizar" uma lista (mudando seu status e movendo para o histórico).
-        *   Criar uma tela para visualizar o histórico de compras.
-
-2.  **Análise de Gastos:**
-    *   **Objetivo:** Fornecer uma visão geral dos gastos do usuário.
-    *   **Tarefas:**
-        *   Criar uma tela que mostre um resumo dos gastos (ex: somatório por período, gráficos).
-
-3.  **Sugestão de Produtos:**
+1.  **Sugestão de Produtos:**
     *   **Objetivo:** Sugerir produtos ao usuário com base em seus hábitos de compra.
     *   **Tarefas:**
         *   Desenvolver a lógica para sugerir produtos (usando o catálogo existente).
+
+## 🏆 Etapas Bônus (Diferenciais)
+
+Após a conclusão das funcionalidades essenciais, estas são as etapas propostas para elevar o nível do aplicativo:
+
+### 1. Arquitetura de Notificações Agendadas via Firebase
+
+**Objetivo:** Enviar uma notificação push para o usuário na data de compra agendada em uma lista.
+
+**Arquitetura Proposta:**
+
+- **Flutter (Front-end):**
+  - Obtém e salva o token de dispositivo (FCM Token) do usuário.
+  - Ao agendar uma data de compra, salva as informações (`data`, `título`, `corpo da mensagem`, `token`) em uma coleção no Cloud Firestore (ex: `agendamentos_notificacoes`).
+
+- **Firebase Functions (Back-end):**
+  - Uma função `cron` (agendada) executa a cada X minutos (ex: 10 minutos).
+  - A função varre a coleção de agendamentos, procurando por documentos cuja data/hora seja igual ou anterior à hora atual.
+  - Para cada documento encontrado, a função utiliza o Firebase Cloud Messaging (FCM) para disparar a notificação para o token armazenado.
+  - Após o envio bem-sucedido, o documento correspondente é removido do Firestore para evitar envios duplicados.
+
+### 2. Sistema de Sugestões Inteligentes com IA
+
+**Objetivo:** Oferecer sugestões de produtos personalizadas, baseadas nos padrões de compra do usuário.
+
+**Arquitetura Proposta:**
+
+- **Cloud Function (Python):**
+  - Uma Cloud Function em Python servirá como o cérebro da operação, executando a análise dos dados.
+
+- **Firebase Firestore:**
+  - As listas de compras finalizadas são a fonte de dados primária.
+  - Uma nova coleção (ex: `sugestoes_usuario`) armazenará os resultados da análise para cada usuário.
+
+- **Cloud Scheduler:**
+  - Um job agendado (ex: toda madrugada) acionará a Cloud Function para processar os dados do dia anterior.
+
+**Fluxo de Trabalho:**
+
+1.  **Coleta de Dados:** O app salva as listas finalizadas no Firestore.
+2.  **Processamento Agendado:** O Cloud Scheduler ativa a Cloud Function.
+3.  **Análise de Padrões:** A função lê o histórico de compras e aplica algoritmos de Machine Learning:
+    - **Análise de Recorrência:** Identifica com que frequência um item é comprado (ex: "Leite" a cada 7 dias).
+    - **Análise de Associação (Regra de Associação - Apriori):** Descobre itens que são frequentemente comprados juntos (ex: quem compra "Pão" também costuma comprar "Manteiga").
+4.  **Armazenamento das Sugestões:** Os resultados (ex: "Lembrete: talvez seja hora de comprar Leite" ou "Que tal levar Manteiga junto com o Pão?") são salvos na coleção de sugestões do usuário.
+5.  **Exibição no App:** O Flutter lê a coleção de sugestões e as exibe de forma inteligente para o usuário no momento apropriado.

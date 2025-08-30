@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lista_compras/controller/auth_controller.dart';
+import 'package:lista_compras/view/widgets/auth_text_form_field.dart'; // Import the new widget
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -25,21 +26,18 @@ class LoginPage extends StatelessWidget {
                   Text(
                     controller.isLoginView.value ? 'Login' : 'Cadastro',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
 
                   // --- CAMPO NOME (APENAS CADASTRO) ---
                   if (!controller.isLoginView.value)
-                    TextFormField(
+                    AuthTextFormField(
                       controller: controller.nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Nome',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.person),
-                      ),
+                      labelText: 'Nome',
+                      prefixIcon: Icons.person,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, digite seu nome.';
@@ -51,13 +49,10 @@ class LoginPage extends StatelessWidget {
 
                   // --- CAMPO TELEFONE (APENAS CADASTRO) ---
                   if (!controller.isLoginView.value)
-                    TextFormField(
+                    AuthTextFormField(
                       controller: controller.phoneController,
-                      decoration: const InputDecoration(
-                        labelText: 'Telefone',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.phone),
-                      ),
+                      labelText: 'Telefone',
+                      prefixIcon: Icons.phone,
                       keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -69,13 +64,10 @@ class LoginPage extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // --- CAMPO EMAIL ---
-                  TextFormField(
+                  AuthTextFormField(
                     controller: controller.emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.email),
-                    ),
+                    labelText: 'Email',
+                    prefixIcon: Icons.email,
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -91,22 +83,19 @@ class LoginPage extends StatelessWidget {
 
                   // --- CAMPO SENHA ---
                   Obx(() {
-                    return TextFormField(
+                    return AuthTextFormField(
                       controller: controller.passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Senha',
-                        border: const OutlineInputBorder(),
-                        prefixIcon: const Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.isPasswordVisible.value
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
-                          onPressed: controller.togglePasswordVisibility,
-                        ),
-                      ),
+                      labelText: 'Senha',
+                      prefixIcon: Icons.lock,
                       obscureText: !controller.isPasswordVisible.value,
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.isPasswordVisible.value
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: controller.togglePasswordVisibility,
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, digite sua senha.';
@@ -123,22 +112,19 @@ class LoginPage extends StatelessWidget {
                   // --- CAMPO CONFIRMAR SENHA (APENAS CADASTRO) ---
                   if (!controller.isLoginView.value)
                     Obx(() {
-                      return TextFormField(
+                      return AuthTextFormField(
                         controller: controller.confirmPasswordController,
-                        decoration: InputDecoration(
-                          labelText: 'Confirmar Senha',
-                          border: const OutlineInputBorder(),
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              controller.isPasswordVisible.value
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: controller.togglePasswordVisibility,
-                          ),
-                        ),
+                        labelText: 'Confirmar Senha',
+                        prefixIcon: Icons.lock_outline,
                         obscureText: !controller.isPasswordVisible.value,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.isPasswordVisible.value
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: controller.togglePasswordVisibility,
+                        ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Por favor, confirme sua senha.';
@@ -169,9 +155,11 @@ class LoginPage extends StatelessWidget {
                                 }
                               }
                             },
-                            child: Text(controller.isLoginView.value
-                                ? 'Entrar'
-                                : 'Cadastrar'),
+                            child: Text(
+                              controller.isLoginView.value
+                                  ? 'Entrar'
+                                  : 'Cadastrar',
+                            ),
                           );
                   }),
                   const SizedBox(height: 16),

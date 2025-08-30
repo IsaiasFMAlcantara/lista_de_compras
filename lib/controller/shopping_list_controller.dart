@@ -3,9 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:lista_compras/controller/auth_controller.dart';
 import 'package:lista_compras/model/shopping_list_model.dart';
+import 'package:lista_compras/repositories/shopping_list_repository.dart'; // Import the new repository
 
 class ShoppingListController extends GetxController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // Inject ShoppingListRepository
+  final ShoppingListRepository _shoppingListRepository = Get.put(
+    ShoppingListRepository(),
+  );
   final AuthController _authController = Get.find<AuthController>();
 
   final RxList<ShoppingListModel> shoppingLists = <ShoppingListModel>[].obs;
@@ -23,39 +27,40 @@ class ShoppingListController extends GetxController {
 
   // Pega as listas de compra em tempo real e aplica a ordenação
   Stream<List<ShoppingListModel>> _getShoppingListsStream(String uid) {
-    return _firestore
-        .collection('lists')
-        .where('members.$uid', isNull: false)
-        .where('status', isEqualTo: 'ativa') // Filtra apenas listas ativas
-        .snapshots()
-        .map((snapshot) {
-      final lists = snapshot.docs
-          .map((doc) => ShoppingListModel.fromFirestore(doc))
-          .toList();
-
-      // Lógica de ordenação: purchaseDate (mais próxima) > createdAt
-      lists.sort((a, b) {
-        // Se ambos têm purchaseDate, compara por ela
-        if (a.purchaseDate != null && b.purchaseDate != null) {
-          return a.purchaseDate!.compareTo(b.purchaseDate!); // Crescente (mais próxima primeiro)
-        }
-        // Se apenas 'a' tem purchaseDate, 'a' vem antes
-        if (a.purchaseDate != null) {
-          return -1;
-        }
-        // Se apenas 'b' tem purchaseDate, 'b' vem antes
-        if (b.purchaseDate != null) {
-          return 1;
-        }
-        // Se nenhum tem purchaseDate, compara por createdAt (mais recente primeiro)
-        return b.createdAt.compareTo(a.createdAt); // Decrescente (mais recente primeiro)
-      });
-      return lists;
-    });
+    return _shoppingListRepository
+        .getShoppingListsStream(uid, 'ativa') // Use repository method
+        .map((lists) {
+          // Lógica de ordenação: purchaseDate (mais próxima) > createdAt
+          lists.sort((a, b) {
+            // Se ambos têm purchaseDate, compara por ela
+            if (a.purchaseDate != null && b.purchaseDate != null) {
+              return a.purchaseDate!.compareTo(
+                b.purchaseDate!,
+              ); // Crescente (mais próxima primeiro)
+            }
+            // Se apenas 'a' tem purchaseDate, 'a' vem antes
+            if (a.purchaseDate != null) {
+              return -1;
+            }
+            // Se apenas 'b' tem purchaseDate, 'b' vem antes
+            if (b.purchaseDate != null) {
+              return 1;
+            }
+            // Se nenhum tem purchaseDate, compara por createdAt (mais recente primeiro)
+            return b.createdAt.compareTo(
+              a.createdAt,
+            ); // Decrescente (mais recente primeiro)
+          });
+          return lists;
+        });
   }
 
   // Cria uma nova lista de compras
-  Future<void> createList(String name, DateTime? purchaseDate) async {
+  Future<void> createList(
+    String name,
+    String category,
+    DateTime? purchaseDate,
+  ) async {
     if (name.isEmpty) {
       Get.snackbar('Erro', 'O nome da lista não pode ser vazio.');
       return;
@@ -72,7 +77,7 @@ class ShoppingListController extends GetxController {
       final now = Timestamp.now();
       final uid = user.uid;
 
-      await _firestore.collection('lists').add({
+      final listData = {
         'name': name,
         'ownerId': uid,
         'createdAt': now,
@@ -80,11 +85,15 @@ class ShoppingListController extends GetxController {
         'lastUpdatedBy': uid,
         'status': 'ativa',
         'members': {uid: 'owner'},
-        'purchaseDate': purchaseDate != null ? Timestamp.fromDate(purchaseDate) : null,
-      });
+        'category': category,
+        'purchaseDate': purchaseDate != null
+            ? Timestamp.fromDate(purchaseDate)
+            : null,
+      };
+
+      await _shoppingListRepository.addList(listData); // Use repository method
 
       Get.snackbar('Sucesso', 'Lista "$name" criada!');
-
     } catch (e) {
       Get.snackbar('Erro', 'Não foi possível criar a lista.');
       log(e.toString());
@@ -97,7 +106,10 @@ class ShoppingListController extends GetxController {
   Future<void> archiveList(String listId) async {
     final user = _authController.user;
     if (user == null) {
-      Get.snackbar('Erro', 'Você precisa estar logado para arquivar uma lista.');
+      Get.snackbar(
+        'Erro',
+        'Você precisa estar logado para arquivar uma lista.',
+      );
       return;
     }
 
@@ -105,7 +117,8 @@ class ShoppingListController extends GetxController {
       isLoading.value = true;
       final now = Timestamp.now();
 
-      await _firestore.collection('lists').doc(listId).update({
+      await _shoppingListRepository.updateList(listId, {
+        // Use repository method
         'status': 'arquivada',
         'updatedAt': now,
         'lastUpdatedBy': user.uid,
@@ -119,8 +132,58 @@ class ShoppingListController extends GetxController {
     }
   }
 
+  // Finaliza uma lista de compras
+  Future<void> finishList(String listId) async {
+    final user = _authController.user;
+    if (user == null) {
+      Get.snackbar(
+        'Erro',
+        'Você precisa estar logado para finalizar uma lista.',
+      );
+      return;
+    }
+
+    try {
+      isLoading.value = true;
+      final now = Timestamp.now();
+
+      // 1. Buscar todos os itens da lista para calcular o total
+      final items = await _shoppingListRepository.getShoppingListItems(
+        listId,
+      ); // Use repository method
+      double totalPrice = 0.0;
+      for (var item in items) {
+        if (item.price != null && item.quantity > 0) {
+          totalPrice += item.price! * item.quantity;
+        }
+      }
+
+      // 2. Atualizar a lista com o novo status e o total
+      await _shoppingListRepository.updateList(listId, {
+        // Use repository method
+        'status': 'finalizada',
+        'totalPrice': totalPrice,
+        'finishedAt': now, // Novo campo para registrar quando foi finalizada
+        'updatedAt': now,
+        'lastUpdatedBy': user.uid,
+      });
+
+      Get.snackbar('Sucesso', 'Compra finalizada e movida para o histórico!');
+    } catch (e) {
+      Get.snackbar('Erro', 'Não foi possível finalizar a compra.');
+      log(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   // Atualiza uma lista existente
-  Future<void> updateList(ShoppingListModel list, String newName, DateTime? newPurchaseDate) async {
+  Future<void> updateList(
+    ShoppingListModel list,
+    String newName,
+    String newCategory,
+    DateTime? newPurchaseDate,
+  ) async {
     if (newName.isEmpty) {
       Get.snackbar('Erro', 'O nome da lista não pode ser vazio.');
       return;
@@ -136,9 +199,13 @@ class ShoppingListController extends GetxController {
       isLoading.value = true;
       final now = Timestamp.now();
 
-      await _firestore.collection('lists').doc(list.id).update({
+      await _shoppingListRepository.updateList(list.id, {
+        // Use repository method
         'name': newName,
-        'purchaseDate': newPurchaseDate != null ? Timestamp.fromDate(newPurchaseDate) : null,
+        'category': newCategory,
+        'purchaseDate': newPurchaseDate != null
+            ? Timestamp.fromDate(newPurchaseDate)
+            : null,
         'updatedAt': now,
         'lastUpdatedBy': user.uid,
       });

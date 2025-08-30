@@ -8,7 +8,7 @@ Um aplicativo Flutter multiplataforma para gerenciar suas listas de compras, con
 *   **Gerenciamento de Listas de Compras:** Crie, edite e exclua suas listas de forma intuitiva.
 *   **Adição e Edição de Itens:** Adicione itens às suas listas com nome, quantidade e valor. Edite ou remova itens existentes.
 *   **Histórico de Compras:** Finalize suas listas e salve-as no histórico para consulta futura, incluindo valores totais.
-*   **Análise de Gastos:** Visualize o somatório de seus gastos por período.
+*   **Análise de Gastos:** Visualize o somatório de seus gastos por período e categoria, com gráficos interativos.
 *   **Sugestão de Produtos:** Receba sugestões de produtos com base nos itens que você adiciona às suas listas.
 *   **Persistência em Nuvem:** Todas as suas listas e dados são salvos no Firebase Firestore, acessíveis de qualquer dispositivo.
 
@@ -20,6 +20,7 @@ Um aplicativo Flutter multiplataforma para gerenciar suas listas de compras, con
     *   **Firebase Authentication:** Para gerenciamento de usuários.
     *   **Cloud Firestore:** Banco de dados NoSQL em tempo real.
 *   **GetX:** Gerenciamento de estado, injeção de dependência e rotas.
+*   **fl_chart:** Para criação de gráficos interativos.
 
 ## 🛠️ Como Configurar e Rodar o Projeto
 
@@ -104,3 +105,15 @@ Se tiver alguma dúvida ou sugestão, sinta-se à vontade para entrar em contato
 *   **Isaias Félix Machado de Alcantara**
 *   **isaiasofelix@gmail.com**
 *   [IsaiasFMAlcantara](https://github.com/IsaiasFMAlcantara)
+
+---
+
+## 📚 Documentação Detalhada
+
+Para mais informações sobre o projeto, consulte os documentos abaixo:
+
+*   [Planejamento de Desenvolvimento](Docs/planejamento_desenvolvimento.md)
+*   [Plano Global](Docs/plano_global.md)
+*   [Progresso do Projeto](Docs/PROGRESSO.md)
+*   [Requisitos do Projeto](Docs/requisitos.md)
+*   [Relatório Detalhado do Projeto](Docs/RELATORIO_PROJETO.md)

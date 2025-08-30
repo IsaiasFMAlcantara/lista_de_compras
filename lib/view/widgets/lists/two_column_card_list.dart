@@ -25,9 +25,7 @@ class TwoColumnCardList extends StatelessWidget {
       ),
       itemCount: itemCount,
       itemBuilder: (context, index) {
-        return SquareCard(
-          child: itemBuilder(context, index),
-        );
+        return SquareCard(child: itemBuilder(context, index));
       },
     );
   }

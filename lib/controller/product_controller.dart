@@ -25,8 +25,13 @@ class ProductController extends GetxController {
   Future<void> fetchProducts() async {
     try {
       isLoading.value = true;
-      final snapshot = await _firestore.collection('products').orderBy('name').get();
-      products.value = snapshot.docs.map((doc) => ProductModel.fromFirestore(doc)).toList();
+      final snapshot = await _firestore
+          .collection('products')
+          .orderBy('name')
+          .get();
+      products.value = snapshot.docs
+          .map((doc) => ProductModel.fromFirestore(doc))
+          .toList();
     } catch (e) {
       Get.snackbar('Erro', 'Não foi possível carregar os produtos.');
       log(e.toString());
@@ -66,7 +71,6 @@ class ProductController extends GetxController {
 
       Get.snackbar('Sucesso', 'Produto adicionado ao catálogo!');
       fetchProducts(); // Atualiza a lista de produtos
-
     } catch (e) {
       Get.snackbar('Erro', 'Não foi possível adicionar o produto.');
       log(e.toString());
@@ -75,7 +79,8 @@ class ProductController extends GetxController {
 
   Future<String?> _uploadImage(XFile imageFile) async {
     try {
-      final fileName = '${DateTime.now().millisecondsSinceEpoch}_${imageFile.name}';
+      final fileName =
+          '${DateTime.now().millisecondsSinceEpoch}_${imageFile.name}';
       final ref = _storage.ref().child('product_images').child(fileName);
       final uploadTask = ref.putFile(File(imageFile.path));
       final snapshot = await uploadTask.whenComplete(() => {});

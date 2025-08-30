@@ -41,7 +41,9 @@ class ShoppingItemModel {
   }
 
   // Cria um objeto ShoppingItemModel a partir de um DocumentSnapshot do Firestore
-  factory ShoppingItemModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+  factory ShoppingItemModel.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data()!;
     return ShoppingItemModel(
       id: doc.id,

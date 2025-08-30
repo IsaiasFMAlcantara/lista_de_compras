@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:lista_compras/controller/product_controller.dart';
 import 'package:lista_compras/view/widgets/custom_app_bar.dart';
 import 'package:lista_compras/view/widgets/custom_drawer.dart';
+import 'package:lista_compras/view/widgets/add_product_dialog.dart'; // Import the new dialog
 
 import 'package:lista_compras/view/widgets/lists/two_column_card_list.dart';
 
@@ -25,9 +23,7 @@ class ProductCatalogPage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (controller.products.isEmpty) {
-          return const Center(
-            child: Text('Nenhum produto no catálogo ainda.'),
-          );
+          return const Center(child: Text('Nenhum produto no catálogo ainda.'));
         }
         return TwoColumnCardList(
           itemCount: controller.products.length,
@@ -58,63 +54,13 @@ class ProductCatalogPage extends StatelessWidget {
         );
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddProductDialog(context, controller),
+        onPressed: () {
+          Get.dialog(
+            AddProductDialog(controller: controller),
+          ); // Use the new dialog
+        },
         child: const Icon(Icons.add),
       ),
     );
-  }
-
-  void _showAddProductDialog(BuildContext context, ProductController controller) {
-    final TextEditingController nameController = TextEditingController();
-    final Rx<XFile?> imageFile = Rx<XFile?>(null);
-
-    Get.dialog(AlertDialog(
-      title: const Text('Adicionar Novo Produto'),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Nome do Produto'),
-            ),
-            const SizedBox(height: 20),
-            Obx(() => imageFile.value == null
-                ? const Text('Nenhuma imagem selecionada.')
-                : Image.file(File(imageFile.value!.path), height: 100)),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              child: const Text('Selecionar Imagem'),
-              onPressed: () async {
-                final ImagePicker picker = ImagePicker();
-                final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
-                if (pickedFile != null) {
-                  imageFile.value = pickedFile;
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          child: const Text('Cancelar'),
-          onPressed: () => Get.back(),
-        ),
-        Obx(() {
-          return controller.isLoading.value
-              ? const CircularProgressIndicator()
-              : ElevatedButton(
-                  child: const Text('Adicionar'),
-                  onPressed: () {
-                    if (nameController.text.isNotEmpty && imageFile.value != null) {
-                      controller.addProduct(nameController.text, imageFile.value!);
-                      Get.back(); // Fecha o dialog
-                    }
-                  },
-                );
-        }),
-      ],
-    ));
   }
 }

@@ -8,9 +8,7 @@ class SquareCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 3,
       child: AspectRatio(
         aspectRatio: 1 / 1, // Proporção 1:1 para ser um quadrado

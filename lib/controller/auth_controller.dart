@@ -1,14 +1,14 @@
 import 'dart:developer';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lista_compras/model/user_model.dart';
 import 'package:lista_compras/routers.dart';
+import 'package:lista_compras/repositories/auth_repository.dart'; // Import the new repository
 
 class AuthController extends GetxController {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // Inject AuthRepository
+  final AuthRepository _authRepository = Get.put(AuthRepository());
 
   // Controllers para os campos de texto
   final nameController = TextEditingController();
@@ -32,7 +32,9 @@ class AuthController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    _firebaseUser.bindStream(_auth.authStateChanges());
+    _firebaseUser.bindStream(
+      _authRepository.authStateChanges,
+    ); // Use repository stream
     // "ouvinte" que reage às mudanças na variável _firebaseUser
     ever(_firebaseUser, _handleAuthStateChanged);
   }
@@ -52,10 +54,9 @@ class AuthController extends GetxController {
   // Carrega os dados do usuário do Firestore
   Future<void> _loadUserModel(String uid) async {
     try {
-      final doc = await _firestore.collection('users').doc(uid).get();
-      if (doc.exists) {
-        userModel.value = UserModel.fromMap(doc.data()!);
-      }
+      userModel.value = await _authRepository.getUserModelFromFirestore(
+        uid,
+      ); // Use repository method
     } catch (e) {
       log('Erro ao carregar modelo de usuário: $e');
       Get.snackbar('Erro', 'Não foi possível carregar os dados do usuário.');
@@ -65,9 +66,10 @@ class AuthController extends GetxController {
   Future<void> login() async {
     try {
       isLoading.value = true;
-      await _auth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
+      await _authRepository.signInWithEmailAndPassword(
+        // Use repository method
+        emailController.text.trim(),
+        passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
       String message;
@@ -105,7 +107,8 @@ class AuthController extends GetxController {
   }
 
   Future<void> signUp() async {
-    if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
+    if (passwordController.text.trim() !=
+        confirmPasswordController.text.trim()) {
       Get.snackbar(
         'Erro de Cadastro',
         'As senhas não coincidem.',
@@ -117,16 +120,17 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       // 1. Criar usuário no Firebase Auth
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
+      UserCredential userCredential = await _authRepository
+          .createUserWithEmailAndPassword(
+            // Use repository method
+            emailController.text.trim(),
+            passwordController.text.trim(),
+          );
 
       // 2. Salvar dados adicionais no Firestore
       if (userCredential.user != null) {
         await _createUserInFirestore(userCredential.user!);
       }
-
     } on FirebaseAuthException catch (e) {
       String message;
       switch (e.code) {
@@ -167,13 +171,16 @@ class AuthController extends GetxController {
         email: emailController.text.trim(),
         phone: phoneController.text.trim(),
       );
-      // Salva no Firestore
-      await _firestore.collection('users').doc(firebaseUser.uid).set(newUser.toJson());
+      // Salva no Firestore usando o repositório
+      await _authRepository.createUserInFirestore(newUser);
       // Atualiza o modelo de usuário no controller localmente
       userModel.value = newUser;
     } catch (e) {
       log('Erro ao criar usuário no Firestore: $e');
-      Get.snackbar('Erro', 'Não foi possível salvar os dados do usuário no Firestore.');
+      Get.snackbar(
+        'Erro',
+        'Não foi possível salvar os dados do usuário no Firestore.',
+      );
     }
   }
 
@@ -189,7 +196,9 @@ class AuthController extends GetxController {
 
     try {
       isLoading.value = true;
-      await _auth.sendPasswordResetEmail(email: emailController.text.trim());
+      await _authRepository.sendPasswordResetEmail(
+        emailController.text.trim(),
+      ); // Use repository method
       Get.snackbar(
         'Sucesso',
         'E-mail de redefinição de senha enviado. Verifique sua caixa de entrada.',
@@ -207,11 +216,7 @@ class AuthController extends GetxController {
         default:
           message = 'Ocorreu um erro ao enviar o e-mail. Tente novamente.';
       }
-      Get.snackbar(
-        'Erro',
-        message,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      Get.snackbar('Erro', message, snackPosition: SnackPosition.BOTTOM);
     } catch (e) {
       log('Erro desconhecido ao redefinir senha: $e');
       Get.snackbar(
@@ -226,7 +231,7 @@ class AuthController extends GetxController {
 
   Future<void> logout() async {
     try {
-      await _auth.signOut();
+      await _authRepository.signOut(); // Use repository method
     } catch (e) {
       log('Erro ao fazer logout: $e');
       Get.snackbar(

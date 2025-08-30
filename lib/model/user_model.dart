@@ -13,12 +13,7 @@ class UserModel {
 
   // Converte um objeto UserModel para um Map (formato JSON do Firestore)
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'email': email,
-      'phone': phone,
-    };
+    return {'id': id, 'name': name, 'email': email, 'phone': phone};
   }
 
   // Cria um objeto UserModel a partir de um Map (documento do Firestore)

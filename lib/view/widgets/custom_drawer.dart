@@ -18,7 +18,9 @@ class CustomDrawer extends StatelessWidget {
             final user = _authController.userModel.value;
             String userName = user?.name ?? 'Usuário';
             String userEmail = user?.email ?? 'email@exemplo.com';
-            String initial = userName.isNotEmpty ? userName[0].toUpperCase() : 'U';
+            String initial = userName.isNotEmpty
+                ? userName[0].toUpperCase()
+                : 'U';
 
             return UserAccountsDrawerHeader(
               accountName: Text(userName),
@@ -27,7 +29,10 @@ class CustomDrawer extends StatelessWidget {
                 backgroundColor: Colors.white,
                 child: Text(
                   initial,
-                  style: const TextStyle(fontSize: 40.0, color: Colors.blue), // Cor do texto para contraste
+                  style: const TextStyle(
+                    fontSize: 40.0,
+                    color: Colors.blue,
+                  ), // Cor do texto para contraste
                 ),
               ),
               decoration: const BoxDecoration(
@@ -48,18 +53,16 @@ class CustomDrawer extends StatelessWidget {
             leading: const Icon(Icons.history),
             title: const Text('Histórico de Compras'),
             onTap: () {
-              // TODO: Navegar para a página de Histórico
               Get.back(); // Fecha o drawer
-              Get.snackbar('Em Breve', 'Página de histórico ainda em desenvolvimento.');
+              Get.toNamed(AppRoutes.historyPage);
             },
           ),
           ListTile(
             leading: const Icon(Icons.insights),
             title: const Text('Análise de Gastos'),
             onTap: () {
-              // TODO: Navegar para a página de Análise
-              Get.back();
-              Get.snackbar('Em Breve', 'Página de análise ainda em desenvolvimento.');
+              Get.back(); // Fecha o drawer
+              Get.toNamed(AppRoutes.spendingAnalysisPage);
             },
           ),
           const Divider(),

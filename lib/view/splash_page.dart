@@ -10,10 +10,6 @@ class SplashPage extends StatelessWidget {
     // Inicia o AuthController
     Get.put(AuthController());
 
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

@@ -18,9 +18,7 @@ class SingleColumnCardList extends StatelessWidget {
     return ListView.builder(
       itemCount: itemCount,
       itemBuilder: (context, index) {
-        return RectangularCard(
-          child: itemBuilder(context, index),
-        );
+        return RectangularCard(child: itemBuilder(context, index));
       },
     );
   }

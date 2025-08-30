@@ -32,7 +32,9 @@ class ProductModel {
   }
 
   // Cria um objeto ProductModel a partir de um DocumentSnapshot do Firestore
-  factory ProductModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+  factory ProductModel.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data()!;
     return ProductModel(
       id: doc.id,

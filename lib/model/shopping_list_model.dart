@@ -8,8 +8,12 @@ class ShoppingListModel {
   final Timestamp updatedAt;
   final String lastUpdatedBy;
   final String status;
-  final Map<String, String> members; // Key: UID, Value: permissão ('owner', 'editor', etc.)
+  final Map<String, String>
+  members; // Key: UID, Value: permissão ('owner', 'editor', etc.)
+  final String category; // Categoria da lista (ex: Mercado, Farmácia)
   final Timestamp? purchaseDate; // Data da compra (opcional)
+  final double? totalPrice; // Preço total da compra (calculado ao finalizar)
+  final Timestamp? finishedAt; // Data em que a compra foi finalizada
 
   ShoppingListModel({
     required this.id,
@@ -20,7 +24,10 @@ class ShoppingListModel {
     required this.lastUpdatedBy,
     required this.status,
     required this.members,
+    required this.category,
     this.purchaseDate,
+    this.totalPrice,
+    this.finishedAt,
   });
 
   // Converte um objeto ShoppingListModel para um Map para o Firestore
@@ -33,12 +40,17 @@ class ShoppingListModel {
       'lastUpdatedBy': lastUpdatedBy,
       'status': status,
       'members': members,
+      'category': category,
       'purchaseDate': purchaseDate,
+      'totalPrice': totalPrice,
+      'finishedAt': finishedAt,
     };
   }
 
   // Cria um objeto ShoppingListModel a partir de um DocumentSnapshot do Firestore
-  factory ShoppingListModel.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
+  factory ShoppingListModel.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> doc,
+  ) {
     final data = doc.data()!;
     return ShoppingListModel(
       id: doc.id,
@@ -48,9 +60,12 @@ class ShoppingListModel {
       updatedAt: data['updatedAt'] ?? Timestamp.now(),
       lastUpdatedBy: data['lastUpdatedBy'] ?? '',
       status: data['status'] ?? 'ativa',
-      // O Firestore retorna o mapa como Map<String, dynamic>, então precisamos converter
       members: Map<String, String>.from(data['members'] ?? {}),
+      category:
+          data['category'] ?? 'Outros', // Padrão 'Outros' para listas antigas
       purchaseDate: data['purchaseDate'] as Timestamp?,
+      totalPrice: (data['totalPrice'] as num?)?.toDouble(),
+      finishedAt: data['finishedAt'] as Timestamp?,
     );
   }
 }

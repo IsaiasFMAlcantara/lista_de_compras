@@ -6,7 +6,7 @@
 4. **Editar e remover itens** já cadastrados.
 5. **Finalizar uma lista** e salvar no histórico.
 6. **Consultar histórico de compras**, exibindo valores totais e itens adquiridos.
-7. **Visualizar análise de gastos** (ex.: somatório por período).
+7. **Visualizar análise de gastos** por período e categoria, com gráficos interativos.
 8. **Sugestão de produtos** a partir de base alimentada conforme usuários adicionam itens.
 
 ---
@@ -56,30 +56,30 @@
 ## **6. Estrutura de Dados no Firestore (rascunho inicial)**
 
 * **users**
-
   * uid
   * nome
   * email
+  * phone (adicionado no UserModel)
+
 * **lists**
+  * id_lista
+  * uid_usuario (dono da lista)
+  * nome_lista
+  * status (ativa/finalizada/arquivada)
+  * category (Mercado, Farmácia, Loja, Outros)
+  * purchaseDate (data agendada para compra)
+  * totalPrice (calculado ao finalizar)
+  * finishedAt (data de finalização)
 
-  * id\_lista
-  * uid\_usuario (dono da lista)
-  * nome\_lista
-  * status (ativa/finalizada)
-* **items**
-
-  * id\_item
-  * id\_lista (referência)
-  * nome\_item
+* **items** (subcoleção de lists)
+  * id_item
+  * nome_item
   * quantidade
   * valor
-* **history**
+  * isCompleted (se o item foi comprado)
+  * productId (referência a um produto do catálogo, se aplicável)
 
-  * id\_histórico
-  * id\_lista
-  * data\_finalização
-  * total\_gasto
 * **products**
-
-  * id\_produto
-  * nome\_produto
+  * id_produto
+  * nome_produto
+  * imageUrl
