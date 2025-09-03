@@ -2,15 +2,17 @@ import 'package:get/get.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart'; // For Colors
 import 'package:lista_compras/controller/auth_controller.dart';
+import 'package:lista_compras/helpers/error_helper.dart';
 import 'package:lista_compras/model/shopping_list_model.dart';
-import 'package:lista_compras/repositories/shopping_list_repository.dart'; // Import the new repository
+import 'package:lista_compras/repositories/shopping_list_repository.dart';
+import 'package:lista_compras/services/logger_service.dart';
 
 class SpendingAnalysisController extends GetxController {
-  // Inject ShoppingListRepository
   final ShoppingListRepository _shoppingListRepository = Get.put(
     ShoppingListRepository(),
   );
   final AuthController _authController = Get.find<AuthController>();
+  final LoggerService _logger = Get.find<LoggerService>();
 
   var isLoading = false.obs;
   var startDate = Rx<DateTime?>(null);
@@ -18,26 +20,19 @@ class SpendingAnalysisController extends GetxController {
   var totalSpending = 0.0.obs;
   var categorySpendingData = <PieChartSectionData>[].obs;
 
-  // Predefined colors for categories
   final Map<String, Color> categoryColors = {
     'Mercado': Colors.blue,
     'Farmácia': Colors.green,
     'Loja': Colors.orange,
     'Outros': Colors.grey,
-    // Add more colors if more categories are introduced
   };
 
   @override
   void onInit() {
     super.onInit();
-    // Initialize date range to current month
     final now = DateTime.now();
     startDate.value = DateTime(now.year, now.month, 1);
-    endDate.value = DateTime(
-      now.year,
-      now.month + 1,
-      0,
-    ); // Last day of current month
+    endDate.value = DateTime(now.year, now.month + 1, 0);
     fetchSpendingData();
   }
 
@@ -48,7 +43,6 @@ class SpendingAnalysisController extends GetxController {
     try {
       isLoading.value = true;
       final lists = await _shoppingListRepository.getFilteredShoppingLists(
-        // Use repository method
         user.uid,
         'finalizada',
         startDate.value,
@@ -57,8 +51,9 @@ class SpendingAnalysisController extends GetxController {
 
       _calculateSpending(lists);
       _preparePieChartData(lists);
-    } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível buscar os dados de gastos.');
+    } catch (e, s) {
+      _logger.logError(e, s);
+      Get.snackbar('Erro', getFirebaseErrorMessage(e));
     } finally {
       isLoading.value = false;
     }
@@ -93,9 +88,7 @@ class SpendingAnalysisController extends GetxController {
     categoryTotals.forEach((category, total) {
       sections.add(
         PieChartSectionData(
-          color:
-              categoryColors[category] ??
-              Colors.grey, // Use predefined colors or default
+          color: categoryColors[category] ?? Colors.grey,
           value: total,
           title: totalSpending.value > 0
               ? '${(total / totalSpending.value * 100).toStringAsFixed(1)}%'

@@ -13,7 +13,7 @@ Este relatório detalha uma análise do projeto Flutter "Lista de Compras", com 
     *   `Models` representam a estrutura de dados (ex: `ShoppingListModel`, `ShoppingItemModel`).
     *   `Views` são as telas e widgets da interface do usuário (ex: `HomePage`, `ListDetailsPage`).
     *   `Controllers` (equivalentes aos ViewModels no GetX) contêm a lógica de negócios e o estado reativo que as Views observam (ex: `ShoppingListController`, `AuthController`).
-    *   **Nova Camada de Repositório:** Foi implementada uma camada de repositório (`lib/repositories`) para abstrair as interações com o Firebase, melhorando a separação de responsabilidades e a testabilidade.
+    *   **Camada de Repositório:** Foi implementada e finalizada uma camada de repositório (`lib/repositories`) para abstrair **todas** as interações com o Firebase (Auth, Firestore e Storage), melhorando a separação de responsabilidades, a consistência da arquitetura e a testabilidade do projeto.
 
 *   **Estrutura de Pastas e Organização:**
     *   A estrutura de pastas (`lib/controller`, `lib/model`, `lib/view`, `lib/view/widgets`, `lib/repositories`) é clara e segue um padrão lógico, facilitando a localização de arquivos e a compreensão das responsabilidades de cada camada.
@@ -50,7 +50,7 @@ Este relatório detalha uma análise do projeto Flutter "Lista de Compras", com 
     *   **Services:** A lógica de acesso a dados está centralizada nos Repositórios, que são classes de serviço dedicadas.
 
 *   **Interações com Firebase:**
-    *   As interações com Firebase (Firestore, Auth) estão agora centralizadas em uma camada de Repositório dedicada (`AuthRepository`, `ShoppingListRepository`, `ShoppingItemRepository`), melhorando significativamente a reutilização e a testabilidade.
+    *   As interações com Firebase (Firestore, Auth, Storage) estão agora totalmente centralizadas em uma camada de Repositório dedicada (`AuthRepository`, `ShoppingListRepository`, `ShoppingItemRepository`, `ProductRepository`), garantindo consistência na arquitetura e melhorando significativamente a reutilização e a testabilidade.
 
 *   **Gerenciamento de Estado:**
     *   O gerenciamento de estado é feito de forma centralizada e reutilizável através do **GetX**. `Rx` (observables) e `Obx` (observadores) são usados consistentemente para reatividade. `Get.put` e `Get.find` gerenciam a injeção de dependências dos controllers e repositórios.
@@ -174,14 +174,14 @@ Este relatório detalha uma análise do projeto Flutter "Lista de Compras", com 
 
 ### Conclusão Geral e Próximos Passos Sugeridos
 
-O projeto "Lista de Compras" possui uma base sólida, com uma arquitetura MVVM bem definida usando GetX, e funcionalidades essenciais implementadas. A separação de responsabilidades entre Views, Controllers e agora Repositórios é um ponto forte.
+O projeto "Lista de Compras" possui uma base sólida, com uma arquitetura MVVM bem definida usando GetX, e funcionalidades essenciais implementadas. A separação de responsabilidades entre Views, Controllers e Repositórios é um ponto forte.
 
 **Para elevar a qualidade e a robustez do projeto, os próximos passos mais críticos seriam:**
 
 1.  **Implementação de Testes Automatizados:** Essencial para garantir a estabilidade e facilitar futuras modificações.
-2.  **Refatoração de Controllers (pontos específicos):** O `ShoppingListController` ainda possui a lógica de cálculo do `totalPrice` dentro do método `finishList`, que envolve a busca de itens. Essa lógica poderia ser extraída para um serviço ou helper dedicado para manter o SRP ainda mais rigoroso.
-3.  **Regras de Segurança do Firestore:** Revisar e garantir que as regras de segurança do Firestore estejam robustas para proteger os dados.
-4.  **Monitoramento de Performance e Erros:** Integrar ferramentas como Firebase Performance Monitoring e Crashlytics para produção.
+2.  **Regras de Segurança do Firestore:** Revisar e garantir que as regras de segurança do Firestore estejam robustas para proteger os dados.
+3.  **Monitoramento de Performance e Erros:** Integrar ferramentas como Firebase Performance Monitoring e Crashlytics para produção.
+4.  **Refatoração Fina (Opcional):** A lógica de cálculo de `totalPrice` no `ShoppingListController` poderia ser extraída para um helper ou serviço para um SRP ainda mais rigoroso, mas a estrutura atual é funcional e clara.
 
 As **Etapas Bônus** (`Notificações Agendadas` e `Sugestões Inteligentes`) são excelentes diferenciais e podem ser abordadas após a solidificação das bases mencionadas acima.
 

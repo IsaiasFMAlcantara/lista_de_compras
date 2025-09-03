@@ -1,28 +1,27 @@
-import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:lista_compras/controller/auth_controller.dart';
+import 'package:lista_compras/helpers/error_helper.dart';
 import 'package:lista_compras/model/shopping_item_model.dart';
-import 'package:lista_compras/repositories/shopping_item_repository.dart'; // Import the new repository
+import 'package:lista_compras/repositories/shopping_item_repository.dart';
+import 'package:lista_compras/services/logger_service.dart';
 
 class ShoppingItemController extends GetxController {
-  // Inject ShoppingItemRepository
   final ShoppingItemRepository _shoppingItemRepository = Get.put(
     ShoppingItemRepository(),
   );
   final AuthController _authController = Get.find<AuthController>();
+  final LoggerService _logger = Get.find<LoggerService>();
 
   final RxList<ShoppingItemModel> items = <ShoppingItemModel>[].obs;
   var isLoading = false.obs;
 
-  // Stream para pegar os itens de uma lista específica em tempo real
   void bindItemsStream(String listId) {
     items.bindStream(
       _shoppingItemRepository.getItemsStream(listId),
-    ); // Use repository method
+    );
   }
 
-  // Adiciona um novo item a uma lista
   Future<void> addItem(
     String listId,
     String name,
@@ -59,18 +58,17 @@ class ShoppingItemController extends GetxController {
       await _shoppingItemRepository.addItem(
         listId,
         itemData,
-      ); // Use repository method
+      );
 
       Get.snackbar('Sucesso', 'Item "$name" adicionado!');
-    } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível adicionar o item.');
-      log(e.toString());
+    } catch (e, s) {
+      _logger.logError(e, s);
+      Get.snackbar('Erro', getFirebaseErrorMessage(e));
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Marca/desmarca um item como concluído
   Future<void> toggleItemCompletion(
     String listId,
     String itemId,
@@ -85,14 +83,13 @@ class ShoppingItemController extends GetxController {
         itemId,
         isCompleted,
         user.uid,
-      ); // Use repository method
-    } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível atualizar o status do item.');
-      log(e.toString());
+      );
+    } catch (e, s) {
+      _logger.logError(e, s);
+      Get.snackbar('Erro', getFirebaseErrorMessage(e));
     }
   }
 
-  // Atualiza um item existente
   Future<void> updateItem(
     String listId,
     String itemId,
@@ -124,17 +121,16 @@ class ShoppingItemController extends GetxController {
         listId,
         itemId,
         updateData,
-      ); // Use repository method
+      );
       Get.snackbar('Sucesso', 'Item atualizado!');
-    } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível atualizar o item.');
-      log(e.toString());
+    } catch (e, s) {
+      _logger.logError(e, s);
+      Get.snackbar('Erro', getFirebaseErrorMessage(e));
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Deleta um item
   Future<void> deleteItem(String listId, String itemId) async {
     final user = _authController.user;
     if (user == null) return;
@@ -144,11 +140,11 @@ class ShoppingItemController extends GetxController {
       await _shoppingItemRepository.deleteItem(
         listId,
         itemId,
-      ); // Use repository method
+      );
       Get.snackbar('Sucesso', 'Item removido!');
-    } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível remover o item.');
-      log(e.toString());
+    } catch (e, s) {
+      _logger.logError(e, s);
+      Get.snackbar('Erro', getFirebaseErrorMessage(e));
     } finally {
       isLoading.value = false;
     }

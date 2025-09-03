@@ -36,26 +36,26 @@ class ListDetailsPage extends StatelessWidget {
                 _showArchiveConfirmationDialog(
                   context,
                   listController,
-                  shoppingList.id,
+                  shoppingList, // Pass the whole object
                 );
               } else if (value == 'finish') {
                 _showFinishConfirmationDialog(
                   context,
                   listController,
-                  shoppingList.id,
+                  shoppingList, // Pass the whole object
                 );
               }
             },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-              const PopupMenuItem<String>(
+            itemBuilder: (BuildContext context) => const <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
                 value: 'edit',
                 child: Text('Editar Lista'),
               ),
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'archive',
                 child: Text('Arquivar Lista'),
               ),
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'finish',
                 child: Text('Finalizar Compra'),
               ),
@@ -90,10 +90,10 @@ class ListDetailsPage extends StatelessWidget {
               title: Text(
                 item.name,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  decoration: item.isCompleted
-                      ? TextDecoration.lineThrough
-                      : TextDecoration.none,
-                ),
+                      decoration: item.isCompleted
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none,
+                    ),
               ),
               subtitle: Text(
                 'Qtd: ${item.quantity} ${item.price != null ? ' - R\$ ${item.price!.toStringAsFixed(2)}' : ''}',
@@ -237,7 +237,7 @@ class ListDetailsPage extends StatelessWidget {
   void _showArchiveConfirmationDialog(
     BuildContext context,
     ShoppingListController controller,
-    String listId,
+    ShoppingListModel list, // Changed from String to ShoppingListModel
   ) {
     Get.dialog(
       AlertDialog(
@@ -254,7 +254,7 @@ class ListDetailsPage extends StatelessWidget {
           ElevatedButton(
             child: const Text('Arquivar'),
             onPressed: () {
-              controller.archiveList(listId);
+              controller.archiveList(list); // Pass the whole object
               Get.back(); // Fecha o dialog
               Get.back(); // Volta para a HomePage após arquivar
             },
@@ -267,7 +267,7 @@ class ListDetailsPage extends StatelessWidget {
   void _showFinishConfirmationDialog(
     BuildContext context,
     ShoppingListController controller,
-    String listId,
+    ShoppingListModel list, // Changed from String to ShoppingListModel
   ) {
     Get.dialog(
       AlertDialog(
@@ -284,7 +284,7 @@ class ListDetailsPage extends StatelessWidget {
           ElevatedButton(
             child: const Text('Finalizar'),
             onPressed: () {
-              controller.finishList(listId);
+              controller.finishList(list); // Pass the whole object
               Get.back(); // Fecha o dialog
               Get.back(); // Volta para a HomePage após finalizar
             },
@@ -470,3 +470,4 @@ class ListDetailsPage extends StatelessWidget {
     );
   }
 }
+

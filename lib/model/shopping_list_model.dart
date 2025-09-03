@@ -9,11 +9,12 @@ class ShoppingListModel {
   final String lastUpdatedBy;
   final String status;
   final Map<String, String>
-  members; // Key: UID, Value: permissão ('owner', 'editor', etc.)
+      members; // Key: UID, Value: permissão ('owner', 'editor', etc.)
   final String category; // Categoria da lista (ex: Mercado, Farmácia)
   final Timestamp? purchaseDate; // Data da compra (opcional)
   final double? totalPrice; // Preço total da compra (calculado ao finalizar)
   final Timestamp? finishedAt; // Data em que a compra foi finalizada
+  final String? scheduledNotificationId; // ID do documento da notificação agendada
 
   ShoppingListModel({
     required this.id,
@@ -28,6 +29,7 @@ class ShoppingListModel {
     this.purchaseDate,
     this.totalPrice,
     this.finishedAt,
+    this.scheduledNotificationId,
   });
 
   // Converte um objeto ShoppingListModel para um Map para o Firestore
@@ -44,6 +46,7 @@ class ShoppingListModel {
       'purchaseDate': purchaseDate,
       'totalPrice': totalPrice,
       'finishedAt': finishedAt,
+      'scheduledNotificationId': scheduledNotificationId,
     };
   }
 
@@ -66,6 +69,7 @@ class ShoppingListModel {
       purchaseDate: data['purchaseDate'] as Timestamp?,
       totalPrice: (data['totalPrice'] as num?)?.toDouble(),
       finishedAt: data['finishedAt'] as Timestamp?,
+      scheduledNotificationId: data['scheduledNotificationId'],
     );
   }
 }

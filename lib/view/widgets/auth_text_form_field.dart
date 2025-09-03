@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class AuthTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
-  final IconData? prefixIcon;
+  final Widget? prefixIcon; // Changed from IconData to Widget
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
   final bool obscureText;
@@ -27,7 +27,7 @@ class AuthTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         border: const OutlineInputBorder(),
-        prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+        prefixIcon: prefixIcon, // Use the widget directly
         suffixIcon: suffixIcon,
       ),
       keyboardType: keyboardType,

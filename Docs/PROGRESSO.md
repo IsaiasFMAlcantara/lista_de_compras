@@ -18,72 +18,54 @@ Durante a análise do código (`flutter analyze`), **nenhum problema foi encontr
 
 ## ✅ Concluído
 
-- **Análise Inicial do Projeto:**
-  - Leitura do `pubspec.yaml` para identificar dependências (Firebase, GetX).
-  - Leitura do `README.md` para entender o escopo geral do projeto.
-  - Análise completa do código-fonte no diretório `lib/`.
+- **Análise Inicial e Estrutura do Projeto:**
+  - Leitura de `pubspec.yaml`, `README.md` e análise completa do código-fonte no diretório `lib/`.
+  - Configuração da estrutura de pastas (controller, model, view, repositories).
 
-- **Estrutura do Projeto:**
-  - Configuração inicial do projeto Flutter.
-  - Estrutura de pastas (controller, model, view).
+- **Arquitetura de Repositório:**
+  - [x] Implementação da camada de Repositório para abstrair o acesso a dados.
+  - [x] Refatoração de todos os controllers (`Auth`, `ShoppingList`, `ShoppingItem`, `History`, `SpendingAnalysis`, `Product`) para utilizar a camada de repositório, garantindo uma arquitetura consistente.
+
+- **Otimização de Performance (Uso de `const`):**
+  - [x] Aplicação da palavra-chave `const` em widgets estáticos da UI para otimizar a performance e reduzir reconstruções desnecessárias.
 
 - **Autenticação de Usuário:**
-  - Implementação do fluxo de autenticação com Firebase Auth.
-  - Criação, Login, Logout e Reset de senha.
-  - UI de Login/Cadastro (`LoginPage`) com validação de formulário.
-  - Controlador de estado (`AuthController`) para gerenciar a lógica.
-  - Modelo de dados do usuário (`UserModel`).
-  - Tela de Splash (`SplashPage`) que redireciona com base no estado de autenticação.
+  - [x] Implementação do fluxo de autenticação com Firebase Auth (Criação, Login, Logout, Reset de senha).
+  - [x] UI de Login/Cadastro (`LoginPage`) com validação de formulário.
+  - [x] Tela de Splash (`SplashPage`) que redireciona com base no estado de autenticação.
 
 - **Estrutura da UI Principal:**
   - [x] Criação de widgets reutilizáveis (`CustomAppBar`, `CustomDrawer`).
-  - [x] Implementação da estrutura da `HomePage` com `Scaffold`.
-  - [x] Adição de um `FloatingActionButton` para criar novas listas.
-  - [x] Adição da função de `Logout` no `Drawer`.
+  - [x] Implementação da estrutura da `HomePage` com `Scaffold` e `FloatingActionButton`.
 
-- **Catálogo de Produtos (Concluído):**
-  - **Objetivo:** Permitir que usuários adicionem produtos a um catálogo global.
-  - **Tarefas:**
-    - [x] Criar o modelo de dados `ProductModel`.
-    - [x] Adicionar a rota para a página de adição de produtos.
-    - [x] Adicionar o link no menu (Drawer) para a nova página.
-    - [x] Criar a página `ProductCatalogPage` com um formulário (nome, imagem) e listagem.
-    - [x] Criar um `ProductController` para gerenciar a lógica (salvar no Firestore, upload de imagem).
+- **Catálogo de Produtos:**
+  - [x] Implementação da UI e da lógica para criar e listar produtos em um catálogo global, incluindo upload de imagem para o Firebase Storage.
 
-- **Gerenciamento de Listas (Concluído):**
-  - **Objetivo:** Permitir que o usuário crie, visualize, edite e arquive listas de compras.
-  - **Tarefas:**
-    - [x] Criar um modelo de dados `ShoppingListModel`.
-    - [x] Criar um `ShoppingListController` para gerenciar o estado das listas.
-    - [x] Implementar a UI para **criar** uma nova lista (pop-up na `HomePage`).
-    - [x] Implementar a lógica no Firestore para `create` e `read` de listas.
-    - [x] Criar um layout para **exibir** as listas de compras do usuário na `HomePage`.
-    - [x] Adicionar o campo `purchaseDate` ao `ShoppingListModel` e implementar a ordenação.
-    - [x] Criar a tela de **detalhes** da lista (para ver os itens dentro dela).
-    - [x] Implementar a funcionalidade de **editar** uma lista.
-    - [x] Implementar a funcionalidade de **arquivar** uma lista (mudando seu status para 'arquivada').
-    - [x] Filtrar listas ativas na `HomePage` (não exibir as arquivadas).
+- **Gerenciamento de Listas:**
+  - [x] Implementação completa de CRUD (Criar, Ler, Editar, Arquivar, Finalizar) para listas de compras.
+  - [x] Ordenação inteligente de listas na `HomePage`.
 
-- **Gerenciamento de Itens da Lista (Concluído):**
-  - **Objetivo:** Permitir que o usuário adicione, edite, marque como comprado e remova itens de uma lista.
-  - **Tarefas:**
-    - [x] Criar um modelo de dados `ShoppingItemModel`.
-    - [x] Implementar a lógica no Firestore para gerenciar os itens (`ShoppingItemController`).
-    - [x] Criar a UI para a visualização de uma lista específica e seus itens (dentro da `ListDetailsPage`).
-    - [x] Implementar a funcionalidade de **editar** um item.
-    - [x] Implementar a funcionalidade de **remover** um item.
+- **Gerenciamento de Itens da Lista:**
+  - [x] Implementação completa de CRUD (Adicionar, Editar, Remover, Marcar como comprado) para itens dentro de uma lista.
 
-- **Histórico de Compras (Concluído):**
-    - [x] **Objetivo:** Permitir que o usuário "finalize" uma lista e visualize compras passadas.
-    - [x] **Tarefas:**
-        - [x] Implementar a funcionalidade de "finalizar" uma lista (mudando seu status e movendo para o histórico).
-        - [x] Criar uma tela para visualizar o histórico de compras.
+- **Histórico de Compras:**
+  - [x] Implementação da tela de histórico para visualizar listas finalizadas e arquivadas.
 
-- **Análise de Gastos (Concluído):**
-    - [x] **Objetivo:** Fornecer uma visão geral dos gastos do usuário, com filtro por período e gráfico de pizza por categoria.
-    - [x] **Tarefas:**
-        - [x] Adicionar campo `category` ao `ShoppingListModel` e UI de criação/edição de listas.
-        - [x] Criar a tela de "Análise de Gastos" com filtros de data, valor total e gráfico de pizza por categoria.
+- **Análise de Gastos:**
+  - [x] Implementação da tela de análise com filtros de data, valor total e gráfico de pizza por categoria.
+
+- **Sistema de Log de Erros Remoto:**
+  - [x] Implementação de um `LoggerService` centralizado para capturar e registrar erros no Firestore, permitindo monitoramento proativo.
+
+- **Tratamento Inteligente de Erros de UX:**
+  - [x] Criação de um helper para traduzir códigos de erro técnicos do Firebase em mensagens amigáveis e acionáveis para o usuário.
+
+- **Gerenciamento do Ciclo de Vida de Notificações Agendadas:**
+  - [x] Implementação de lógica robusta para criar, atualizar e deletar notificações agendadas no Firestore, garantindo sincronia com as datas de compra das listas.
+
+- **Testes Automatizados (Configuração Inicial):**
+  - [x] Configuração do ambiente de testes com `mockito` e `build_runner`.
+  - [x] Criação do primeiro teste de unidade para o `AuthController`, validando a troca de estado da UI de login/cadastro.
 
 ## 🚧 Próximos Passos
 
@@ -98,22 +80,18 @@ As próximas grandes funcionalidades a serem desenvolvidas, conforme nosso `PROG
 
 Após a conclusão das funcionalidades essenciais, estas são as etapas propostas para elevar o nível do aplicativo:
 
-### 1. Arquitetura de Notificações Agendadas via Firebase
+### 1. Notificações Agendadas (Back-end)
 
-**Objetivo:** Enviar uma notificação push para o usuário na data de compra agendada em uma lista.
-- **Status Atual:** A configuração do lado do cliente (Flutter) para agendar notificações no Firestore está concluída. A implementação e o deploy da função Firebase (backend) para enviar as notificações estão pendentes devido a dificuldades no setup do ambiente Python.
+**Objetivo:** Enviar a notificação push para o usuário na data agendada.
+- **Status Atual:** A implementação e o deploy da função Firebase (backend) para processar a coleção `scheduled_notifications` e enviar as notificações via FCM estão pendentes.
 
-**Arquitetura Proposta:**
-
-- **Flutter (Front-end):**
-  - Obtém e salva o token de dispositivo (FCM Token) do usuário.
-  - Ao agendar uma data de compra, salva as informações (`data`, `título`, `corpo da mensagem`, `token`) em uma coleção no Cloud Firestore (ex: `agendamentos_notificacoes`).
+**Arquitetura Proposta (Back-end):**
 
 - **Firebase Functions (Back-end):**
   - Uma função `cron` (agendada) executa a cada X minutos (ex: 10 minutos).
-  - A função varre a coleção de agendamentos, procurando por documentos cuja data/hora seja igual ou anterior à hora atual.
+  - A função varre a coleção `scheduled_notifications`, procurando por documentos cuja data/hora seja igual ou anterior à hora atual e que ainda não foram enviados.
   - Para cada documento encontrado, a função utiliza o Firebase Cloud Messaging (FCM) para disparar a notificação para o token armazenado.
-  - Após o envio bem-sucedido, o documento correspondente é removido do Firestore para evitar envios duplicados.
+  - Após o envio bem-sucedido, o documento correspondente é atualizado ou removido para evitar envios duplicados.
 
 ### 2. Sistema de Sugestões Inteligentes com IA
 

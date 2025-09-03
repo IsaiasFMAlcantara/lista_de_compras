@@ -37,7 +37,7 @@ class LoginPage extends StatelessWidget {
                     AuthTextFormField(
                       controller: controller.nameController,
                       labelText: 'Nome',
-                      prefixIcon: Icons.person,
+                      prefixIcon: const Icon(Icons.person),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Por favor, digite seu nome.';
@@ -45,14 +45,15 @@ class LoginPage extends StatelessWidget {
                         return null;
                       },
                     ),
-                  const SizedBox(height: 16),
+                  if (!controller.isLoginView.value)
+                    const SizedBox(height: 16),
 
                   // --- CAMPO TELEFONE (APENAS CADASTRO) ---
                   if (!controller.isLoginView.value)
                     AuthTextFormField(
                       controller: controller.phoneController,
                       labelText: 'Telefone',
-                      prefixIcon: Icons.phone,
+                      prefixIcon: const Icon(Icons.phone),
                       keyboardType: TextInputType.phone,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -61,13 +62,14 @@ class LoginPage extends StatelessWidget {
                         return null;
                       },
                     ),
-                  const SizedBox(height: 16),
+                  if (!controller.isLoginView.value)
+                    const SizedBox(height: 16),
 
                   // --- CAMPO EMAIL ---
                   AuthTextFormField(
                     controller: controller.emailController,
                     labelText: 'Email',
-                    prefixIcon: Icons.email,
+                    prefixIcon: const Icon(Icons.email),
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -86,7 +88,7 @@ class LoginPage extends StatelessWidget {
                     return AuthTextFormField(
                       controller: controller.passwordController,
                       labelText: 'Senha',
-                      prefixIcon: Icons.lock,
+                      prefixIcon: const Icon(Icons.lock),
                       obscureText: !controller.isPasswordVisible.value,
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -115,7 +117,7 @@ class LoginPage extends StatelessWidget {
                       return AuthTextFormField(
                         controller: controller.confirmPasswordController,
                         labelText: 'Confirmar Senha',
-                        prefixIcon: Icons.lock_outline,
+                        prefixIcon: const Icon(Icons.lock_outline),
                         obscureText: !controller.isPasswordVisible.value,
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -136,7 +138,8 @@ class LoginPage extends StatelessWidget {
                         },
                       );
                     }),
-                  const SizedBox(height: 24),
+                  if (!controller.isLoginView.value)
+                    const SizedBox(height: 24),
 
                   // --- BOTÃO PRINCIPAL (LOGIN/CADASTRO) ---
                   Obx(() {
