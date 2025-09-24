@@ -9,7 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:lista_compras/services/logger_service.dart';
 
 class AuthController extends GetxController {
-  final AuthRepository _authRepository = Get.put(AuthRepository());
+  final AuthRepository _authRepository = Get.find<AuthRepository>();
   final LoggerService _logger = Get.find<LoggerService>();
 
   final nameController = TextEditingController();

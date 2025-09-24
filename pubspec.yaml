@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.20.2
   fl_chart: ^1.0.0
   firebase_messaging: ^16.0.0 # Add firebase_messaging for push notifications
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:

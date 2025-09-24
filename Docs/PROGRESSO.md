@@ -48,6 +48,15 @@ Durante a análise do código (`flutter analyze`), **nenhum problema foi encontr
 - **Gerenciamento de Itens da Lista:**
   - [x] Implementação completa de CRUD (Adicionar, Editar, Remover, Marcar como comprado) para itens dentro de uma lista.
 
+- **Compartilhamento de Listas e Permissões:**
+  - [x] Implementação do fluxo de convite de usuários para listas por e-mail.
+  - [x] Criação da tela de gerenciamento de membros.
+  - [x] Aplicação da lógica de permissões (`owner`, `editor`) para controlar ações na UI (edição, exclusão, etc.).
+
+- **Sugestão de Produtos:**
+  - [x] Implementação da lógica para sugerir produtos com base no histórico de compras do usuário.
+  - [x] Exibição das sugestões na tela de detalhes da lista (`ListDetailsPage`) para fácil adição.
+
 - **Histórico de Compras:**
   - [x] Implementação da tela de histórico para visualizar listas finalizadas e arquivadas.
 
@@ -67,14 +76,7 @@ Durante a análise do código (`flutter analyze`), **nenhum problema foi encontr
   - [x] Configuração do ambiente de testes com `mockito` e `build_runner`.
   - [x] Criação do primeiro teste de unidade para o `AuthController`, validando a troca de estado da UI de login/cadastro.
 
-## 🚧 Próximos Passos
 
-As próximas grandes funcionalidades a serem desenvolvidas, conforme nosso `PROGRESSO.md` e `requisitos.md`, são:
-
-1.  **Sugestão de Produtos:**
-    *   **Objetivo:** Sugerir produtos ao usuário com base em seus hábitos de compra.
-    *   **Tarefas:**
-        *   Desenvolver a lógica para sugerir produtos (usando o catálogo existente).
 
 ## 🏆 Etapas Bônus (Diferenciais)
 
@@ -117,4 +119,6 @@ Após a conclusão das funcionalidades essenciais, estas são as etapas proposta
     - **Análise de Recorrência:** Identifica com que frequência um item é comprado (ex: "Leite" a cada 7 dias).
     - **Análise de Associação (Regra de Associação - Apriori):** Descobre itens que são frequentemente comprados juntos (ex: quem compra "Pão" também costuma comprar "Manteiga").
 4.  **Armazenamento das Sugestões:** Os resultados (ex: "Lembrete: talvez seja hora de comprar Leite" ou "Que tal levar Manteiga junto com o Pão?") são salvos na coleção de sugestões do usuário.
+5.  **Exibição no App:** O Flutter lê a coleção de sugestões e as exibe de forma inteligente para o usuário no momento apropriado.
+ Leite" ou "Que tal levar Manteiga junto com o Pão?") são salvos na coleção de sugestões do usuário.
 5.  **Exibição no App:** O Flutter lê a coleção de sugestões e as exibe de forma inteligente para o usuário no momento apropriado.

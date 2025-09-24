@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lista_compras/controller/auth_controller.dart';
+import 'package:lista_compras/controller/product_controller.dart';
 import 'package:lista_compras/controller/shopping_item_controller.dart';
 import 'package:lista_compras/controller/shopping_list_controller.dart';
 import 'package:lista_compras/model/shopping_item_model.dart';
 import 'package:lista_compras/model/shopping_list_model.dart';
+import 'package:lista_compras/routers.dart';
 import 'package:lista_compras/view/widgets/custom_app_bar.dart';
 import 'package:lista_compras/view/widgets/lists/single_column_card_list.dart';
+import 'package:lista_compras/view/widgets/suggestions/suggestion_carousel.dart';
 
 class ListDetailsPage extends StatelessWidget {
   final ShoppingListModel shoppingList;
@@ -15,125 +19,117 @@ class ListDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ShoppingListController listController =
-        Get.find<ShoppingListController>();
-    final ShoppingItemController itemController = Get.put(
-      ShoppingItemController(),
-    );
+    final ShoppingListController listController = Get.find<ShoppingListController>();
+    final ShoppingItemController itemController = Get.put(ShoppingItemController());
+    final AuthController authController = Get.find<AuthController>();
+    Get.put(ProductController()); // Dependency for SuggestionController
 
-    // Vincula o stream de itens para esta lista específica
     itemController.bindItemsStream(shoppingList.id);
+
+    // Get user's role for this list
+    final String? userRole = shoppingList.members[authController.user?.uid];
+    final bool isOwner = userRole == 'owner';
+    final bool canEdit = isOwner || userRole == 'editor';
 
     return Scaffold(
       appBar: CustomAppBar(
         title: shoppingList.name,
         actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == 'edit') {
-                _showEditListDialog(context, listController, shoppingList);
-              } else if (value == 'archive') {
-                _showArchiveConfirmationDialog(
-                  context,
-                  listController,
-                  shoppingList, // Pass the whole object
-                );
-              } else if (value == 'finish') {
-                _showFinishConfirmationDialog(
-                  context,
-                  listController,
-                  shoppingList, // Pass the whole object
-                );
+          if (isOwner)
+            IconButton(
+              icon: const Icon(Icons.group_add_outlined),
+              onPressed: () {
+                Get.toNamed(AppRoutes.membersPage, arguments: shoppingList);
+              },
+            ),
+          // Show menu only for owner
+          if (isOwner)
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'edit') {
+                  _showEditListDialog(context, listController, shoppingList);
+                } else if (value == 'archive') {
+                  _showArchiveConfirmationDialog(context, listController, shoppingList);
+                } else if (value == 'finish') {
+                  _showFinishConfirmationDialog(context, listController, shoppingList);
+                }
+              },
+              itemBuilder: (BuildContext context) => const <PopupMenuEntry<String>>[
+                PopupMenuItem<String>(value: 'edit', child: Text('Editar Lista')),
+                PopupMenuItem<String>(value: 'archive', child: Text('Arquivar Lista')),
+                PopupMenuItem<String>(value: 'finish', child: Text('Finalizar Compra')),
+              ],
+            ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Suggestions are visible to everyone
+          SuggestionCarousel(listId: shoppingList.id),
+          Expanded(
+            child: Obx(() {
+              if (itemController.isLoading.value && itemController.items.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
               }
-            },
-            itemBuilder: (BuildContext context) => const <PopupMenuEntry<String>>[
-              PopupMenuItem<String>(
-                value: 'edit',
-                child: Text('Editar Lista'),
-              ),
-              PopupMenuItem<String>(
-                value: 'archive',
-                child: Text('Arquivar Lista'),
-              ),
-              PopupMenuItem<String>(
-                value: 'finish',
-                child: Text('Finalizar Compra'),
-              ),
-            ],
+              if (itemController.items.isEmpty) {
+                return Center(child: Text(canEdit ? 'Nenhum item nesta lista ainda. Clique no "+" para adicionar.' : 'Nenhum item nesta lista ainda.'));
+              }
+              return SingleColumnCardList(
+                itemCount: itemController.items.length,
+                itemBuilder: (context, index) {
+                  final item = itemController.items[index];
+                  return ListTile(
+                    leading: Checkbox(
+                      value: item.isCompleted,
+                      onChanged: canEdit // Anyone can check/uncheck items
+                          ? (bool? value) {
+                              if (value != null) {
+                                itemController.toggleItemCompletion(shoppingList.id, item.id, value);
+                              }
+                            }
+                          : null,
+                    ),
+                    title: Text(
+                      item.name,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            decoration: item.isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
+                          ),
+                    ),
+                    subtitle: Text(
+                      'Qtd: ${item.quantity} ${item.price != null ? ' - R\$ ${item.price!.toStringAsFixed(2)}' : ''}',
+                    ),
+                    trailing: canEdit
+                        ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  _showEditItemDialog(context, itemController, shoppingList.id, item);
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () {
+                                  _showDeleteItemConfirmationDialog(context, itemController, shoppingList.id, item.id);
+                                },
+                              ),
+                            ],
+                          )
+                        : null, // No trailing icons if user cannot edit
+                  );
+                },
+              );
+            }),
           ),
         ],
       ),
-      body: Obx(() {
-        if (itemController.isLoading.value && itemController.items.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (itemController.items.isEmpty) {
-          return const Center(child: Text('Nenhum item nesta lista ainda.'));
-        }
-        return SingleColumnCardList(
-          itemCount: itemController.items.length,
-          itemBuilder: (context, index) {
-            final item = itemController.items[index];
-            return ListTile(
-              leading: Checkbox(
-                value: item.isCompleted,
-                onChanged: (bool? value) {
-                  if (value != null) {
-                    itemController.toggleItemCompletion(
-                      shoppingList.id,
-                      item.id,
-                      value,
-                    );
-                  }
-                },
-              ),
-              title: Text(
-                item.name,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      decoration: item.isCompleted
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-              ),
-              subtitle: Text(
-                'Qtd: ${item.quantity} ${item.price != null ? ' - R\$ ${item.price!.toStringAsFixed(2)}' : ''}',
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      _showEditItemDialog(
-                        context,
-                        itemController,
-                        shoppingList.id,
-                        item,
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      _showDeleteItemConfirmationDialog(
-                        context,
-                        itemController,
-                        shoppingList.id,
-                        item.id,
-                      );
-                    },
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            _showAddItemDialog(context, itemController, shoppingList.id),
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: canEdit
+          ? FloatingActionButton(
+              onPressed: () => _showAddItemDialog(context, itemController, shoppingList.id),
+              child: const Icon(Icons.add),
+            )
+          : null, // No FAB if user cannot edit
     );
   }
 

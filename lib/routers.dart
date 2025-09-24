@@ -4,6 +4,7 @@ import 'package:lista_compras/view/history_page.dart';
 import 'package:lista_compras/view/login_page.dart';
 import 'package:lista_compras/view/home_page.dart';
 import 'package:lista_compras/view/list_details_page.dart';
+import 'package:lista_compras/view/members_page.dart';
 import 'package:lista_compras/view/product_catalog_page.dart';
 import 'package:lista_compras/view/spending_analysis_page.dart';
 import 'package:lista_compras/view/splash_page.dart';
@@ -16,6 +17,7 @@ class AppRoutes {
   static const listDetailsPage = '/list-details';
   static const historyPage = '/history';
   static const spendingAnalysisPage = '/spending-analysis';
+  static const membersPage = '/members';
 
   List<GetPage> define() {
     return [
@@ -35,6 +37,7 @@ class AppRoutes {
         name: spendingAnalysisPage,
         page: () => const SpendingAnalysisPage(),
       ),
+      GetPage(name: membersPage, page: () => const MembersPage()),
     ];
   }
 }

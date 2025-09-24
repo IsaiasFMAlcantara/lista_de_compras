@@ -7,9 +7,7 @@ import 'package:lista_compras/repositories/shopping_list_repository.dart';
 import 'package:lista_compras/services/logger_service.dart';
 
 class ShoppingListController extends GetxController {
-  final ShoppingListRepository _shoppingListRepository = Get.put(
-    ShoppingListRepository(),
-  );
+  final ShoppingListRepository _shoppingListRepository = Get.find<ShoppingListRepository>();
   final AuthController _authController = Get.find<AuthController>();
   final LoggerService _logger = Get.find<LoggerService>();
 

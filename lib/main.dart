@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lista_compras/bindings.dart';
 import 'firebase_options.dart';
 import 'routers.dart';
 import 'theme.dart'; // Import the theme file
@@ -46,6 +47,7 @@ Future<void> main() async {
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.splash,
       getPages: AppRoutes().define(),
+      initialBinding: InitialBinding(), // Add this line
       theme: lightTheme, // Use the light theme
       darkTheme: darkTheme, // Use the dark theme
       themeMode: ThemeMode.system, // Automatically switch based on system settings

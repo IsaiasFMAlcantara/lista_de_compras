@@ -5,9 +5,7 @@ import 'package:lista_compras/repositories/shopping_list_repository.dart'; // Im
 
 class HistoryController extends GetxController {
   // Inject ShoppingListRepository
-  final ShoppingListRepository _shoppingListRepository = Get.put(
-    ShoppingListRepository(),
-  );
+  final ShoppingListRepository _shoppingListRepository = Get.find<ShoppingListRepository>();
   final AuthController _authController = Get.find<AuthController>();
 
   final RxList<ShoppingListModel> historicalLists = <ShoppingListModel>[].obs;

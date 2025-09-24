@@ -37,9 +37,14 @@ Para desacoplar a lógica de negócios da fonte de dados (Firebase), foi impleme
 
 O GetX é utilizado como solução de gerenciamento de estado. Variáveis observáveis (ex: `var isLoading = false.obs;`) são declaradas nos controllers. Na UI, widgets `Obx` escutam as mudanças nessas variáveis e se reconstroem automaticamente, eliminando a necessidade de `StatefulWidget` e `setState()` na maior parte do código e resultando em uma UI mais limpa e performática.
 
-### 2.4. Injeção de Dependência (DI)
+### 2.4. Injeção de Dependência (DI) com GetX Bindings
 
-O GetX gerencia o ciclo de vida dos controllers e serviços através de `Get.put()` e `Get.find()`. Isso garante que uma única instância de um serviço (como o `LoggerService` ou um repositório) seja compartilhada por todo o app (padrão Singleton), otimizando o uso de memória e garantindo um ponto de acesso único e consistente.
+Para garantir um gerenciamento de dependências robusto e centralizado, o projeto adotou o sistema de **Bindings** do GetX.
+
+- **`InitialBinding`:** Foi criada uma classe `InitialBinding` que é responsável por inicializar todas as dependências críticas da aplicação (serviços e repositórios) assim que o app é iniciado. 
+- **`Get.lazyPut()`:** Dentro do binding, utilizamos `Get.lazyPut()` para registrar as dependências. Isso oferece uma otimização de performance, pois a instância da classe (ex: `ShoppingListRepository`) só é criada na memória no momento em que é usada pela primeira vez.
+- **Ciclo de Vida:** O uso de `fenix: true` garante que a instância da dependência persista durante todo o ciclo de vida do aplicativo, funcionando como um Singleton seguro e acessível de qualquer parte do código através de `Get.find()`.
+- **Desacoplamento:** Essa abordagem desacopla completamente os controllers da responsabilidade de criar suas próprias dependências. Um controller agora simplesmente solicita a dependência de que precisa (`Get.find<MyRepository>()`), sem saber como ou quando ela foi criada, aderindo ao princípio de Inversão de Controle (IoC).
 
 ---
 
@@ -109,7 +114,6 @@ Durante o desenvolvimento, diversas funcionalidades e refatorações foram imple
 
 ## 5. Pontos Críticos e Próximos Passos
 
-*   **Testes Automatizados:** O projeto atualmente carece de uma suíte de testes automatizados. Este é o próximo passo técnico mais crítico para garantir a estabilidade do código e prevenir regressões futuras.
 *   **CI/CD (Integração e Deploy Contínuo):** A automação do processo de build, teste e deploy não foi implementada, sendo uma oportunidade de melhoria para profissionalizar o ciclo de desenvolvimento.
 *   **Funcionalidades Futuras:** A próxima grande funcionalidade no roadmap é o sistema de **sugestão de produtos** com base no histórico de compras do usuário.
 
@@ -118,6 +122,28 @@ Durante o desenvolvimento, diversas funcionalidades e refatorações foram imple
 *   **Problema:** O banco de dados, em sua configuração inicial, era inseguro, permitindo acesso irrestrito aos dados.
 *   **Solução:** Foi desenvolvido um conjunto de regras de segurança (`firestore.rules`) que define permissões de acesso para cada coleção. A regra principal garante que um usuário só pode ler e escrever documentos de listas (`/lists`) nos quais ele é membro, validando a requisição contra um mapa `members` dentro do documento.
 *   **Resultado:** Proteção da integridade e privacidade dos dados do usuário.
+
+### 4.5. Sugestão de Produtos Baseada em Histórico
+
+*   **Data:** 23/09/2025
+*   **Problema:** Usuários podem se esquecer de adicionar itens recorrentes às suas listas de compras, gerando uma experiência de usuário fragmentada.
+*   **Solução:** Foi implementada uma funcionalidade de sugestão de produtos que analisa o histórico de compras do usuário.
+    1.  **Criação do `SuggestionController`:** Um novo controller foi desenvolvido para conter a lógica de geração de sugestões.
+    2.  **Lógica de Análise:** O controller busca todas as listas com status "finalizada" ou "arquivada" do usuário. Em seguida, ele agrega todos os itens comprados nessas listas e calcula a frequência de cada produto.
+    3.  **Exibição Inteligente:** Os 5 produtos mais comprados são então exibidos em um carrossel (`SuggestionCarousel`) na tela de detalhes da lista (`ListDetailsPage`), um local estratégico onde o usuário está ativamente gerenciando os itens de sua compra.
+    4.  **Interatividade:** Ao tocar em um produto sugerido, ele é instantaneamente adicionado à lista de compras atual, agilizando o processo de criação da lista.
+*   **Resultado:** Melhoria na experiência do usuário, que agora recebe lembretes proativos de itens que compra com frequência, tornando o processo de montagem da lista mais rápido e eficiente.
+
+### 4.6. Compartilhamento de Listas e Controle de Permissão
+
+*   **Data:** 23/09/2025
+*   **Problema:** Um requisito central do projeto é permitir que usuários colaborem em uma mesma lista de compras, com diferentes níveis de acesso.
+*   **Solução:** Uma arquitetura de compartilhamento baseada em papéis foi implementada.
+    1.  **Modelo de Dados:** O `ShoppingListModel` foi projetado desde o início com um campo `members`, que é um `Map<String, String>`. Este mapa armazena o UID de cada usuário associado à lista como chave e sua permissão (ex: `owner`, `editor`) como valor.
+    2.  **Fluxo de Convite:** Uma nova tela, `MembersPage`, foi criada. Apenas o `owner` da lista pode acessá-la. Nessa tela, ele pode convidar outros usuários por e-mail. Um `MembersController` orquestra a lógica, buscando o usuário pelo e-mail no `AuthRepository` e atualizando o mapa `members` da lista no `ShoppingListRepository`.
+    3.  **Segurança no Backend:** As `firestore.rules` são a base da segurança, garantindo que um usuário só possa ler uma lista se seu UID estiver presente no mapa `members` daquele documento.
+    4.  **Controle na UI:** Na `ListDetailsPage`, a UI agora é dinâmica e baseada em permissão. O papel do usuário (`owner`, `editor`) é verificado, e os widgets de interação (como os botões para editar/deletar a lista, adicionar membros ou itens) são renderizados condicionalmente, aparecendo apenas para os usuários com a permissão adequada.
+*   **Resultado:** O aplicativo agora suporta colaboração multiusuário de forma segura, onde o dono da lista tem controle total, e os usuários convidados podem interagir dentro dos limites de suas permissões.
 
 ---
 

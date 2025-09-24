@@ -57,4 +57,17 @@ class AuthRepository {
       'fcmToken': fcmToken,
     });
   }
+
+  Future<UserModel?> getUserByEmail(String email) async {
+    final querySnapshot = await _firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      return UserModel.fromMap(querySnapshot.docs.first.data());
+    }
+    return null;
+  }
 }
