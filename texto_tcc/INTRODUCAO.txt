@@ -1,0 +1,28 @@
+1. INTRODUÇÃO
+
+1.1. Contextualização do Problema
+
+O gerenciamento de compras domésticas, embora seja uma tarefa rotineira na vida de milhões de pessoas, apresenta desafios significativos na era digital. A utilização de métodos analógicos, como listas em papel, ou ferramentas digitais genéricas, como aplicativos de notas, frequentemente resulta em ineficiências. Entre os problemas mais comuns estão a dificuldade de coordenação de listas entre múltiplos membros de uma família, a falta de um controle claro sobre os gastos, o esquecimento de itens recorrentes e a ausência de um histórico para consulta e planejamento futuro. Este cenário evidencia a necessidade de uma solução de software dedicada, projetada especificamente para otimizar e centralizar todo o ciclo de vida do processo de compras, desde o planejamento até a análise pós-compra.
+
+1.2. Objetivo Geral e Objetivos Específicos
+
+Este trabalho tem como objetivo geral o projeto e desenvolvimento de um aplicativo multiplataforma, funcional e robusto, para o gerenciamento inteligente de listas de compras, utilizando o framework Flutter para o front-end e a plataforma Firebase como back-end.
+
+Para alcançar o objetivo geral, foram delineados os seguintes objetivos específicos:
+
+- Implementar um sistema seguro de cadastro e autenticação de usuários, garantindo a privacidade e a persistência dos dados em nuvem;
+- Desenvolver a funcionalidade de criação e gerenciamento de múltiplas listas de compras, permitindo sua edição, arquivamento e exclusão;
+- Permitir a adição, edição e remoção de itens nas listas, com informações detalhadas de nome, quantidade e valor;
+- Habilitar o compartilhamento de listas entre diferentes usuários, com um sistema de permissões que possibilite a colaboração em tempo real;
+- Implementar a funcionalidade de finalizar uma compra, calculando o valor total e movendo a lista para um registro histórico permanente;
+- Disponibilizar a consulta ao histórico de compras, exibindo detalhes como valores totais e os itens adquiridos em cada compra;
+- Criar uma tela de análise de gastos, com visualização de dados por período e categoria através de gráficos interativos;
+- Desenvolver um sistema de sugestão de produtos com base no histórico de compras do usuário, visando agilizar o processo de criação de novas listas.
+
+1.3. Justificativa
+
+A relevância deste projeto reside na sua capacidade de oferecer uma solução tecnológica direcionada para um problema cotidiano, impactando positivamente a organização financeira e a rotina de seus usuários. Em um cenário onde aplicativos móveis otimizam diversas áreas da vida pessoal, uma ferramenta especialista em compras se justifica por centralizar funcionalidades que hoje se encontram dispersas ou são realizadas de forma manual e ineficiente. A capacidade de compartilhar listas em tempo real resolve um problema crônico em ambientes familiares, eliminando a necessidade de comunicação descoordenada. Adicionalmente, as funcionalidades de análise de gastos e sugestões inteligentes oferecem ao usuário um maior controle e consciência sobre seus hábitos de consumo, promovendo não apenas organização, mas também potencial economia e planejamento financeiro.
+
+1.4. Estrutura do Trabalho
+
+Este trabalho está organizado em seis capítulos, de modo a apresentar uma visão completa do projeto. O Capítulo 2 aborda a fundamentação teórica, detalhando as tecnologias, os padrões arquiteturais e os conceitos que sustentam o desenvolvimento da aplicação. O Capítulo 3 descreve a metodologia de trabalho adotada, incluindo as ferramentas e as etapas do desenvolvimento. O Capítulo 4 apresenta em detalhes o processo de desenvolvimento e implementação da solução, incluindo sua arquitetura, estrutura de dados e as funcionalidades criadas. O Capítulo 5 expõe e discute os resultados obtidos com a implementação do software. Por fim, o Capítulo 6 apresenta a conclusão do trabalho, as limitações identificadas durante o projeto e as propostas para trabalhos futuros.

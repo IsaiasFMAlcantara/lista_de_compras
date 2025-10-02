@@ -1,0 +1,27 @@
+6. CONCLUSÃO
+
+Este capítulo finaliza o presente trabalho, apresentando uma síntese das contribuições alcançadas, uma análise transparente das limitações do projeto e uma visão sobre as possíveis evoluções e trabalhos futuros que podem ser construídos sobre a base que foi desenvolvida.
+
+O desenvolvimento de software para solucionar problemas cotidianos é um dos campos mais dinâmicos da engenharia de software, e este projeto se insere nesse contexto. Partindo do desafio de otimizar o gerenciamento de compras domésticas, este trabalho demonstrou com sucesso a concepção, o projeto e a implementação de um aplicativo multiplataforma completo, utilizando o ecossistema tecnológico do Flutter e do Firebase. O projeto alcançou todos os seus objetivos iniciais, resultando em uma aplicação que não apenas cumpre os requisitos funcionais de forma robusta, mas o faz sobre uma base de código bem arquitetada, segura e escalável, seguindo as boas práticas do desenvolvimento de software moderno.
+
+A principal contribuição deste trabalho é, portanto, a entrega de uma solução de software de ponta a ponta, que oferece valor real ao usuário final ao otimizar uma tarefa rotineira por meio de funcionalidades como colaboração em tempo real, análise financeira e suporte proativo com sugestões inteligentes.
+
+6.1. Limitações do Projeto
+
+Apesar do sucesso na implementação das funcionalidades e na construção de uma arquitetura sólida, é importante reconhecer as limitações inerentes ao escopo e ao cronograma do projeto. As principais limitações identificadas são:
+
+- **Ausência de Testes Automatizados:** A limitação mais significativa é a ausência de uma suíte abrangente de testes automatizados (unitários, de widget e de integração). Embora o desenvolvimento tenha sido cuidadoso, a falta de testes representa um débito técnico que aumenta o risco de introdução de regressões (bugs em funcionalidades existentes) durante futuras manutenções ou na adição de novos recursos.
+
+- **Processo de Deploy Manual:** Não foi implementado um pipeline de Integração Contínua e Deploy Contínuo (CI/CD). Isso significa que os processos de compilação, teste e publicação do aplicativo para as lojas ou para a web ainda são manuais, o que é menos eficiente e mais suscetível a erros do que um processo automatizado.
+
+6.2. Propostas de Trabalhos Futuros
+
+A plataforma robusta que foi construída abre um leque de possibilidades para evoluções e aprofundamentos em trabalhos futuros. As propostas mais relevantes são:
+
+- **Implementação da Suíte Completa de Testes:** O passo mais crítico para aumentar a qualidade e a resiliência do software seria o desenvolvimento de uma cobertura de testes completa, garantindo a estabilidade do código a longo prazo.
+
+- **Automação de CI/CD:** A configuração de um pipeline de CI/CD (utilizando ferramentas como GitHub Actions, por exemplo) para automatizar a compilação, a execução dos testes e o deploy do aplicativo, profissionalizando o ciclo de vida do desenvolvimento.
+
+- **Desenvolvimento do Backend para Notificações Agendadas:** Atualmente, a lógica de notificação está no cliente. Um trabalho futuro seria desenvolver e implantar a Cloud Function no Firebase que seria responsável por processar as notificações agendadas de forma assíncrona no servidor, garantindo o envio mesmo que o aplicativo não esteja em uso.
+
+- **Evolução do Sistema de Sugestões com Inteligência Artificial:** O atual sistema de sugestões é baseado em frequência. Uma evolução natural seria a aplicação de algoritmos de Machine Learning, como regras de associação (ex: Apriori), para identificar padrões de compra mais complexos (ex: "usuários que compram macarrão também costumam comprar molho de tomate") e oferecer sugestões ainda mais personalizadas e contextuais.

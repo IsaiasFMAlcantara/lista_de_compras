@@ -1,0 +1,70 @@
+4. DESENVOLVIMENTO E IMPLEMENTAÇÃO
+
+Este capítulo apresenta o processo de construção da aplicação "Lista de Compras", detalhando a implementação da arquitetura de software, a modelagem da estrutura de dados, o fluxo de navegação do usuário através das telas e as soluções técnicas adotadas para as funcionalidades mais relevantes do sistema.
+
+4.1. Arquitetura da Solução
+
+Conforme antecipado na fundamentação teórica, a aplicação foi construída sobre o padrão de arquitetura Model-View-ViewModel (MVVM), utilizando o framework GetX para sua implementação. A interação entre as camadas foi projetada para garantir um alto nível de desacoplamento e separação de responsabilidades, conforme ilustrado no Diagrama 1.
+
+**[INSERIR DIAGRAMA 1: ARQUITETURA DE CAMADAS DO APLICATIVO]**
+
+O fluxo de dados e eventos ocorre da seguinte forma:
+
+1.  A **View** (telas em Flutter) é responsável exclusivamente pela apresentação da UI. Ela captura as interações do usuário (ex: um toque em um botão) e invoca um comando no **Controller** correspondente.
+2.  O **Controller** (atuando como ViewModel) contém a lógica de apresentação e o estado da UI. Ele processa a requisição da View e solicita os dados ou operações necessárias ao **Repository**.
+3.  O **Repository** encapsula toda a lógica de acesso à fonte de dados. Ele recebe as chamadas do Controller e as traduz em operações específicas para o **Firebase** (leituras ou escritas no Firestore, por exemplo).
+4.  As atualizações de estado no Controller, resultantes das operações, são observadas pela View de forma reativa, que se reconstrói para exibir os dados atualizados ao usuário.
+
+A injeção de dependências, gerenciada pelo sistema de `Bindings` do GetX, garante que as instâncias dos repositórios e outros serviços sejam criadas de forma centralizada e disponibilizadas aos controllers de maneira desacoplada, através do localizador de serviços `Get.find()`.
+
+4.2. Estrutura de Dados
+
+A persistência dos dados foi modelada no Cloud Firestore, um banco de dados NoSQL orientado a documentos. A estrutura foi projetada para otimizar as consultas e garantir a escalabilidade e a segurança dos dados, utilizando as seguintes coleções principais:
+
+- **`users`:** Armazena informações públicas do perfil do usuário, como nome e e-mail, tendo o ID de autenticação (UID) do Firebase Authentication como chave do documento.
+
+- **`lists`:** Coleção principal que armazena os documentos de cada lista de compras. Cada documento contém atributos como `name`, `category`, `status` (`ativa`, `finalizada`, `arquivada`), e um campo crucial para a colaboração: o mapa `members`. Este mapa associa o UID de cada membro da lista a uma string que define sua permissão (`owner` ou `editor`).
+
+- **`items`:** É modelada como uma subcoleção dentro de cada documento da coleção `lists`. Cada documento nesta subcoleção representa um item da compra, contendo atributos como `name`, `quantity`, `price` e um booleano `isCompleted` para rastrear o status da compra do item.
+
+- **`products`:** Uma coleção global que funciona como um catálogo de produtos, contendo `name` e `imageUrl`. Esta coleção pode ser utilizada para popular as listas de forma mais rápida e visual.
+
+4.3. Telas e Fluxo de Navegação
+
+A jornada do usuário no aplicativo foi projetada para ser lógica e intuitiva, guiada por uma interface limpa e funcional. A seguir, descreve-se o fluxo através das principais telas do sistema.
+
+**[INSERIR FIGURA 1: TELA DE LOGIN E CADASTRO]**
+
+O primeiro contato do usuário com o aplicativo é a tela de autenticação. Nela, é possível realizar o login com e-mail e senha ou criar uma nova conta. Um mecanismo de recuperação de senha também está disponível. Após a autenticação bem-sucedida, o usuário é direcionado para a tela principal.
+
+**[INSERIR FIGURA 2: TELA PRINCIPAL COM A LISTAGEM DE COMPRAS]**
+
+A tela principal (`HomePage`) funciona como um dashboard, exibindo todas as listas de compras com status "ativa" pertencentes ao usuário, incluindo tanto as listas que ele criou quanto as que foram compartilhadas com ele. Um botão de ação flutuante (`FloatingActionButton`) permite a criação de novas listas. A ordenação prioriza listas com data de compra agendada.
+
+**[INSERIR FIGURA 3: TELA DE DETALHES DA LISTA E GERENCIAMENTO DE ITENS]**
+
+Ao selecionar uma lista, o usuário navega para a tela de detalhes (`ListDetailsPage`), o núcleo funcional da aplicação. Nesta tela, ele pode visualizar todos os itens, marcá-los como comprados e, caso possua permissão de `owner` ou `editor`, pode adicionar, editar ou remover itens. É também nesta tela que funcionalidades avançadas, como o gerenciamento de membros e as sugestões de produtos, são acessadas.
+
+**[INSERIR FIGURA 4: TELA DE ANÁLISE DE GASTOS COM GRÁFICO]**
+
+Através do menu de navegação lateral, o usuário pode acessar a tela de análise de gastos (`SpendingAnalysisPage`). Esta tela oferece uma visão financeira sobre as compras finalizadas, permitindo filtrar por um intervalo de datas e exibindo o valor total gasto no período, além de um gráfico de pizza que mostra a distribuição percentual dos gastos por categoria.
+
+4.4. Implementações Técnicas Relevantes
+
+Durante o desenvolvimento, diversas funcionalidades foram implementadas com soluções de engenharia específicas para garantir robustez, segurança e uma boa experiência de usuário.
+
+4.4.1. Compartilhamento de Listas e Controle de Permissões
+
+A funcionalidade de colaboração foi implementada utilizando o mapa `members` no modelo de dados da lista. Apenas o `owner` da lista tem permissão para acessar a tela de gerenciamento de membros e convidar outros usuários por e-mail. Um `MembersController` orquestra a busca do usuário convidado e a atualização do mapa de membros no Firestore. A interface do usuário é dinâmica e se adapta à permissão do usuário logado, exibindo ou ocultando widgets de interação (como botões para editar a lista ou adicionar membros) com base no seu papel (`owner` ou `editor`).
+
+4.4.2. Sugestão de Produtos Baseada em Histórico
+
+Para agilizar a criação de listas, foi implementado um `SuggestionController`. Este controller é responsável por buscar todas as listas com status "finalizada" ou "arquivada" do usuário. Em seguida, ele agrega todos os itens comprados nessas listas e calcula a frequência de cada produto. Os produtos mais comprados são então exibidos em um carrossel de sugestões na tela de detalhes da lista, um local estratégico onde o usuário está ativamente gerenciando os itens de sua compra, permitindo a adição de um item sugerido com um único toque.
+
+4.4.3. Gerenciamento do Ciclo de Vida de Notificações
+
+O sistema permite que o usuário agende uma data para a compra, funcionalidade que foi integrada a um sistema de notificações. O `ShoppingListController` foi refatorado para gerenciar o ciclo de vida completo da notificação: ao criar ou atualizar uma lista com uma data futura, uma notificação é agendada e seu ID é salvo no documento da lista no Firestore. Se a data for alterada, a notificação antiga é cancelada e uma nova é criada. Se a data for removida, ou se a lista for finalizada ou arquivada, qualquer notificação pendente associada é deletada. Isso garante que o usuário receba apenas alertas relevantes e corretos.
+
+4.4.4. Segurança de Dados com Firestore Rules
+
+A segurança e a privacidade dos dados do usuário são garantidas no nível do back-end através de um conjunto de regras de segurança (`firestore.rules`). As regras foram escritas para garantir que um usuário só possa ler ou escrever em um documento de lista (`/lists/{listId}`) se o seu UID de autenticação estiver presente como uma chave no mapa `members` daquele mesmo documento. Isso impede que um usuário acesse, mesmo que intencionalmente, os dados de outro usuário, garantindo a integridade e a confidencialidade das informações.
