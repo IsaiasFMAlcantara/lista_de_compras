@@ -1,29 +1,50 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lista_compras/model/shopping_item_model.dart';
+import 'package:lista_compras/services/logger_service.dart';
 
 class ShoppingItemRepository {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore;
+  final LoggerService _logger;
+
+  ShoppingItemRepository({
+    FirebaseFirestore? firestore,
+    required LoggerService logger,
+  })  : _firestore = firestore ?? FirebaseFirestore.instance,
+        _logger = logger;
 
   Stream<List<ShoppingItemModel>> getItemsStream(String listId) {
-    return _firestore
-        .collection('lists')
-        .doc(listId)
-        .collection('items')
-        .orderBy('createdAt', descending: false)
-        .snapshots()
-        .map((snapshot) {
-          return snapshot.docs
-              .map((doc) => ShoppingItemModel.fromFirestore(doc))
-              .toList();
-        });
+    try {
+      return _firestore
+          .collection('lists')
+          .doc(listId)
+          .collection('items')
+          .orderBy('createdAt', descending: false)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs
+            .map((doc) => ShoppingItemModel.fromFirestore(doc))
+            .toList();
+      }).handleError((error, stackTrace) {
+        _logger.logError(error, stackTrace);
+        throw error;
+      });
+    } catch (e, stackTrace) {
+      _logger.logError(e, stackTrace);
+      return Stream.error(e);
+    }
   }
 
   Future<void> addItem(String listId, Map<String, dynamic> itemData) async {
-    await _firestore
-        .collection('lists')
-        .doc(listId)
-        .collection('items')
-        .add(itemData);
+    try {
+      await _firestore
+          .collection('lists')
+          .doc(listId)
+          .collection('items')
+          .add(itemData);
+    } on FirebaseException catch (e, stackTrace) {
+      _logger.logError(e, stackTrace);
+      rethrow;
+    }
   }
 
   Future<void> updateItemCompletion(
@@ -32,16 +53,21 @@ class ShoppingItemRepository {
     bool isCompleted,
     String updatedBy,
   ) async {
-    await _firestore
-        .collection('lists')
-        .doc(listId)
-        .collection('items')
-        .doc(itemId)
-        .update({
-          'isCompleted': isCompleted,
-          'updatedAt': Timestamp.now(),
-          'createdBy': updatedBy,
-        });
+    try {
+      await _firestore
+          .collection('lists')
+          .doc(listId)
+          .collection('items')
+          .doc(itemId)
+          .update({
+        'isCompleted': isCompleted,
+        'updatedAt': Timestamp.now(),
+        'createdBy': updatedBy,
+      });
+    } on FirebaseException catch (e, stackTrace) {
+      _logger.logError(e, stackTrace);
+      rethrow;
+    }
   }
 
   Future<void> updateItem(
@@ -49,20 +75,30 @@ class ShoppingItemRepository {
     String itemId,
     Map<String, dynamic> updateData,
   ) async {
-    await _firestore
-        .collection('lists')
-        .doc(listId)
-        .collection('items')
-        .doc(itemId)
-        .update(updateData);
+    try {
+      await _firestore
+          .collection('lists')
+          .doc(listId)
+          .collection('items')
+          .doc(itemId)
+          .update(updateData);
+    } on FirebaseException catch (e, stackTrace) {
+      _logger.logError(e, stackTrace);
+      rethrow;
+    }
   }
 
   Future<void> deleteItem(String listId, String itemId) async {
-    await _firestore
-        .collection('lists')
-        .doc(listId)
-        .collection('items')
-        .doc(itemId)
-        .delete();
+    try {
+      await _firestore
+          .collection('lists')
+          .doc(listId)
+          .collection('items')
+          .doc(itemId)
+          .delete();
+    } on FirebaseException catch (e, stackTrace) {
+      _logger.logError(e, stackTrace);
+      rethrow;
+    }
   }
 }

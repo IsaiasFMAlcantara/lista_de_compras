@@ -210,7 +210,7 @@ class ListDetailsPage extends StatelessWidget {
             onPressed: () => Get.back(),
           ),
           Obx(() {
-            return controller.isLoading.value
+            return controller.status.isLoading
                 ? const CircularProgressIndicator()
                 : ElevatedButton(
                     child: const Text('Salvar'),

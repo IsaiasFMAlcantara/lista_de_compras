@@ -6,21 +6,40 @@ import 'package:lista_compras/model/shopping_list_model.dart';
 import 'package:lista_compras/repositories/shopping_list_repository.dart';
 import 'package:lista_compras/services/logger_service.dart';
 
-class ShoppingListController extends GetxController {
-  final ShoppingListRepository _shoppingListRepository = Get.find<ShoppingListRepository>();
+class ShoppingListController extends GetxController
+    with StateMixin<List<ShoppingListModel>> {
+  final ShoppingListRepository _shoppingListRepository =
+      Get.find<ShoppingListRepository>();
   final AuthController _authController = Get.find<AuthController>();
   final LoggerService _logger = Get.find<LoggerService>();
-
-  final RxList<ShoppingListModel> shoppingLists = <ShoppingListModel>[].obs;
-  var isLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
     final user = _authController.user;
     if (user != null) {
-      shoppingLists.bindStream(_getShoppingListsStream(user.uid));
+      _loadShoppingLists(user.uid);
+    } else {
+      // If there's no user, there are no lists to show.
+      change([], status: RxStatus.empty());
     }
+  }
+
+  void _loadShoppingLists(String uid) {
+    change(null, status: RxStatus.loading());
+    _getShoppingListsStream(uid).listen(
+      (lists) {
+        if (lists.isEmpty) {
+          change([], status: RxStatus.empty());
+        } else {
+          change(lists, status: RxStatus.success());
+        }
+      },
+      onError: (err, stack) {
+        _logger.logError(err, stack);
+        change(null, status: RxStatus.error(err.toString()));
+      },
+    );
   }
 
   Stream<List<ShoppingListModel>> _getShoppingListsStream(String uid) {
@@ -56,7 +75,6 @@ class ShoppingListController extends GetxController {
     }
 
     try {
-      isLoading.value = true;
       final now = Timestamp.now();
       final uid = user.uid;
 
@@ -93,8 +111,6 @@ class ShoppingListController extends GetxController {
     } catch (e, s) {
       _logger.logError(e, s);
       Get.snackbar('Erro', getFirebaseErrorMessage(e));
-    } finally {
-      isLoading.value = false;
     }
   }
 
@@ -116,8 +132,6 @@ class ShoppingListController extends GetxController {
     }
 
     try {
-      isLoading.value = true;
-
       // Handle notification logic before updating the list
       await _handleNotificationOnUpdate(
         list: list,
@@ -139,8 +153,6 @@ class ShoppingListController extends GetxController {
     } catch (e, s) {
       _logger.logError(e, s);
       Get.snackbar('Erro', getFirebaseErrorMessage(e));
-    } finally {
-      isLoading.value = false;
     }
   }
 
@@ -152,7 +164,6 @@ class ShoppingListController extends GetxController {
     }
 
     try {
-      isLoading.value = true;
       // Cancel any pending notification before archiving
       await _deleteNotification(list.scheduledNotificationId);
 
@@ -166,8 +177,6 @@ class ShoppingListController extends GetxController {
     } catch (e, s) {
       _logger.logError(e, s);
       Get.snackbar('Erro', getFirebaseErrorMessage(e));
-    } finally {
-      isLoading.value = false;
     }
   }
 
@@ -179,7 +188,6 @@ class ShoppingListController extends GetxController {
     }
 
     try {
-      isLoading.value = true;
       // Cancel any pending notification before finishing
       await _deleteNotification(list.scheduledNotificationId);
 
@@ -204,8 +212,6 @@ class ShoppingListController extends GetxController {
     } catch (e, s) {
       _logger.logError(e, s);
       Get.snackbar('Erro', getFirebaseErrorMessage(e));
-    } finally {
-      isLoading.value = false;
     }
   }
 

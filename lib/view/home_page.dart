@@ -20,16 +20,11 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: const CustomAppBar(title: 'Minhas Listas'),
       drawer: CustomDrawer(),
-      body: Obx(() {
-        if (controller.shoppingLists.isEmpty) {
-          return const Center(
-            child: Text('Você ainda não tem nenhuma lista de compras.'),
-          );
-        }
-        return SingleColumnCardList(
-          itemCount: controller.shoppingLists.length,
+      body: controller.obx(
+        (state) => SingleColumnCardList(
+          itemCount: state!.length,
           itemBuilder: (context, index) {
-            final list = controller.shoppingLists[index];
+            final list = state[index];
             // Formata a data para exibição
             final subtitle = list.purchaseDate != null
                 ? 'Comprar em: ${DateFormat('dd/MM/yyyy').format(list.purchaseDate!.toDate())}'
@@ -44,8 +39,13 @@ class HomePage extends StatelessWidget {
               },
             );
           },
-        );
-      }),
+        ),
+        onLoading: const Center(child: CircularProgressIndicator()),
+        onEmpty: const Center(
+            child: Text('Você ainda não tem nenhuma lista de compras.')),
+        onError: (error) => const Center(
+            child: Text('Você ainda não tem nenhuma lista de compras.')),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.dialog(
