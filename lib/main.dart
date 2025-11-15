@@ -1,56 +1,46 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'package:lista_compras/bindings.dart';
+import 'package:lista_compras/app/routes/app_pages.dart';
+import 'package:lista_compras/app/routes/app_routes.dart';
 import 'firebase_options.dart';
-import 'routers.dart';
-import 'theme.dart'; // Import the theme file
-import 'package:firebase_messaging/firebase_messaging.dart'; // Import Firebase Messaging
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Request permission for notifications
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform, // <-- ESSA LINHA É OBRIGATÓRIA NO WEB
   );
 
-  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-    
-    // TODO: Save this token to the user's document in Firestore
-  } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
-    
-  } else {
-    
+  final initialRoute = await _getInitialRoute();
+
+  runApp(MyApp(initialRoute: initialRoute));
+}
+
+Future<String> _getInitialRoute() async {
+  final user = await FirebaseAuth.instance.authStateChanges().first;
+  if (user != null) {
+    return Routes.HOME;
   }
+  return Routes.AUTH;
+}
 
-  // Handle foreground messages (optional, but good for testing)
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    
-    
+class MyApp extends StatelessWidget {
+  final String initialRoute;
+  const MyApp({super.key, required this.initialRoute});
 
-    if (message.notification != null) {
-      
-    }
-  });
-
-  runApp(
-    GetMaterialApp(
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.splash,
-      getPages: AppRoutes().define(),
-      initialBinding: InitialBinding(), // Add this line
-      theme: lightTheme, // Use the light theme
-      darkTheme: darkTheme, // Use the dark theme
-      themeMode: ThemeMode.system, // Automatically switch based on system settings
-    ),
-  );
+      title: 'Lista de Compras',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      initialRoute: initialRoute,
+      getPages: AppPages.routes,
+    );
+  }
 }

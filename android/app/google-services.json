@@ -12,7 +12,12 @@
           "package_name": "com.example.lista_compras"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "743629179345-6cc407ukn7h00f4bg1nr39jrr6nd5t01.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBuutqFY8gz-eaDcixmUXqik3Tw0Xi75d8"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "743629179345-6cc407ukn7h00f4bg1nr39jrr6nd5t01.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
