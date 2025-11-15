@@ -1,119 +1,50 @@
-# 🛒 Lista de Compras
+# 🛒 Lista de Compras - TCC
 
-Um aplicativo Flutter multiplataforma para gerenciar suas listas de compras, controlar gastos e receber sugestões de produtos, tudo sincronizado em tempo real com o Firebase.
+Este é o repositório do projeto de TCC: um aplicativo de Lista de Compras desenvolvido em Flutter com Firebase.
 
-## ✨ Funcionalidades
+O objetivo é criar uma solução completa e intuitiva para gerenciar listas de compras, permitindo organização, colaboração e controle financeiro de forma simples e eficiente.
 
-*   **Cadastro e Autenticação de Usuários:** Gerencie seu acesso de forma segura via Firebase Authentication.
-*   **Gerenciamento de Listas de Compras:** Crie, edite e exclua suas listas de forma intuitiva.
-*   **Adição e Edição de Itens:** Adicione itens às suas listas com nome, quantidade e valor. Edite ou remova itens existentes.
-*   **Histórico de Compras:** Finalize suas listas e salve-as no histórico para consulta futura, incluindo valores totais.
-*   **Análise de Gastos:** Visualize o somatório de seus gastos por período e categoria, com gráficos interativos.
-*   **Sugestão de Produtos:** Receba sugestões de produtos com base nos itens que você adiciona às suas listas.
-*   **Persistência em Nuvem:** Todas as suas listas e dados são salvos no Firebase Firestore, acessíveis de qualquer dispositivo.
+## ⭐ Visão Geral do Projeto
 
-## 🚀 Tecnologias Utilizadas
+O aplicativo foi projetado para facilitar o processo de compra, seja para um único usuário ou para grupos. Ele combina funcionalidades essenciais de gerenciamento de listas com recursos avançados que melhoram a experiência do usuário.
 
-*   **Flutter:** Framework para desenvolvimento de aplicativos multiplataforma.
-*   **Dart:** Linguagem de programação.
-*   **Firebase:** Backend as a Service (BaaS)
-    *   **Firebase Authentication:** Para gerenciamento de usuários.
-    *   **Cloud Firestore:** Banco de dados NoSQL em tempo real.
-*   **GetX:** Gerenciamento de estado, injeção de dependência e rotas.
-*   **fl_chart:** Para criação de gráficos interativos.
+### ✨ Funcionalidades Planejadas
 
-## 🛠️ Como Configurar e Rodar o Projeto
+- **Contas de Usuário:** Cadastro e login para salvar listas e sincronizar dados entre dispositivos.
+- **Base de Produtos Global:** Um catálogo de produtos que pode ser expandido pelos próprios usuários. Cada usuário pode gerenciar os produtos que criou.
+- **Gerenciamento de Listas:** Crie, edite, exclua e organize múltiplas listas de compras.
+- **Compartilhamento com Permissões:** Compartilhe listas com outros usuários, definindo níveis de acesso (visualização, adição de itens ou edição completa).
+- **Controle Financeiro:** Adicione preços aos produtos e acompanhe o custo total estimado de cada lista.
+- **Modo de Compra:** Uma interface simplificada e otimizada para usar o aplicativo dentro do supermercado, com itens maiores e marcação rápida.
+- **Duplicar Listas:** Copie listas existentes para agilizar a criação de compras recorrentes.
+- **Busca Rápida:** Encontre produtos facilmente por nome ou categoria.
+- **Funcionamento Offline:** Crie e modifique listas mesmo sem conexão com a internet, com sincronização automática ao se reconectar.
 
-Siga estas instruções para configurar e executar o projeto em sua máquina local.
+## 🛠️ Estado Atual do Desenvolvimento (14/11/2025)
 
-### Pré-requisitos
+Atualmente, a base do aplicativo está implementada, com foco no fluxo de autenticação e na estrutura inicial.
 
-Certifique-se de ter as seguintes ferramentas instaladas:
+### ✅ O que já foi feito:
 
-*   [Flutter SDK](https://flutter.dev/docs/get-started/codelab)
-*   [Firebase CLI](https://firebase.google.com/docs/cli#install_the_firebase_cli)
+1.  **Estrutura do Projeto:**
+    - Arquitetura modular configurada com GetX.
+    - Dependências essenciais (Firebase, GetX, Equatable) adicionadas.
+    - Conexão com o Firebase estabelecida.
 
-### Instalação
+2.  **Fluxo de Autenticação:**
+    - Sistema de **Login e Cadastro** com Firebase Auth.
+    - Os dados do usuário são salvos em um perfil no Firestore.
+    - O aplicativo direciona o usuário para a tela de `Login` ou `Home` com base no status de autenticação.
+    - Implementado um botão de **Logout** funcional.
 
-1.  **Clone o repositório:**
-    ```bash
-    git clone https://github.com/seu-usuario/lista_compras.git
-    cd lista_compras
-    ```
+3.  **Segurança:**
+    - Regras do Firestore (`firestore.rules`) foram configuradas para garantir que um usuário só possa gerenciar seu próprio perfil.
 
-2.  **Instale as dependências do Flutter:**
-    ```bash
-    flutter pub get
-    ```
+## 🚀 Próximos Passos
 
-### Configuração do Firebase
+O foco agora é desenvolver o **catálogo global de produtos**, que é uma funcionalidade central do aplicativo. As próximas etapas são:
 
-1.  **Crie um Projeto Firebase:**
-    *   Vá para o [Console do Firebase](https://console.firebase.google.com/).
-    *   Crie um novo projeto.
+1.  **Tela de Visualização de Produtos:** Criar uma tela onde todos os usuários possam ver a lista de produtos cadastrados.
+2.  **Tela de Gerenciamento de Produtos:** Implementar as funcionalidades para que os usuários possam **cadastrar, editar e excluir** os produtos que eles mesmos criaram.
 
-2.  **Configure o Firebase Authentication:**
-    *   No Console do Firebase, vá em "Authentication" e habilite o método de login "E-mail/Senha".
-
-3.  **Configure o Cloud Firestore:**
-    *   No Console do Firebase, vá em "Firestore Database" e crie um novo banco de dados.
-    *   **Importante:** Configure as Regras de Segurança do Firestore para permitir o acesso adequado aos seus dados. Consulte a documentação oficial do Firebase para mais detalhes sobre como configurar regras seguras para seu ambiente de produção.
-
-4.  **Adicione os arquivos de configuração do Firebase ao seu projeto:**
-    *   Para Android: No Console do Firebase, adicione um aplicativo Android ao seu projeto. Baixe o arquivo `google-services.json` e coloque-o em `android/app/`.
-    *   Para iOS: No Console do Firebase, adicione um aplicativo iOS ao seu projeto. Baixe o arquivo `GoogleService-Info.plist` e coloque-o em `ios/Runner/`.
-    *   Para Web: No Console do Firebase, adicione um aplicativo Web ao seu projeto. Copie as configurações do SDK e adicione-as ao seu `web/index.html` (ou configure via `firebase_options.dart` se estiver usando o FlutterFire CLI).
-
-5.  **Gere o arquivo `firebase_options.dart` (se ainda não tiver):**
-    ```bash
-    flutterfire configure
-    ```
-
-### Executando o Aplicativo
-
-*   **Para rodar em um emulador/dispositivo:**
-    ```bash
-    flutter run
-    ```
-*   **Para rodar no navegador (Web):**
-    ```bash
-    flutter run -d chrome
-    ```
-
-## 📸 Screenshots
-
-*(Adicione aqui screenshots ou GIFs do seu aplicativo em funcionamento. Isso é crucial para mostrar o projeto!)*
-
-## 🤝 Contribuição
-
-Contribuições são bem-vindas! Se você quiser contribuir para este projeto, por favor, siga estas etapas:
-
-1.  Faça um fork do repositório.
-2.  Crie uma nova branch (`git checkout -b feature/sua-feature`).
-3.  Faça suas alterações e commit (`git commit -m 'Adiciona nova feature'`).
-4.  Envie para a branch (`git push origin feature/sua-feature`).
-5.  Abra um Pull Request.
-
-## 📄 Licença
-
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
-## 📧 Contato
-
-Se tiver alguma dúvida ou sugestão, sinta-se à vontade para entrar em contato:
-
-*   **Isaias Félix Machado de Alcantara**
-*   **isaiasofelix@gmail.com**
-*   [IsaiasFMAlcantara](https://github.com/IsaiasFMAlcantara)
-
----
-
-## 📚 Documentação Detalhada
-
-Para mais informações sobre o projeto, consulte os documentos abaixo:
-
-*   [Planejamento de Desenvolvimento](Docs/planejamento_desenvolvimento.md)
-*   [Plano Global](Docs/plano_global.md)
-*   [Progresso do Projeto](Docs/PROGRESSO.md)
-*   [Requisitos do Projeto](Docs/requisitos.md)
-*   [Relatório Detalhado do Projeto](Docs/RELATORIO_PROJETO.md)
+Após a conclusão dessas etapas, o projeto avançará para o gerenciamento das listas de compras.
