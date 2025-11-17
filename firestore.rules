@@ -10,7 +10,16 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Adicione outras regras para outras coleções aqui.
-    // Por padrão, todas as outras coleções estão bloqueadas.
+    // Regra para a coleção de produtos
+    match /products/{productId} {
+      // Qualquer usuário autenticado pode ler a lista de produtos.
+      allow read: if request.auth != null;
+      
+      // Qualquer usuário autenticado pode criar um produto.
+      allow create: if request.auth != null;
+      
+      // Apenas o dono do produto (ownerId) pode atualizá-lo ou excluí-lo.
+      allow update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid;
+    }
   }
 }

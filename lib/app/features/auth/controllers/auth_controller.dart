@@ -13,23 +13,68 @@ class AuthController extends GetxController {
 
   final isLogin = true.obs;
   final isLoading = false.obs;
+  final isPasswordVisible = false.obs;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void submit() {
+  final Rx<User?> firebaseUser = Rx<User?>(null);
+  final Rx<UserModel?> firestoreUser = Rx<UserModel?>(null);
+
+  @override
+  void onInit() {
+    super.onInit();
+    firebaseUser.bindStream(_auth.authStateChanges());
+    ever(firebaseUser, _handleAuthChanged);
+  }
+
+  void _handleAuthChanged(User? user) {
+    if (user != null) {
+      _loadFirestoreUser(user.uid);
+      // Apenas navega se não estivermos já na home
+      if (Get.currentRoute != Routes.HOME) {
+        Get.offAllNamed(Routes.HOME);
+      }
+    } else {
+      firestoreUser.value = null;
+      // Apenas navega se não estivermos já na autenticação
+      if (Get.currentRoute != Routes.AUTH) {
+        Get.offAllNamed(Routes.AUTH);
+      }
+    }
+  }
+
+  void togglePasswordVisibility() {
+    isPasswordVisible.value = !isPasswordVisible.value;
+  }
+
+  Future<void> _loadFirestoreUser(String userId) async {
+    try {
+      final doc = await _firestore.collection('users').doc(userId).get();
+      if (doc.exists) {
+        firestoreUser.value = UserModel.fromMap(doc.data()!);
+      }
+    } catch (e) {
+      Get.snackbar('Erro', 'Não foi possível carregar os dados do usuário.');
+    }
+  }
+
+  void submit() async {
     if (isLoading.value) return;
 
     isLoading.value = true;
-    if (isLogin.value) {
-      _loginUser();
-    } else {
-      _createUser();
+    try {
+      if (isLogin.value) {
+        await _loginUser();
+      } else {
+        await _createUser();
+      }
+    } finally {
+      isLoading.value = false;
     }
-    isLoading.value = false;
   }
 
-  void _createUser() async {
+  Future<void> _createUser() async {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -49,7 +94,6 @@ class AuthController extends GetxController {
           .doc(newUser.id)
           .set(newUser.toMap());
 
-      Get.offAllNamed(Routes.HOME);
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Erro no Cadastro', e.message ?? 'Ocorreu um erro');
     } catch (e) {
@@ -57,18 +101,21 @@ class AuthController extends GetxController {
     }
   }
 
-  void _loginUser() async {
+  Future<void> _loginUser() async {
     try {
       await _auth.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
-      Get.offAllNamed(Routes.HOME);
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Erro no Login', e.message ?? 'Ocorreu um erro');
     } catch (e) {
       Get.snackbar('Erro no Login', 'Ocorreu um erro inesperado.');
     }
+  }
+
+  void logout() async {
+    await _auth.signOut();
   }
 }
 

@@ -45,13 +45,23 @@ class AuthView extends GetView<AuthController> {
                   keyboardType: TextInputType.emailAddress,
                 ),
                 const SizedBox(height: 12),
-                TextFormField(
-                  controller: controller.passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Senha',
-                    border: OutlineInputBorder(),
+                Obx(
+                  () => TextFormField(
+                    controller: controller.passwordController,
+                    decoration: InputDecoration(
+                      labelText: 'Senha',
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          controller.isPasswordVisible.value
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: controller.togglePasswordVisibility,
+                      ),
+                    ),
+                    obscureText: !controller.isPasswordVisible.value,
                   ),
-                  obscureText: true,
                 ),
                 const SizedBox(height: 12),
                 Obx(

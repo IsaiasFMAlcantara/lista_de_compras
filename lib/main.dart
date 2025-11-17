@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'package:lista_compras/app/features/auth/controllers/auth_controller.dart';
 import 'package:lista_compras/app/routes/app_pages.dart';
 import 'package:lista_compras/app/routes/app_routes.dart';
 import 'firebase_options.dart';
@@ -10,8 +11,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // <-- ESSA LINHA É OBRIGATÓRIA NO WEB
+    options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Inicializa o AuthController permanentemente
+  Get.put(AuthController(), permanent: true);
 
   final initialRoute = await _getInitialRoute();
 
@@ -19,11 +23,9 @@ void main() async {
 }
 
 Future<String> _getInitialRoute() async {
-  final user = await FirebaseAuth.instance.authStateChanges().first;
-  if (user != null) {
-    return Routes.HOME;
-  }
-  return Routes.AUTH;
+  // Aguarda um momento para o stream de autenticação emitir o primeiro valor
+  await Future.delayed(const Duration(milliseconds: 500));
+  return FirebaseAuth.instance.currentUser != null ? Routes.HOME : Routes.AUTH;
 }
 
 class MyApp extends StatelessWidget {
