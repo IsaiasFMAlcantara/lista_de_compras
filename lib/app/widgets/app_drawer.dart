@@ -48,6 +48,26 @@ class AppDrawer extends StatelessWidget {
               }
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.list_alt),
+            title: const Text('Minhas Listas'),
+            onTap: () {
+              Get.back(); // Fecha o drawer
+              if (Get.currentRoute != Routes.SHOPPING_LIST_OVERVIEW) {
+                Get.toNamed(Routes.SHOPPING_LIST_OVERVIEW);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.category),
+            title: const Text('Categorias'),
+            onTap: () {
+              Get.back(); // Fecha o drawer
+              if (Get.currentRoute != Routes.CATEGORIES) {
+                Get.toNamed(Routes.CATEGORIES);
+              }
+            },
+          ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.person),

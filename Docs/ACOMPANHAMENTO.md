@@ -4,63 +4,59 @@ Este documento rastreia o progresso do desenvolvimento do aplicativo.
 
 ---
 
-## ✅ O Que Foi Feito (Até 16/11/2025)
+## ✅ O Que Foi Feito (Até 17/11/2025)
 
-### 1. Estrutura e Configuração do Projeto
-- **Estrutura de Pastas:** Projeto reorganizado com uma arquitetura modular usando GetX (features, data, routes).
-- **Dependências:** Adicionadas e configuradas as dependências essenciais (GetX, Firebase, Equatable, image_picker, firebase_storage).
-- **Firebase:** Inicialização do Firebase configurada no `main.dart`.
-- **Assets:** Pasta `assets/images` criada para o logotipo.
+### 1. Feature: Gerenciamento de Categorias
+- **Estrutura:** Criada a feature `category` completa (Model, Repository, View, Controller, Binding).
+- **Funcionalidade:** Usuários podem criar, editar e excluir suas próprias categorias de compra.
+- **Navegação:** Adicionado o item "Categorias" ao menu de navegação (`AppDrawer`).
+- **Segurança:** Implementadas regras no Firestore para garantir que apenas o criador de uma categoria possa editá-la ou excluí-la.
 
-### 2. Fluxo de Autenticação
-- **Lógica de Inicialização:** O app agora verifica o status de login na inicialização e direciona para a tela correta (Login ou Home).
-- **Tela de Autenticação (`AuthView`):**
-    - UI redesenhada sem `AppBar` e com um logotipo central.
-    - Adicionado um fallback (ícone de interrogação) caso o logo não seja encontrado.
-    - Campos de texto agora têm bordas.
-    - Lógica de Login e Cadastro implementada com Firebase Auth e salvamento de dados do usuário no Firestore.
-    - Adição de funcionalidade de visibilidade de senha.
-- **Segurança:** Regras do Firestore (`firestore.rules`) e do Storage (`storage.rules`) configuradas para garantir o acesso seguro aos dados.
+### 2. Feature: Listas de Compras (Núcleo)
+- **Estrutura:** Criada a feature `shopping_list` completa, incluindo a tela de visão geral (`ShoppingListOverviewView`) e a de detalhes (`ShoppingListDetailsView`).
+- **Modelos:** Definidos `ListModel` e `ListItemModel` para estruturar os dados no Firestore.
+- **Criação de Listas:** Implementado formulário para criar novas listas, incluindo nome, categoria e data da compra (com `DatePicker`).
+- **Visualização:** A tela "Minhas Listas", acessível pelo menu, agora exibe todas as listas do usuário (criadas por ele ou compartilhadas).
+- **Detalhes da Lista:** A tela de detalhes exibe os itens de uma lista, permitindo marcá-los como "comprados".
 
-### 3. Navegação e UI Geral
-- **AppDrawer:** Criação de um `AppDrawer` reutilizável para navegação centralizada (Home, Perfil, Produtos, Logout).
-- **HomeView:** Modificada para ser uma tela de informações/boas-vindas.
-- **Banner de Debug:** Removida a faixa "Debug" do aplicativo.
+### 3. Feature: Adição de Itens à Lista
+- **Seleção de Produtos:** Criada a tela `ProductSelectionView`, que permite ao usuário buscar e selecionar produtos do catálogo global para adicionar à sua lista.
+- **Fluxo de Adição:** Ao selecionar um produto, o usuário informa a quantidade desejada e o item é adicionado à lista com preço zerado.
+- **Edição de Preço:** Na tela de detalhes, o usuário pode tocar em um item para abrir um diálogo e registrar/editar seu preço unitário.
 
-### 4. Feature de Perfil do Usuário
-- **Modelo:** `UserModel` atualizado com o campo `photoUrl`.
-- **Estrutura:** Criação da feature `profile` (view, controller, binding) e adição de rotas.
-- **Funcionalidades:**
-    - Edição de informações do usuário (nome, telefone).
-    - Upload de foto de perfil com opção de Câmera ou Galeria.
-    - Alteração de senha com reautenticação.
-- **Reatividade:** Lógica ajustada para garantir que as atualizações do perfil sejam refletidas em todo o app (ex: `AppDrawer`).
+### 4. Feature: Compartilhamento de Listas
+- **Modelo Baseado em UID:** O sistema de compartilhamento foi revertido para o modelo baseado em UID (ID de usuário), conforme solicitado.
+- **Gerenciamento de Membros:** Criada a `MembersView`, acessível a partir da tela de detalhes da lista (para o dono).
+- **Funcionalidade:** A tela permite adicionar novos membros por e-mail (com permissão de "editor" ou "visualizador") e remover membros existentes.
+- **Segurança:** As regras do Firestore foram atualizadas para suportar o sistema de permissões baseado em UID.
 
-### 5. Feature de Produtos
-- **Estrutura:** Criação da feature `product` e `manage_product` (views, controllers, bindings) e adição de rotas.
-- **Modelo:** `ProductModel` definido sem o campo de preço, que será gerenciado nas listas de compras.
-- **Tela de Produtos (`ProductView`):**
-    - Implementado campo de pesquisa por nome.
-    - Adicionado seletor de ordenação (Alfabética, Meus Produtos, Data de Criação, Data de Atualização) com critério de desempate.
-    - Novo fluxo de interação: um clique no produto abre um `bottomSheet` com opções de "Editar" e "Excluir" (apenas para o dono).
-- **Tela de Gerenciamento (`ManageProductView`):**
-    - Formulário para adicionar/editar produtos (nome, descrição, imagem).
-    - Upload de imagem do produto com opção de Câmera ou Galeria.
-
-### 6. Correções e Melhorias
-- **Loop de Redirecionamento:** Corrigido o problema de loop na inicialização do aplicativo.
-- **Mensagens de Erro:** Removidas as mensagens de erro detalhadas dos `Get.snackbar` para uma melhor experiência do usuário.
-- **Compilação:** Corrigido erro de `default clause` redundante no `switch` de ordenação.
+### 5. Correções e Refatoração
+- **Injeção de Dependência:** Corrigidos múltiplos erros de `Controller not found` no GetX, ajustando os `Bindings` para injetar as dependências corretamente no escopo necessário.
+- **Segurança de Nulos (Null Safety):** Resolvidos erros e avisos de acesso a variáveis nulas, tornando o código mais robusto.
+- **Permissões do Firestore:** Ajustadas as regras de segurança para corrigir erros de `PERMISSION_DENIED` ao criar e atualizar listas.
+- **Estrutura da UI:** A `HomePage` foi restaurada como uma tela de boas-vindas, e a visualização de listas foi movida para sua própria tela (`ShoppingListOverviewView`), conforme solicitado.
+- **Permissão de Leitura de Usuários:** O problema de `PERMISSION_DENIED` ao buscar usuários por e-mail foi resolvido com a alteração da regra do Firestore para a coleção `users`, permitindo que qualquer usuário autenticado leia qualquer documento de usuário.
 
 ---
 
 ## 🚀 Próximos Passos
 
-1.  **Feature de Listas de Compras:**
-    - Criar a estrutura para a feature de listas de compras.
-    - Permitir que o usuário crie, renomeie e exclua listas.
-    - Adicionar produtos do catálogo global a uma lista de compras.
-    - Definir o preço do produto *dentro* da lista de compras.
-    - Marcar produtos como "comprados".
-2.  **Reavaliação:**
-    - Após a conclusão da feature de listas de compras, definiremos os próximos passos.
+1.  **Finalizar Compra:**
+    - Implementar a lógica do botão "Finalizar Compra" na tela de detalhes.
+    - A ação deve mudar o `status` da lista para "finalizada".
+    - (Opcional) Calcular e salvar o `totalPrice` final da lista neste momento.
+
+2.  **Histórico de Compras:**
+    - Criar uma nova tela de "Histórico".
+    - Exibir listas com status "finalizada" ou "arquivada".
+    - Permitir que o usuário visualize os detalhes de uma compra antiga.
+
+3.  **Análise de Gastos:**
+    - Implementar a tela `SpendingAnalysisPage`.
+    - Adicionar filtros por data.
+    - Exibir um gráfico (ex: pizza) com a distribuição de gastos por categoria.
+
+4.  **Melhorias e Polimento:**
+    - Implementar a lógica para o cálculo automático do `totalPrice` da lista (via Cloud Function, se decidido posteriormente, ou no cliente).
+    - Melhorar a UI/UX geral, tratando todos os estados de carregamento e vazios.
+    - Adicionar feedback visual para o usuário em mais interações.
