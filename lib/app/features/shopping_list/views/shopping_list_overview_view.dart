@@ -31,14 +31,27 @@ class ShoppingListOverviewView extends GetView<ShoppingListController> {
             itemCount: shoppingListController.lists.length,
             itemBuilder: (context, index) {
               final list = shoppingListController.lists[index];
-              return Card(
-                child: ListTile(
-                  title: Text(list.name),
-                  subtitle: Text('Status: ${list.status}'),
-                  trailing: Text('${list.totalPrice.toStringAsFixed(2)} R\$'),
-                  onTap: () {
-                    shoppingListController.selectList(list);
-                  },
+              return Dismissible(
+                key: Key(list.id!),
+                direction: DismissDirection.endToStart,
+                onDismissed: (direction) {
+                  shoppingListController.deleteList(list.id!);
+                },
+                background: Container(
+                  color: Colors.red,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.centerRight,
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                child: Card(
+                  child: ListTile(
+                    title: Text(list.name),
+                    subtitle: Text('Status: ${list.status}'),
+                    trailing: Text('${list.totalPrice.toStringAsFixed(2)} R\$'),
+                    onTap: () {
+                      shoppingListController.selectListAndNavigate(list);
+                    },
+                  ),
                 ),
               );
             },

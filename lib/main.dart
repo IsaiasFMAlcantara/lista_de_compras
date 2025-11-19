@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:lista_compras/app/features/auth/controllers/auth_controller.dart';
 import 'package:lista_compras/app/routes/app_pages.dart';
 import 'package:lista_compras/app/routes/app_routes.dart';
+import 'package:lista_compras/app/bindings/initial_binding.dart';
+import 'package:intl/date_symbol_data_local.dart'; // Import necessário
 import 'firebase_options.dart';
 
 void main() async {
@@ -14,23 +15,18 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Inicializa o AuthController permanentemente
+  // Inicializa a formatação de datas para o locale 'pt_BR'
+  await initializeDateFormatting('pt_BR', null); // Chamada para inicialização
+
+  // Inicializa o AuthController permanentemente para que ele possa reagir às
+  // mudanças de autenticação imediatamente.
   Get.put(AuthController(), permanent: true);
 
-  final initialRoute = await _getInitialRoute();
-
-  runApp(MyApp(initialRoute: initialRoute));
-}
-
-Future<String> _getInitialRoute() async {
-  // Aguarda um momento para o stream de autenticação emitir o primeiro valor
-  await Future.delayed(const Duration(milliseconds: 500));
-  return FirebaseAuth.instance.currentUser != null ? Routes.HOME : Routes.AUTH;
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final String initialRoute;
-  const MyApp({super.key, required this.initialRoute});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +37,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      initialRoute: initialRoute,
+      initialBinding: InitialBinding(),
+      // A rota inicial é sempre a de autenticação.
+      // O AuthController irá redirecionar para a home se o usuário já estiver logado.
+      initialRoute: Routes.AUTH,
       getPages: AppPages.routes,
     );
   }

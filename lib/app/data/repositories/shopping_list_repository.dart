@@ -13,6 +13,18 @@ class ShoppingListRepository {
     return _firestore
         .collection(_listsCollectionPath)
         .where('memberUIDs', arrayContains: userId)
+        .where('status', isEqualTo: 'ativa') // Only active lists for the main view
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) => ListModel.fromDocumentSnapshot(doc)).toList();
+    });
+  }
+
+  Stream<List<ListModel>> getHistoricalLists(String userId) {
+    return _firestore
+        .collection(_listsCollectionPath)
+        .where('memberUIDs', arrayContains: userId)
+        .where('status', whereIn: ['finalizada', 'arquivada'])
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) => ListModel.fromDocumentSnapshot(doc)).toList();
@@ -68,5 +80,27 @@ class ShoppingListRepository {
         .collection(_itemsSubcollectionPath)
         .doc(itemId)
         .delete();
+  }
+
+  Future<List<ListItemModel>> getItemsOnce(String listId) async {
+    final snapshot = await _firestore
+        .collection(_listsCollectionPath)
+        .doc(listId)
+        .collection(_itemsSubcollectionPath)
+        .get();
+    return snapshot.docs.map((doc) => ListItemModel.fromDocumentSnapshot(doc)).toList();
+  }
+
+  Future<void> addItemsBatch(String listId, List<ListItemModel> items) {
+    final batch = _firestore.batch();
+    final itemsCollection =
+        _firestore.collection(_listsCollectionPath).doc(listId).collection(_itemsSubcollectionPath);
+
+    for (final item in items) {
+      final newDocRef = itemsCollection.doc();
+      batch.set(newDocRef, item.toMap());
+    }
+
+    return batch.commit();
   }
 }

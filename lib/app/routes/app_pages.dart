@@ -16,14 +16,35 @@ import 'package:lista_compras/app/features/shopping_list/bindings/shopping_list_
 import 'package:lista_compras/app/features/shopping_list/views/members_view.dart';
 import 'package:lista_compras/app/features/shopping_list/views/shopping_list_details_view.dart';
 import 'package:lista_compras/app/features/shopping_list/views/shopping_list_overview_view.dart';
+import 'package:lista_compras/app/features/history/bindings/history_binding.dart';
+import 'package:lista_compras/app/features/history/views/history_view.dart';
+import 'package:lista_compras/app/features/spending_analysis/bindings/spending_analysis_binding.dart';
+import 'package:lista_compras/app/features/shopping_list/bindings/historical_list_details_binding.dart';
+import 'package:lista_compras/app/features/shopping_list/views/historical_list_details_view.dart';
+import 'package:lista_compras/app/features/spending_analysis/views/spending_analysis_view.dart';
 import 'package:lista_compras/app/routes/app_routes.dart';
 
 class AppPages {
   static final routes = [
     GetPage(
+      name: Routes.HISTORICAL_LIST_DETAILS,
+      page: () => const HistoricalListDetailsView(),
+      binding: HistoricalListDetailsBinding(),
+    ),
+    GetPage(
       name: Routes.AUTH,
       page: () => const AuthView(),
       binding: AuthBinding(),
+    ),
+    GetPage(
+      name: Routes.HISTORY,
+      page: () => const HistoryView(),
+      binding: HistoryBinding(),
+    ),
+    GetPage(
+      name: Routes.SPENDING_ANALYSIS,
+      page: () => const SpendingAnalysisView(),
+      binding: SpendingAnalysisBinding(),
     ),
     GetPage(
       name: Routes.HOME,

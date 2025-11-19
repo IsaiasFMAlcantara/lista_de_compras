@@ -29,19 +29,20 @@ class AuthController extends GetxController {
   }
 
   void _handleAuthChanged(User? user) {
-    if (user != null) {
-      _loadFirestoreUser(user.uid);
-      // Apenas navega se não estivermos já na home
-      if (Get.currentRoute != Routes.HOME) {
-        Get.offAllNamed(Routes.HOME);
+    // Adia a navegação para garantir que o GetMaterialApp esteja pronto.
+    Future.delayed(Duration.zero, () {
+      if (user != null) {
+        _loadFirestoreUser(user.uid);
+        if (Get.currentRoute != Routes.HOME) {
+          Get.offAllNamed(Routes.HOME);
+        }
+      } else {
+        firestoreUser.value = null;
+        if (Get.currentRoute != Routes.AUTH) {
+          Get.offAllNamed(Routes.AUTH);
+        }
       }
-    } else {
-      firestoreUser.value = null;
-      // Apenas navega se não estivermos já na autenticação
-      if (Get.currentRoute != Routes.AUTH) {
-        Get.offAllNamed(Routes.AUTH);
-      }
-    }
+    });
   }
 
   void togglePasswordVisibility() {

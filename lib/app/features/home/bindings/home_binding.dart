@@ -1,35 +1,19 @@
 import 'package:get/get.dart';
 import 'package:lista_compras/app/data/repositories/category_repository.dart';
-import 'package:lista_compras/app/features/category/controllers/category_controller.dart';
 import 'package:lista_compras/app/data/repositories/shopping_list_repository.dart';
-import 'package:lista_compras/app/data/repositories/user_repository.dart';
-import 'package:lista_compras/app/features/shopping_list/controllers/shopping_list_controller.dart';
+import 'package:lista_compras/app/features/auth/controllers/auth_controller.dart';
 import '../controllers/home_controller.dart';
 
 class HomeBinding extends Bindings {
   @override
   void dependencies() {
+    // O HomeController agora busca as dependências que já foram
+    // inicializadas no InitialBinding.
     Get.lazyPut<HomeController>(
-      () => HomeController(),
-    );
-    // Injetando as dependências da Category diretamente no HomeBinding
-    Get.lazyPut<CategoryRepository>(
-      () => CategoryRepository(),
-    );
-    Get.lazyPut<CategoryController>(
-      () => CategoryController(repository: Get.find<CategoryRepository>()),
-    );
-    // Injetando as dependências da ShoppingList diretamente no HomeBinding
-    Get.lazyPut<ShoppingListRepository>(
-      () => ShoppingListRepository(),
-    );
-    Get.lazyPut<UserRepository>(
-      () => UserRepository(),
-    );
-    Get.lazyPut<ShoppingListController>(
-      () => ShoppingListController(
-        repository: Get.find<ShoppingListRepository>(),
-        userRepository: Get.find<UserRepository>(),
+      () => HomeController(
+        authController: Get.find<AuthController>(),
+        shoppingListRepository: Get.find<ShoppingListRepository>(),
+        categoryRepository: Get.find<CategoryRepository>(),
       ),
     );
   }

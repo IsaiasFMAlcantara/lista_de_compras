@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lista_compras/app/features/auth/controllers/auth_controller.dart';
+import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:lista_compras/app/features/home/controllers/home_controller.dart';
+import 'package:lista_compras/app/features/shopping_list/controllers/shopping_list_controller.dart';
+import 'package:lista_compras/app/routes/app_routes.dart';
 import 'package:lista_compras/app/widgets/app_drawer.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -9,37 +12,240 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    final authController = Get.find<AuthController>();
-
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
-        title: const Text('Página Inicial'),
+        title: const Text('Dashboard'),
         centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Obx(
-              () => Text(
-                'Olá, ${authController.firestoreUser.value?.name ?? 'Usuário'}!',
-                style: Get.textTheme.headlineMedium,
+            _buildGreeting(),
+            const SizedBox(height: 24),
+            _buildQuickActions(),
+            const SizedBox(height: 24),
+            _buildSectionTitle('Próximas Compras'),
+            _buildUpcomingPurchases(),
+            const SizedBox(height: 24),
+            _buildSectionTitle('Resumo do Mês'),
+            _buildMonthlySummary(),
+            const SizedBox(height: 24),
+            _buildSectionTitle('Última Compra'),
+            _buildLastPurchase(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGreeting() {
+    return Obx(
+      () => Text(
+        'Olá, ${controller.username.value}!',
+        style: Get.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildQuickActions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        _quickActionButton(
+          icon: Icons.add_shopping_cart,
+          label: 'Nova Lista',
+          onTap: () => Get.find<ShoppingListController>().showAddListDialog(),
+        ),
+        _quickActionButton(
+          icon: Icons.history,
+          label: 'Histórico',
+          onTap: () => Get.toNamed(Routes.HISTORY),
+        ),
+      ],
+    );
+  }
+
+  Widget _quickActionButton({required IconData icon, required String label, required VoidCallback onTap}) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: onTap,
+          style: ElevatedButton.styleFrom(
+            shape: const CircleBorder(),
+            padding: const EdgeInsets.all(16),
+          ),
+          child: Icon(icon, size: 30),
+        ),
+        const SizedBox(height: 8),
+        Text(label, style: Get.textTheme.titleMedium),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: Get.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+    );
+  }
+
+  Widget _buildUpcomingPurchases() {
+    return Obx(() {
+      if (controller.upcomingLists.isEmpty) {
+        return const _InfoCard(
+          icon: Icons.shopping_bag_outlined,
+          text: 'Nenhuma lista de compras ativa.',
+        );
+      }
+      return SizedBox(
+        height: 120,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: controller.upcomingLists.length,
+          itemBuilder: (context, index) {
+            final list = controller.upcomingLists[index];
+            return Card(
+              elevation: 2,
+              margin: const EdgeInsets.only(right: 12),
+              child: InkWell(
+                onTap: () => Get.find<ShoppingListController>().selectListAndNavigate(list),
+                child: Container(
+                  width: 180,
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(list.name, style: Get.textTheme.titleMedium, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 8),
+                      Text(
+                        list.purchaseDate != null
+                            ? 'Data: ${DateFormat('dd/MM/yy').format(list.purchaseDate!)}'
+                            : 'Sem data',
+                        style: Get.textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    });
+  }
+
+  Widget _buildMonthlySummary() {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Total Gasto em ${DateFormat.MMMM('pt_BR').format(DateTime.now())}', style: Get.textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  Obx(() => Text(
+                    'R\$ ${controller.monthlyTotal.value.toStringAsFixed(2)}',
+                    style: Get.textTheme.headlineSmall?.copyWith(color: Colors.green.shade700, fontWeight: FontWeight.bold),
+                  )),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
-            Text(
-              'Bem-vindo ao seu assistente de compras.',
-              style: Get.textTheme.titleLarge,
+            const SizedBox(width: 16),
+            Expanded(
+              flex: 1,
+              child: Obx(() {
+                if (controller.categorySpending.isEmpty) {
+                  return const SizedBox(height: 80, child: Center(child: Text('Sem dados')));
+                }
+                return SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: PieChart(
+                    PieChartData(
+                      sections: _buildPieChartSections(),
+                      sectionsSpace: 2,
+                      centerSpaceRadius: 20,
+                    ),
+                  ),
+                );
+              }),
             ),
-            const SizedBox(height: 40),
-            const Center(
-              child: Text(
-                'Use o menu lateral para navegar.',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<PieChartSectionData> _buildPieChartSections() {
+    final List<Color> colors = [Colors.blue, Colors.orange, Colors.purple, Colors.teal];
+    int colorIndex = 0;
+
+    final sortedCategories = controller.categorySpending.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    
+    final topCategories = sortedCategories.take(4);
+
+    return topCategories.map((entry) {
+      final color = colors[colorIndex++ % colors.length];
+      return PieChartSectionData(
+        color: color,
+        value: entry.value,
+        title: '', // No title inside the chart
+        radius: 20,
+      );
+    }).toList();
+  }
+
+  Widget _buildLastPurchase() {
+    return Obx(() {
+      final purchase = controller.lastPurchase.value;
+      if (purchase == null) {
+        return const _InfoCard(
+          icon: Icons.receipt_long_outlined,
+          text: 'Nenhuma compra no seu histórico.',
+        );
+      }
+      return Card(
+        elevation: 2,
+        child: ListTile(
+          leading: const Icon(Icons.receipt_long, color: Colors.blueAccent),
+          title: Text(purchase.name),
+          subtitle: Text('Total: R\$ ${purchase.totalPrice.toStringAsFixed(2)}'),
+          trailing: Text(DateFormat('dd/MM/yy').format(purchase.purchaseDate!)),
+          onTap: () => Get.toNamed(Routes.HISTORICAL_LIST_DETAILS, arguments: purchase),
+        ),
+      );
+    });
+  }
+}
+
+// A simple helper widget for info cards
+class _InfoCard extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  const _InfoCard({required this.icon, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.grey.shade600),
+            const SizedBox(width: 16),
+            Text(text, style: Get.textTheme.titleMedium),
           ],
         ),
       ),

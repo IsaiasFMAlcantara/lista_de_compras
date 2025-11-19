@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:lista_compras/app/routes/app_routes.dart';
 import 'package:lista_compras/app/features/shopping_list/controllers/shopping_list_controller.dart';
 import 'package:lista_compras/app/data/models/list_item_model.dart';
+import 'package:lista_compras/app/data/models/list_model.dart'; // Adicionado
 import 'package:lista_compras/app/features/auth/controllers/auth_controller.dart';
 
 class ShoppingListDetailsView extends GetView<ShoppingListController> {
@@ -10,6 +11,12 @@ class ShoppingListDetailsView extends GetView<ShoppingListController> {
 
   @override
   Widget build(BuildContext context) {
+    // Se a view for chamada com uma lista como argumento, define-a no controller.
+    // Isso acontece quando navegamos a partir da tela de Histórico.
+    if (Get.arguments is ListModel) {
+      controller.setList(Get.arguments as ListModel);
+    }
+
     final authController = Get.find<AuthController>();
     return Scaffold(
       appBar: AppBar(
@@ -19,11 +26,24 @@ class ShoppingListDetailsView extends GetView<ShoppingListController> {
             final isOwner = controller.currentList.value?.ownerId == authController.firebaseUser.value?.uid;
             if (!isOwner) return const SizedBox.shrink();
             
-            return IconButton(
-              icon: const Icon(Icons.group_add),
-              onPressed: () {
-                Get.toNamed(Routes.MEMBERS);
-              },
+            return Row(
+              children: [
+                Obx(() => TextButton(
+                  onPressed: controller.canFinalize.value ? () => controller.finishShopping() : null,
+                  child: Text(
+                    'Finalizar',
+                    style: TextStyle(
+                      color: controller.canFinalize.value ? Colors.white : Colors.grey,
+                    ),
+                  ),
+                )),
+                IconButton(
+                  icon: const Icon(Icons.group_add),
+                  onPressed: () {
+                    Get.toNamed(Routes.MEMBERS);
+                  },
+                ),
+              ],
             );
           })
         ],
@@ -39,9 +59,21 @@ class ShoppingListDetailsView extends GetView<ShoppingListController> {
             itemCount: controller.currentItems.length,
             itemBuilder: (context, index) {
               final item = controller.currentItems[index];
-              return CheckboxListTile(
-                value: item.isCompleted,
-                onChanged: (value) => controller.toggleItemCompletion(item),
+              return Dismissible(
+                key: Key(item.id!), // Unique key for each item
+                direction: DismissDirection.endToStart, // Swipe from right to left
+                onDismissed: (direction) {
+                  controller.deleteItem(item);
+                },
+                background: Container(
+                  color: Colors.red,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  alignment: Alignment.centerRight,
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                child: CheckboxListTile(
+                  value: item.isCompleted,
+                  onChanged: (value) => controller.toggleItemCompletion(item),
                 title: GestureDetector(
                   onTap: () => _showEditPriceDialog(context, item),
                   child: Text(
@@ -58,7 +90,7 @@ class ShoppingListDetailsView extends GetView<ShoppingListController> {
                   child: Text('Qtd: ${item.quantity} | Preço: ${item.unitPrice.toStringAsFixed(2)} R\$'),
                 ),
                 secondary: Text('${item.totalItemPrice.toStringAsFixed(2)} R\$'),
-              );
+                ));
             },
           );
         },

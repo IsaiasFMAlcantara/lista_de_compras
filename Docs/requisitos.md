@@ -1,24 +1,24 @@
 ## **1. Requisitos Funcionais (o que o sistema faz)**
 
-1. **Cadastro e autenticação de usuários** via Firebase Authentication.
-2. **Gerenciar listas de compras** (criar, editar, excluir).
-3. **Adicionar itens às listas** (nome, quantidade, valor).
-4. **Editar e remover itens** já cadastrados.
-5. **Finalizar uma lista** e salvar no histórico.
-6. **Consultar histórico de compras**, exibindo valores totais e itens adquiridos.
-7. **Visualizar análise de gastos** por período e categoria, com gráficos interativos.
-8. **Sugestão de produtos** a partir de base alimentada conforme usuários adicionam itens.
+- ✅ **1. Cadastro e autenticação de usuários:** Implementado via Firebase Authentication.
+- ✅ **2. Gerenciar listas de compras:** Implementado (criar, editar, excluir).
+- ✅ **3. Adicionar itens às listas:** Implementado (nome, quantidade, valor).
+- ✅ **4. Editar e remover itens:** Implementado.
+- ✅ **5. Finalizar uma lista e salvar no histórico:** Implementado.
+- ✅ **6. Consultar histórico de compras:** Implementado, com exibição de valores totais e itens.
+- ✅ **7. Visualizar análise de gastos:** Implementado, com filtros por período e gráfico de pizza por categoria.
+- ✅ **8. Sugestão de produtos:** Implementado. A sugestão é baseada na frequência de itens comprados no histórico do usuário e exibida na tela de detalhes da lista.
 
 ---
 
 ## **2. Requisitos Não Funcionais (como o sistema deve ser)**
 
-* **Plataforma:** multiplataforma (Android, iOS e Web via Flutter).
-* **Banco de Dados:** Firebase Firestore (NoSQL em nuvem).
-* **Autenticação:** Firebase Authentication (seguro, com suporte a login e senha).
-* **Usabilidade:** interface intuitiva e responsiva.
-* **Persistência:** todas as listas e históricos devem ficar salvos em nuvem, acessíveis pelo login do usuário.
-* **Disponibilidade:** o sistema deve ser acessível via navegador ou dispositivo móvel para o usuário autenticado, garantindo que os dados das listas estejam sempre disponíveis enquanto o usuário estiver conectado.
+- ✅ **Plataforma:** Implementado em Flutter, com suporte para Android, iOS e Web.
+- ✅ **Banco de Dados:** Implementado com Firebase Firestore.
+- ✅ **Autenticação:** Implementado com Firebase Authentication.
+- ✅ **Usabilidade:** A interface foi projetada para ser intuitiva, e o novo dashboard melhora a usabilidade. A responsividade é um ponto de polimento contínuo.
+- ✅ **Persistência:** Implementado, com todos os dados salvos na nuvem e associados ao login do usuário.
+- ✅ **Disponibilidade:** Implementado, os dados estão disponíveis em tempo real em qualquer dispositivo com o app e acesso à internet.
 
 ---
 
@@ -31,55 +31,67 @@
 
 ## **4. Casos de Uso Principais**
 
-* **UC01 – Autenticação de Usuário**
-* **UC02 – Criar Lista de Compras**
-* **UC03 – Editar/Excluir Lista de Compras**
-* **UC04 – Adicionar/Editar/Excluir Item**
-* **UC05 – Finalizar Lista e Salvar Histórico**
-* **UC06 – Visualizar Histórico de Compras**
-* **UC07 – Consultar Análise de Gastos**
-* **UC08 – Sugestão de Produtos**
+* ✅ **UC01 – Autenticação de Usuário**
+* ✅ **UC02 – Criar Lista de Compras**
+* ✅ **UC03 – Editar/Excluir Lista de Compras**
+* ✅ **UC04 – Adicionar/Editar/Excluir Item**
+* ✅ **UC05 – Finalizar Lista e Salvar Histórico**
+* ✅ **UC06 – Visualizar Histórico de Compras**
+* ✅ **UC07 – Consultar Análise de Gastos**
+* ✅ **UC08 – Sugestão de Produtos**
 
 ---
 
 ## **5. Protótipo de Telas (mínimas esperadas)**
 
-1. Tela de Login/Cadastro.
-2. Dashboard (visualizar todas as listas).
-3. Tela de criação/edição de lista.
-4. Tela de visualização de itens dentro da lista.
-5. Tela de histórico de compras.
-6. Tela de análise (gastos por período).
+1. ✅ Tela de Login/Cadastro.
+2. ✅ Dashboard (visualizar todas as listas e mais).
+3. ✅ Tela de criação/edição de lista.
+4. ✅ Tela de visualização de itens dentro da lista.
+5. ✅ Tela de histórico de compras.
+6. ✅ Tela de análise (gastos por período).
 
 ---
 
-## **6. Estrutura de Dados no Firestore (rascunho inicial)**
+## **6. Estrutura de Dados no Firestore (implementada)**
 
 * **users**
   * uid
   * nome
   * email
-  * phone (adicionado no UserModel)
+  * phone
 
 * **lists**
   * id_lista
-  * uid_usuario (dono da lista)
-  * nome_lista
+  * ownerId (dono da lista)
+  * memberUIDs (lista de membros)
+  * memberPermissions (mapa de permissões)
+  * name
   * status (ativa/finalizada/arquivada)
-  * category (Mercado, Farmácia, Loja, Outros)
-  * purchaseDate (data agendada para compra)
+  * categoryId
+  * purchaseDate (data da compra)
+  * createdAt (data de criação)
   * totalPrice (calculado ao finalizar)
-  * finishedAt (data de finalização)
 
-* **items** (subcoleção de lists)
+* **items** (subcoleção de `lists`)
   * id_item
-  * nome_item
-  * quantidade
-  * valor
-  * isCompleted (se o item foi comprado)
-  * productId (referência a um produto do catálogo, se aplicável)
+  * productName
+  * productImageUrl
+  * quantity
+  * unitPrice
+  * totalItemPrice
+  * isCompleted
+  * productId (referência a um produto do catálogo)
 
 * **products**
   * id_produto
-  * nome_produto
+  * name
   * imageUrl
+  * createdBy
+
+* **categories**
+  * id
+  * name
+  * createdBy
+  * createdAt
+  * updatedAt

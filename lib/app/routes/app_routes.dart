@@ -9,4 +9,7 @@ abstract class Routes {
   static const SHOPPING_LIST_OVERVIEW = '/shopping-list-overview';
   static const PRODUCT_SELECTION = '/product-selection';
   static const MEMBERS = '/members';
+  static const HISTORY = '/history';
+  static const SPENDING_ANALYSIS = '/spending-analysis';
+  static const HISTORICAL_LIST_DETAILS = '/historical-list-details';
 }

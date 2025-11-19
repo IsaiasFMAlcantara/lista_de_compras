@@ -59,12 +59,32 @@ class AppDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: const Icon(Icons.history),
+            title: const Text('Histórico de Compras'),
+            onTap: () {
+              Get.back(); // Fecha o drawer
+              if (Get.currentRoute != Routes.HISTORY) {
+                Get.toNamed(Routes.HISTORY);
+              }
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.category),
             title: const Text('Categorias'),
             onTap: () {
               Get.back(); // Fecha o drawer
               if (Get.currentRoute != Routes.CATEGORIES) {
                 Get.toNamed(Routes.CATEGORIES);
+              }
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.analytics),
+            title: const Text('Análise de Gastos'),
+            onTap: () {
+              Get.back(); // Fecha o drawer
+              if (Get.currentRoute != Routes.SPENDING_ANALYSIS) {
+                Get.toNamed(Routes.SPENDING_ANALYSIS);
               }
             },
           ),

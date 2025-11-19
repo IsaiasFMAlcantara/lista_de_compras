@@ -1,10 +1,42 @@
 # Acompanhamento de Desenvolvimento
 
-Este documento rastreia o progresso do desenvolvimento do aplicativo.
+Este documento rastreia o progresso do desenvolvimento do aplicativo, com as atualizações mais recentes no topo.
 
 ---
+---
 
-## ✅ O Que Foi Feito (Até 17/11/2025)
+## ✅ **O Que Foi Feito (Até 18/11/2025)**
+
+### 1. Feature: Novo Dashboard na Home
+- **Reestruturação Completa:** A `HomePage` foi transformada de uma simples tela de boas-vindas para um dashboard informativo.
+- **Componentes Adicionados:**
+  - **Ações Rápidas:** Botões para "Nova Lista" e "Histórico".
+  - **Próximas Compras:** Exibe listas ativas ordenadas por data de compra.
+  - **Resumo do Mês:** Mostra o total gasto no mês corrente e um gráfico de pizza com as principais categorias de despesa.
+  - **Última Compra:** Exibe um card com os detalhes da última lista finalizada.
+- **Controller e Binding:** O `HomeController` e `HomeBinding` foram refeitos para suportar a nova estrutura e carregar todos os dados necessários.
+
+### 2. Feature: Funcionalidades Adicionais de Lista
+- **Clonar Lista Histórica:** Na tela de Histórico, agora é possível clonar uma lista finalizada, definindo um novo nome e data de compra.
+- **Deletar Lista Ativa:** Na tela "Minhas Listas", foi implementada a funcionalidade de deletar listas ativas arrastando o item para o lado (`Dismissible`).
+- **Finalização de Compra:** Implementada a lógica do botão "Finalizar Compra" na tela de detalhes, que muda o `status` da lista para "finalizada", calcula o `totalPrice` e salva a `purchaseDate` correta.
+
+### 3. Feature: Análise de Gastos e Histórico
+- **Análise de Gastos:** A tela `SpendingAnalysisPage` foi implementada com filtros por data e um gráfico de pizza para a distribuição de gastos por categoria.
+- **Histórico de Compras:** Criada a tela de "Histórico" que exibe listas com status "finalizada" ou "arquivada", permitindo a visualização dos detalhes.
+
+### 4. Correções e Refatoração
+- **Análise de Gastos:** Corrigido o bug que exibia o ID da categoria em vez do nome.
+- **Finalização de Compra (Validação):** Adicionada validação que impede a finalização de uma lista se algum item marcado tiver quantidade ou preço zerado.
+- **Erros de Inicialização e Dependência:**
+  - Resolvido erro `LocaleDataException` ao garantir a inicialização da formatação de data (`initializeDateFormatting`).
+  - Corrigidos múltiplos erros de `Controller not found` (para `ShoppingListController` e `CategoryController`) ao centralizar a injeção de dependências globais no `InitialBinding`.
+  - Refatorado o `main.dart` para um fluxo de inicialização mais limpo e robusto, eliminando o erro de "contextless navigation".
+
+---
+---
+
+## ✅ **O Que Foi Feito (Até 17/11/2025)**
 
 ### 1. Feature: Gerenciamento de Categorias
 - **Estrutura:** Criada a feature `category` completa (Model, Repository, View, Controller, Binding).
@@ -16,47 +48,42 @@ Este documento rastreia o progresso do desenvolvimento do aplicativo.
 - **Estrutura:** Criada a feature `shopping_list` completa, incluindo a tela de visão geral (`ShoppingListOverviewView`) e a de detalhes (`ShoppingListDetailsView`).
 - **Modelos:** Definidos `ListModel` e `ListItemModel` para estruturar os dados no Firestore.
 - **Criação de Listas:** Implementado formulário para criar novas listas, incluindo nome, categoria e data da compra (com `DatePicker`).
-- **Visualização:** A tela "Minhas Listas", acessível pelo menu, agora exibe todas as listas do usuário (criadas por ele ou compartilhadas).
-- **Detalhes da Lista:** A tela de detalhes exibe os itens de uma lista, permitindo marcá-los como "comprados".
+- **Visualização:** A tela "Minhas Listas", acessível pelo menu, agora exibe todas as listas do usuário.
 
 ### 3. Feature: Adição de Itens à Lista
-- **Seleção de Produtos:** Criada a tela `ProductSelectionView`, que permite ao usuário buscar e selecionar produtos do catálogo global para adicionar à sua lista.
-- **Fluxo de Adição:** Ao selecionar um produto, o usuário informa a quantidade desejada e o item é adicionado à lista com preço zerado.
-- **Edição de Preço:** Na tela de detalhes, o usuário pode tocar em um item para abrir um diálogo e registrar/editar seu preço unitário.
+- **Seleção de Produtos:** Criada a tela `ProductSelectionView` para buscar e selecionar produtos.
+- **Fluxo de Adição:** O usuário informa a quantidade desejada e o item é adicionado à lista.
+- **Edição de Preço:** Na tela de detalhes, o usuário pode tocar em um item para registrar/editar seu preço unitário.
 
 ### 4. Feature: Compartilhamento de Listas
-- **Modelo Baseado em UID:** O sistema de compartilhamento foi revertido para o modelo baseado em UID (ID de usuário), conforme solicitado.
-- **Gerenciamento de Membros:** Criada a `MembersView`, acessível a partir da tela de detalhes da lista (para o dono).
-- **Funcionalidade:** A tela permite adicionar novos membros por e-mail (com permissão de "editor" ou "visualizador") e remover membros existentes.
-- **Segurança:** As regras do Firestore foram atualizadas para suportar o sistema de permissões baseado em UID.
+- **Modelo Baseado em UID:** O sistema de compartilhamento foi implementado usando o ID de usuário (UID).
+- **Gerenciamento de Membros:** Criada a `MembersView` para o dono da lista adicionar/remover membros e definir permissões ("editor" ou "visualizador").
+- **Segurança:** As regras do Firestore foram atualizadas para suportar o sistema de permissões.
 
 ### 5. Correções e Refatoração
-- **Injeção de Dependência:** Corrigidos múltiplos erros de `Controller not found` no GetX, ajustando os `Bindings` para injetar as dependências corretamente no escopo necessário.
-- **Segurança de Nulos (Null Safety):** Resolvidos erros e avisos de acesso a variáveis nulas, tornando o código mais robusto.
-- **Permissões do Firestore:** Ajustadas as regras de segurança para corrigir erros de `PERMISSION_DENIED` ao criar e atualizar listas.
-- **Estrutura da UI:** A `HomePage` foi restaurada como uma tela de boas-vindas, e a visualização de listas foi movida para sua própria tela (`ShoppingListOverviewView`), conforme solicitado.
-- **Permissão de Leitura de Usuários:** O problema de `PERMISSION_DENIED` ao buscar usuários por e-mail foi resolvido com a alteração da regra do Firestore para a coleção `users`, permitindo que qualquer usuário autenticado leia qualquer documento de usuário.
+- **Injeção de Dependência:** Corrigidos múltiplos erros de `Controller not found` no GetX.
+- **Segurança de Nulos (Null Safety):** Resolvidos erros e avisos de acesso a variáveis nulas.
+- **Permissões do Firestore:** Ajustadas as regras de segurança para corrigir erros de `PERMISSION_DENIED`.
+- **Estrutura da UI:** A `HomePage` foi restaurada como uma tela de boas-vindas simples.
+- **Permissão de Leitura de Usuários:** Resolvido o problema de `PERMISSION_DENIED` ao buscar usuários por e-mail.
 
 ---
+---
 
-## 🚀 Próximos Passos
+## 🚀 **Próximos Passos**
 
-1.  **Finalizar Compra:**
-    - Implementar a lógica do botão "Finalizar Compra" na tela de detalhes.
-    - A ação deve mudar o `status` da lista para "finalizada".
-    - (Opcional) Calcular e salvar o `totalPrice` final da lista neste momento.
+### 1. Definição de Tema e Identidade Visual
+- **Tarefa:** Criar um `AppTheme` centralizado.
+- **Objetivo:** Definir cores primárias, secundárias, tipografia e estilos de componentes (botões, cards, etc.) para garantir uma identidade visual coesa em todo o aplicativo.
 
-2.  **Histórico de Compras:**
-    - Criar uma nova tela de "Histórico".
-    - Exibir listas com status "finalizada" ou "arquivada".
-    - Permitir que o usuário visualize os detalhes de uma compra antiga.
+### 2. Lógica de Cálculo no Cliente
+- **Decisão:** Não serão utilizadas Cloud Functions.
+- **Plano:** Toda a lógica de cálculo (como total de preços, etc.) será implementada e mantida no lado do cliente (no próprio app Flutter).
 
-3.  **Análise de Gastos:**
-    - Implementar a tela `SpendingAnalysisPage`.
-    - Adicionar filtros por data.
-    - Exibir um gráfico (ex: pizza) com a distribuição de gastos por categoria.
+### 3. Melhorias e Polimento
+- **Tarefa:** Focar na experiência do usuário (UX).
+- **Plano:** Melhorar os feedbacks visuais (snackbars, loaders), tratar todos os estados de carregamento e vazios, e refinar as transições entre telas.
 
-4.  **Melhorias e Polimento:**
-    - Implementar a lógica para o cálculo automático do `totalPrice` da lista (via Cloud Function, se decidido posteriormente, ou no cliente).
-    - Melhorar a UI/UX geral, tratando todos os estados de carregamento e vazios.
-    - Adicionar feedback visual para o usuário em mais interações.
+### 4. Testes
+- **Tarefa:** Adicionar testes de unidade e de widget.
+- **Plano:** Garantir a robustez das novas funcionalidades e do fluxo principal do aplicativo.
