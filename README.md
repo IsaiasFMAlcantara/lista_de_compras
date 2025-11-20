@@ -2,6 +2,20 @@
 
 Projeto de TCC de um aplicativo de Lista de Compras desenvolvido em Flutter com Firebase. O aplicativo é uma solução completa e moderna para gerenciamento de compras, com foco em organização, colaboração em tempo real e controle financeiro.
 
+##  상태 do Projeto
+
+**Status:** ✅ Concluído
+
+Todos os requisitos funcionais e não funcionais propostos foram implementados com sucesso. O projeto foi finalizado e entregue na data prevista (20/11/2025).
+
+## Índice
+
+- [✨ Funcionalidades Principais](#-funcionalidades-principais)
+- [🛠️ Tecnologias Utilizadas](#️-tecnologias-utilizadas)
+- [🏗️ Arquitetura](#️-arquitetura)
+- [🚀 Como Executar o Projeto](#-como-executar-o-projeto)
+- [📚 Documentação Detalhada](#-documentação-detalhada)
+
 ## ✨ Funcionalidades Principais
 
 O aplicativo está funcionalmente completo e inclui os seguintes recursos:
@@ -74,5 +88,15 @@ O projeto foi desenvolvido seguindo boas práticas de engenharia de software, co
     flutter run
     ```
 
----
-Para um acompanhamento detalhado do desenvolvimento e das decisões técnicas, consulte a pasta `Docs/`.
+## 📚 Documentação Detalhada
+
+Toda a documentação do projeto, incluindo visão geral, requisitos, fluxo de usuário, memorial técnico e histórico de desenvolvimento, está organizada na pasta [`Docs/`](./Docs).
+
+Abaixo está um guia para os documentos disponíveis:
+
+- **`01_VISAO_GERAL.md`**: Descreve o objetivo do produto e o público-alvo.
+- **`02_HISTORICO_DESENVOLVIMENTO.md`**: Contém o plano do projeto e um diário detalhado de todo o progresso.
+- **`03_REQUISITOS_E_CASOS_DE_USO.md`**: Detalha os requisitos funcionais, não funcionais e a estrutura de dados no Firestore.
+- **`04_FLUXO_DE_USUARIO.md`**: Mapeia a jornada do usuário através das telas do aplicativo.
+- **`05_MEMORIAL_TECNICO.md`**: Explica a arquitetura, as decisões técnicas e as tecnologias utilizadas.
+- **`06_RELATORIO_FINAL.md`**: Apresenta a análise conclusiva sobre o projeto, sua arquitetura e a qualidade do produto final.
