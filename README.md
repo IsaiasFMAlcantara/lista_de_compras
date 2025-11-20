@@ -2,8 +2,6 @@
 
 Projeto de TCC de um aplicativo de Lista de Compras desenvolvido em Flutter com Firebase. O aplicativo é uma solução completa e moderna para gerenciamento de compras, com foco em organização, colaboração em tempo real e controle financeiro.
 
-##  상태 do Projeto
-
 **Status:** ✅ Concluído
 
 Todos os requisitos funcionais e não funcionais propostos foram implementados com sucesso. O projeto foi finalizado e entregue na data prevista (20/11/2025).
@@ -38,6 +36,40 @@ O aplicativo está funcionalmente completo e inclui os seguintes recursos:
   - Visualize um relatório de despesas com filtros por período.
   - Um gráfico de pizza mostra a distribuição dos gastos por categoria.
 - **Catálogo de Produtos:** Uma base de produtos que pode ser expandida pelos usuários.
+
+## 🖼️ Telas do Aplicativo
+
+A seguir, algumas das principais telas que representam o fluxo de uso do aplicativo.
+
+### Autenticação e Onboarding
+
+| Login | Criar Conta | Recuperar Senha |
+| :---: | :---: | :---: |
+| <img src="imagens_do_projeto/login.jpg" alt="Tela de Login" width="250"/> | <img src="imagens_do_projeto/criar_conta.jpg" alt="Tela de Criação de Conta" width="250"/> | <img src="imagens_do_projeto/Recuperar_senha.jpg" alt="Tela de Recuperação de Senha" width="250"/> |
+
+### Home, Dashboard e Navegação
+
+| Home (Sem Listas) | Home (Com Listas) | Menu Lateral |
+| :---: | :---: | :---: |
+| <img src="imagens_do_projeto/home_page.jpg" alt="Tela Home inicial" width="250"/> | <img src="imagens_do_projeto/home_com_lista.jpg" alt="Tela Home com listas e dashboard" width="250"/> | <img src="imagens_do_projeto/menu.jpg" alt="Menu de navegação" width="250"/> |
+
+### Gerenciamento de Listas de Compras
+
+| Listas Ativas | Criando uma Lista | Dentro da Lista | Gerenciando Membros |
+| :---: | :---: | :---: | :---: |
+| <img src="imagens_do_projeto/listas.jpg" alt="Tela com as listas de compras" width="250"/> | <img src="imagens_do_projeto/criar_lista.jpg" alt="Tela de criação de lista" width="250"/> | <img src="imagens_do_projeto/dentro_da_lista.jpg" alt="Visualização dos itens dentro de uma lista" width="250"/> | <img src="imagens_do_projeto/gerenciando_mebros.jpg" alt="Tela para gerenciar membros da lista" width="250"/> |
+
+### Catálogo de Produtos e Categorias
+
+| Produtos | Cadastrando Produto | Selecionando Produto | Categorias | Cadastrando Categoria |
+| :---: | :---: | :---: | :---: | :---: |
+| <img src="imagens_do_projeto/produtos.jpg" alt="Catálogo de produtos" width="250"/> | <img src="imagens_do_projeto/cadastrar_produtos.jpg" alt="Tela para cadastrar novo produto" width="250"/> | <img src="imagens_do_projeto/selecionando_produto.jpg" alt="Adicionando um produto do catálogo à lista" width="250"/> | <img src="imagens_do_projeto/categorias.jpg" alt="Catálogo de categorias" width="250"/> | <img src="imagens_do_projeto/cadastrar_categorias.jpg" alt="Tela para cadastrar nova categoria" width="250"/> |
+
+### Histórico e Análise de Gastos
+
+| Histórico de Listas | Análise de Gastos |
+| :---: | :---: |
+| <img src="imagens_do_projeto/histórico_listas.jpg" alt="Tela de histórico de compras finalizadas" width="250"/> | <img src="imagens_do_projeto/analiae_gastos.jpg" alt="Tela de análise de gastos com gráfico" width="250"/> |
 
 ## 🛠️ Tecnologias Utilizadas
 
