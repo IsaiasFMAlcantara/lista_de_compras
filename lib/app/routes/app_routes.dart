@@ -1,15 +1,16 @@
 abstract class Routes {
-  static const AUTH = '/auth';
-  static const HOME = '/home';
-  static const PRODUCTS = '/products';
-  static const PROFILE = '/profile';
-  static const MANAGE_PRODUCT = '/manage-product';
-  static const CATEGORIES = '/categories';
-  static const SHOPPING_LIST_DETAILS = '/shopping-list-details';
-  static const SHOPPING_LIST_OVERVIEW = '/shopping-list-overview';
-  static const PRODUCT_SELECTION = '/product-selection';
-  static const MEMBERS = '/members';
-  static const HISTORY = '/history';
-  static const SPENDING_ANALYSIS = '/spending-analysis';
-  static const HISTORICAL_LIST_DETAILS = '/historical-list-details';
+  static const auth = '/auth';
+  static const home = '/home';
+  static const products = '/products';
+  static const profile = '/profile';
+  static const manageProduct = '/manage-product';
+  static const categories = '/categories';
+  static const shoppingListDetails = '/shopping-list-details';
+  static const shoppingListOverview = '/shopping-list-overview';
+  static const productSelection = '/product-selection';
+  static const members = '/members';
+  static const history = '/history';
+  static const spendingAnalysis = '/spending-analysis';
+  static const historicalListDetails = '/historical-list-details';
+  static const forgotPassword = '/forgot-password';
 }

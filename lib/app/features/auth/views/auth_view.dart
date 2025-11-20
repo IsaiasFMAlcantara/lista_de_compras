@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lista_compras/app/features/auth/controllers/auth_controller.dart';
+import 'package:lista_compras/app/routes/app_routes.dart'; // Adicionado
 
 class AuthView extends GetView<AuthController> {
   const AuthView({super.key});
@@ -63,7 +64,18 @@ class AuthView extends GetView<AuthController> {
                     obscureText: !controller.isPasswordVisible.value,
                   ),
                 ),
-                const SizedBox(height: 12),
+                // Botão "Esqueceu sua senha?"
+                Obx(
+                  () => controller.isLogin.value
+                      ? Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () => Get.toNamed(Routes.forgotPassword),
+                            child: const Text('Esqueceu sua senha?'),
+                          ),
+                        )
+                      : const SizedBox(height: 12),
+                ),
                 Obx(
                   () => !controller.isLogin.value
                       ? TextFormField(

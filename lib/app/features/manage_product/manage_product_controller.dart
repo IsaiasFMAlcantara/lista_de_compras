@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:lista_compras/app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -85,7 +85,8 @@ class ManageProductController extends GetxController {
       final downloadUrl = await uploadTask.ref.getDownloadURL();
       return downloadUrl;
     } catch (e) {
-      Get.snackbar('Erro de Upload', 'Não foi possível enviar a imagem.');
+      Get.snackbar('Erro de Upload', 'Não foi possível enviar a imagem.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
       return null;
     }
   }
@@ -120,7 +121,8 @@ class ManageProductController extends GetxController {
 
         await _productProvider.updateProduct(updatedProduct);
         Get.back();
-        Get.snackbar('Sucesso', 'Produto atualizado!');
+        Get.snackbar('Sucesso', 'Produto atualizado!',
+        backgroundColor: AppTheme.successColor, colorText: Colors.white);
       } else {
         // --- MODO ADIÇÃO ---
         final newProduct = ProductModel(
@@ -142,10 +144,12 @@ class ManageProductController extends GetxController {
         }
         
         Get.back();
-        Get.snackbar('Sucesso', 'Produto adicionado!');
+        Get.snackbar('Sucesso', 'Produto adicionado!',
+        backgroundColor: AppTheme.successColor, colorText: Colors.white);
       }
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível salvar o produto.');
+      Get.snackbar('Erro', 'Não foi possível salvar o produto.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }

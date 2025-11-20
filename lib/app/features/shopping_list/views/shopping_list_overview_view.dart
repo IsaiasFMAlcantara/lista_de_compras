@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:lista_compras/app/features/category/controllers/category_controller.dart';
-import 'package:lista_compras/app/features/shopping_list/controllers/shopping_list_controller.dart';
+import 'package:get/get.dart'; // Adicionado
+import 'package:lista_compras/app/features/category/controllers/category_controller.dart'; // Adicionado
+import 'package:lista_compras/app/features/shopping_list/controllers/shopping_list_controller.dart'; // Adicionado
+import 'package:lista_compras/app/theme/app_theme.dart'; // Adicionado
+import 'package:lista_compras/app/widgets/empty_state_widget.dart';
 
 class ShoppingListOverviewView extends GetView<ShoppingListController> {
   const ShoppingListOverviewView({super.key});
@@ -22,8 +24,10 @@ class ShoppingListOverviewView extends GetView<ShoppingListController> {
             return const Center(child: CircularProgressIndicator());
           }
           if (shoppingListController.lists.isEmpty) {
-            return const Center(
-              child: Text('Nenhuma lista encontrada. Crie uma nova!'),
+            return const EmptyStateWidget(
+              icon: Icons.list_alt_rounded,
+              title: 'Nenhuma Lista',
+              message: 'Parece que você ainda não tem nenhuma lista de compras. Que tal criar uma agora?',
             );
           }
           return ListView.builder(
@@ -38,7 +42,7 @@ class ShoppingListOverviewView extends GetView<ShoppingListController> {
                   shoppingListController.deleteList(list.id!);
                 },
                 background: Container(
-                  color: Colors.red,
+                  color: AppTheme.destructiveColor, // Alterado
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   alignment: Alignment.centerRight,
                   child: const Icon(Icons.delete, color: Colors.white),
@@ -110,7 +114,7 @@ class ShoppingListOverviewView extends GetView<ShoppingListController> {
                 }
 
                 return DropdownButtonFormField<String>(
-                  value: selectedCategoryId,
+                  initialValue: selectedCategoryId,
                   decoration: const InputDecoration(
                     labelText: 'Categoria',
                     border: OutlineInputBorder(),

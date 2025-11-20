@@ -24,7 +24,7 @@ class ShoppingListRepository {
     return _firestore
         .collection(_listsCollectionPath)
         .where('memberUIDs', arrayContains: userId)
-        .where('status', whereIn: ['finalizada', 'arquivada'])
+        .where('status', isEqualTo: 'finalizada') // Alterado de whereIn
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) => ListModel.fromDocumentSnapshot(doc)).toList();

@@ -18,8 +18,6 @@ class UserRepository {
       }
       return null;
     } catch (e) {
-      // Handle exceptions as needed
-      print(e);
       return null;
     }
   }
@@ -32,7 +30,6 @@ class UserRepository {
       }
       return null;
     } catch (e) {
-      print(e);
       return null;
     }
   }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:intl/intl.dart'; // Adicionado: Import para formatação de data
 import 'package:lista_compras/app/features/history/controllers/history_controller.dart';
 import 'package:lista_compras/app/routes/app_routes.dart'; // Import for navigation
+import 'package:lista_compras/app/widgets/empty_state_widget.dart';
 
 class HistoryView extends GetView<HistoryController> {
   const HistoryView({super.key});
@@ -15,9 +16,14 @@ class HistoryView extends GetView<HistoryController> {
       ),
       body: Obx(
         () {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
           if (controller.historicalLists.isEmpty) {
-            return const Center(
-              child: Text('Nenhuma lista finalizada ou arquivada.'),
+            return const EmptyStateWidget(
+              icon: Icons.history_rounded,
+              title: 'Nenhum Histórico',
+              message: 'Suas listas de compras finalizadas ou arquivadas aparecerão aqui.',
             );
           }
           return ListView.builder(
@@ -50,7 +56,7 @@ class HistoryView extends GetView<HistoryController> {
                     ],
                   ),
                   onTap: () {
-                    Get.toNamed(Routes.HISTORICAL_LIST_DETAILS, arguments: list);
+                    Get.toNamed(Routes.historicalListDetails, arguments: list);
                   },
                 ),
               );

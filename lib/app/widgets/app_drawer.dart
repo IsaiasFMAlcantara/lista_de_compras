@@ -33,9 +33,8 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Home'),
             onTap: () {
               Get.back(); // Fecha o drawer
-              if (Get.currentRoute != Routes.HOME) {
-                Get.offAllNamed(Routes.HOME);
-              }
+                          if (Get.currentRoute != Routes.home) {
+                            Get.offAllNamed(Routes.home);              }
             },
           ),          
           ListTile(
@@ -43,9 +42,8 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Produtos'),
             onTap: () {
               Get.back(); // Fecha o drawer
-              if (Get.currentRoute != Routes.PRODUCTS) {
-                Get.toNamed(Routes.PRODUCTS);
-              }
+                          if (Get.currentRoute != Routes.products) {
+                            Get.toNamed(Routes.products);              }
             },
           ),
           ListTile(
@@ -53,9 +51,8 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Minhas Listas'),
             onTap: () {
               Get.back(); // Fecha o drawer
-              if (Get.currentRoute != Routes.SHOPPING_LIST_OVERVIEW) {
-                Get.toNamed(Routes.SHOPPING_LIST_OVERVIEW);
-              }
+                          if (Get.currentRoute != Routes.shoppingListOverview) {
+                            Get.toNamed(Routes.shoppingListOverview);              }
             },
           ),
           ListTile(
@@ -63,9 +60,8 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Histórico de Compras'),
             onTap: () {
               Get.back(); // Fecha o drawer
-              if (Get.currentRoute != Routes.HISTORY) {
-                Get.toNamed(Routes.HISTORY);
-              }
+                          if (Get.currentRoute != Routes.history) {
+                            Get.toNamed(Routes.history);              }
             },
           ),
           ListTile(
@@ -73,9 +69,8 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Categorias'),
             onTap: () {
               Get.back(); // Fecha o drawer
-              if (Get.currentRoute != Routes.CATEGORIES) {
-                Get.toNamed(Routes.CATEGORIES);
-              }
+                          if (Get.currentRoute != Routes.categories) {
+                            Get.toNamed(Routes.categories);              }
             },
           ),
           ListTile(
@@ -83,9 +78,8 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Análise de Gastos'),
             onTap: () {
               Get.back(); // Fecha o drawer
-              if (Get.currentRoute != Routes.SPENDING_ANALYSIS) {
-                Get.toNamed(Routes.SPENDING_ANALYSIS);
-              }
+                          if (Get.currentRoute != Routes.spendingAnalysis) {
+                            Get.toNamed(Routes.spendingAnalysis);              }
             },
           ),
           const Divider(),
@@ -94,9 +88,8 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Meu Perfil'),
             onTap: () {
               Get.back(); // Fecha o drawer
-              if (Get.currentRoute != Routes.PROFILE) {
-                Get.toNamed(Routes.PROFILE);
-              }
+                          if (Get.currentRoute != Routes.profile) {
+                            Get.toNamed(Routes.profile);              }
             },
           ),
           ListTile(

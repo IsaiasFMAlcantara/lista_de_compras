@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lista_compras/app/theme/app_theme.dart';
 import 'package:lista_compras/app/data/models/product_model.dart';
 import 'package:lista_compras/app/data/providers/product_provider.dart';
 import 'package:lista_compras/app/features/auth/controllers/auth_controller.dart';
@@ -88,7 +89,7 @@ class ProductController extends GetxController {
               title: const Text('Editar'),
               onTap: () {
                 Get.back();
-                Get.toNamed(Routes.MANAGE_PRODUCT, arguments: product);
+                Get.toNamed(Routes.manageProduct, arguments: product);
               },
             ),
             ListTile(
@@ -121,9 +122,11 @@ class ProductController extends GetxController {
   Future<void> deleteProduct(String productId) async {
     try {
       await _productProvider.deleteProduct(productId);
-      Get.snackbar('Sucesso', 'Produto excluído!');
+      Get.snackbar('Sucesso', 'Produto excluído!',
+        backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível excluir o produto.');
+      Get.snackbar('Erro', 'Não foi possível excluir o produto.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     }
   }
 }

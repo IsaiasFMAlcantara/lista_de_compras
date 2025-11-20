@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lista_compras/app/data/models/list_model.dart';
+import 'package:lista_compras/app/data/models/user_model.dart';
 import 'package:lista_compras/app/data/repositories/category_repository.dart';
 import 'package:lista_compras/app/data/repositories/shopping_list_repository.dart';
 import 'package:lista_compras/app/features/auth/controllers/auth_controller.dart';
@@ -26,16 +28,35 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Reage às mudanças do usuário carregado pelo AuthController
+    ever(authController.firestoreUser, (UserModel? user) {
+      if (user != null) {
+        username.value = user.name;
+      } else {
+        username.value = 'Usuário';
+      }
+    });
+
     _loadDashboardData();
   }
 
   void _loadDashboardData() {
-    // 1. Get Username
-    username.value = authController.firestoreUser.value?.name ?? 'Usuário';
+    // A lógica do nome de usuário foi movida para o 'ever' worker acima.
 
     final userId = authController.firebaseUser.value?.uid;
-    if (userId == null) return;
+    if (userId == null) {
+      // Escuta por mudanças no firebaseUser para carregar os dados quando ele estiver disponível.
+      once(authController.firebaseUser, (User? user) {
+        if (user != null) {
+          _fetchDataForUser(user.uid);
+        }
+      });
+    } else {
+      _fetchDataForUser(userId);
+    }
+  }
 
+  void _fetchDataForUser(String userId) {
     // 2. Fetch upcoming lists and sort them
     shoppingListRepository.getLists(userId).listen((lists) {
       lists.sort((a, b) {
@@ -57,7 +78,12 @@ class HomeController extends GetxController {
       }
 
       // 4. Find last purchase
-      history.sort((a, b) => b.purchaseDate!.compareTo(a.purchaseDate!));
+      history.sort((a, b) {
+        if (a.purchaseDate == null && b.purchaseDate == null) return 0;
+        if (a.purchaseDate == null) return 1; // Consider nulls as older
+        if (b.purchaseDate == null) return -1;
+        return b.purchaseDate!.compareTo(a.purchaseDate!);
+      });
       lastPurchase.value = history.first;
 
       // 5. Calculate monthly spending

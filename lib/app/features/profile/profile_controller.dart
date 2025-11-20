@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:lista_compras/app/theme/app_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -94,9 +94,11 @@ class ProfileController extends GetxController {
       }
       profileImageUrl.value = downloadUrl;
 
-      Get.snackbar('Sucesso', 'Foto de perfil atualizada!');
+      Get.snackbar('Sucesso', 'Foto de perfil atualizada!',
+        backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível atualizar a foto de perfil.');
+      Get.snackbar('Erro', 'Não foi possível atualizar a foto de perfil.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
@@ -123,9 +125,11 @@ class ProfileController extends GetxController {
         );
       }
 
-      Get.snackbar('Sucesso', 'Perfil atualizado!');
+      Get.snackbar('Sucesso', 'Perfil atualizado!',
+        backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível atualizar o perfil.');
+      Get.snackbar('Erro', 'Não foi possível atualizar o perfil.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
@@ -133,7 +137,8 @@ class ProfileController extends GetxController {
 
   Future<void> changePassword() async {
     if (oldPasswordController.text.isEmpty || newPasswordController.text.isEmpty) {
-      Get.snackbar('Erro', 'Preencha a senha antiga e a nova senha.');
+      Get.snackbar('Erro', 'Preencha a senha antiga e a nova senha.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
       return;
     }
 
@@ -141,7 +146,8 @@ class ProfileController extends GetxController {
     try {
       final user = authController.firebaseUser.value;
       if (user == null || user.email == null) {
-        Get.snackbar('Erro', 'Usuário não encontrado.');
+        Get.snackbar('Erro', 'Usuário não encontrado.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
         return;
       }
 
@@ -158,11 +164,14 @@ class ProfileController extends GetxController {
       oldPasswordController.clear();
       newPasswordController.clear();
       Get.back(); // Volta para a tela anterior
-      Get.snackbar('Sucesso', 'Senha alterada com sucesso!');
+      Get.snackbar('Sucesso', 'Senha alterada com sucesso!',
+        backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } on FirebaseAuthException catch (e) {
-      Get.snackbar('Erro', e.message ?? 'Não foi possível alterar a senha.');
+      Get.snackbar('Erro', e.message ?? 'Não foi possível alterar a senha.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Ocorreu um erro inesperado.');
+      Get.snackbar('Erro', 'Ocorreu um erro inesperado.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }

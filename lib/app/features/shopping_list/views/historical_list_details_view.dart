@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lista_compras/app/theme/app_theme.dart';
 import 'package:lista_compras/app/features/shopping_list/controllers/historical_list_details_controller.dart';
 
 class HistoricalListDetailsView extends GetView<HistoricalListDetailsController> {
@@ -25,7 +26,7 @@ class HistoricalListDetailsView extends GetView<HistoricalListDetailsController>
               return ListTile(
                 leading: Icon(
                   item.isCompleted ? Icons.check_box : Icons.check_box_outline_blank,
-                  color: item.isCompleted ? Colors.green : null,
+                  color: item.isCompleted ? AppTheme.successColor : null,
                 ),
                 title: Text(
                   item.productName,

@@ -5,8 +5,9 @@ import 'package:lista_compras/app/features/auth/controllers/auth_controller.dart
 import 'package:lista_compras/app/routes/app_pages.dart';
 import 'package:lista_compras/app/routes/app_routes.dart';
 import 'package:lista_compras/app/bindings/initial_binding.dart';
-import 'package:intl/date_symbol_data_local.dart'; // Import necessário
+import 'package:intl/date_symbol_data_local.dart';
 import 'firebase_options.dart';
+import 'package:lista_compras/app/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,14 +34,11 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Lista de Compras',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: AppTheme.themeData,
       initialBinding: InitialBinding(),
       // A rota inicial é sempre a de autenticação.
       // O AuthController irá redirecionar para a home se o usuário já estiver logado.
-      initialRoute: Routes.AUTH,
+      initialRoute: Routes.auth,
       getPages: AppPages.routes,
     );
   }

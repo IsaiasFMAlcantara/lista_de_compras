@@ -21,73 +21,80 @@ import 'package:lista_compras/app/features/history/views/history_view.dart';
 import 'package:lista_compras/app/features/spending_analysis/bindings/spending_analysis_binding.dart';
 import 'package:lista_compras/app/features/shopping_list/bindings/historical_list_details_binding.dart';
 import 'package:lista_compras/app/features/shopping_list/views/historical_list_details_view.dart';
+import 'package:lista_compras/app/features/auth/forgot_password/bindings/forgot_password_binding.dart';
+import 'package:lista_compras/app/features/auth/forgot_password/views/forgot_password_view.dart';
 import 'package:lista_compras/app/features/spending_analysis/views/spending_analysis_view.dart';
 import 'package:lista_compras/app/routes/app_routes.dart';
 
 class AppPages {
   static final routes = [
     GetPage(
-      name: Routes.HISTORICAL_LIST_DETAILS,
+      name: Routes.forgotPassword,
+      page: () => const ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
+    ),
+    GetPage(
+      name: Routes.historicalListDetails,
       page: () => const HistoricalListDetailsView(),
       binding: HistoricalListDetailsBinding(),
     ),
     GetPage(
-      name: Routes.AUTH,
+      name: Routes.auth,
       page: () => const AuthView(),
       binding: AuthBinding(),
     ),
     GetPage(
-      name: Routes.HISTORY,
+      name: Routes.history,
       page: () => const HistoryView(),
       binding: HistoryBinding(),
     ),
     GetPage(
-      name: Routes.SPENDING_ANALYSIS,
+      name: Routes.spendingAnalysis,
       page: () => const SpendingAnalysisView(),
       binding: SpendingAnalysisBinding(),
     ),
     GetPage(
-      name: Routes.HOME,
+      name: Routes.home,
       page: () => const HomeView(),
       binding: HomeBinding(),
     ),
     GetPage(
-      name: Routes.PRODUCTS,
+      name: Routes.products,
       page: () => const ProductView(),
       binding: ProductBinding(),
     ),
     GetPage(
-      name: Routes.PROFILE,
+      name: Routes.profile,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
     ),
     GetPage(
-      name: Routes.MANAGE_PRODUCT,
+      name: Routes.manageProduct,
       page: () => const ManageProductView(),
       binding: ManageProductBinding(),
     ),
     GetPage(
-      name: Routes.CATEGORIES,
+      name: Routes.categories,
       page: () => const CategoryView(),
       binding: CategoryBinding(),
     ),
     GetPage(
-      name: Routes.SHOPPING_LIST_DETAILS,
+      name: Routes.shoppingListDetails,
       page: () => const ShoppingListDetailsView(),
       binding: ShoppingListBinding(),
     ),
     GetPage(
-      name: Routes.SHOPPING_LIST_OVERVIEW,
+      name: Routes.shoppingListOverview,
       page: () => const ShoppingListOverviewView(),
       binding: ShoppingListBinding(),
     ),
     GetPage(
-      name: Routes.PRODUCT_SELECTION,
+      name: Routes.productSelection,
       page: () => const ProductSelectionView(),
       binding: ProductBinding(),
     ),
     GetPage(
-      name: Routes.MEMBERS,
+      name: Routes.members,
       page: () => const MembersView(),
       binding: ShoppingListBinding(),
     ),

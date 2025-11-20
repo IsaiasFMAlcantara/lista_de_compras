@@ -33,14 +33,12 @@ class AuthController extends GetxController {
     Future.delayed(Duration.zero, () {
       if (user != null) {
         _loadFirestoreUser(user.uid);
-        if (Get.currentRoute != Routes.HOME) {
-          Get.offAllNamed(Routes.HOME);
-        }
+            if (Get.currentRoute != Routes.home) {
+              Get.offAllNamed(Routes.home);        }
       } else {
         firestoreUser.value = null;
-        if (Get.currentRoute != Routes.AUTH) {
-          Get.offAllNamed(Routes.AUTH);
-        }
+            if (Get.currentRoute != Routes.auth) {
+              Get.offAllNamed(Routes.auth);        }
       }
     });
   }

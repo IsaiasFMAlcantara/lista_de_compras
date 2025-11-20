@@ -6,6 +6,8 @@ import 'package:lista_compras/app/features/home/controllers/home_controller.dart
 import 'package:lista_compras/app/features/shopping_list/controllers/shopping_list_controller.dart';
 import 'package:lista_compras/app/routes/app_routes.dart';
 import 'package:lista_compras/app/widgets/app_drawer.dart';
+import 'package:lista_compras/app/theme/app_theme.dart';
+
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -23,16 +25,17 @@ class HomeView extends GetView<HomeController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 16), // Espaçamento inicial
             _buildGreeting(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32), // Aumentado
             _buildQuickActions(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32), // Aumentado
             _buildSectionTitle('Próximas Compras'),
             _buildUpcomingPurchases(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32), // Aumentado
             _buildSectionTitle('Resumo do Mês'),
             _buildMonthlySummary(),
-            const SizedBox(height: 24),
+            const SizedBox(height: 32), // Aumentado
             _buildSectionTitle('Última Compra'),
             _buildLastPurchase(),
           ],
@@ -45,7 +48,7 @@ class HomeView extends GetView<HomeController> {
     return Obx(
       () => Text(
         'Olá, ${controller.username.value}!',
-        style: Get.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold),
+        style: Theme.of(Get.context!).textTheme.headlineSmall,
       ),
     );
   }
@@ -62,8 +65,7 @@ class HomeView extends GetView<HomeController> {
         _quickActionButton(
           icon: Icons.history,
           label: 'Histórico',
-          onTap: () => Get.toNamed(Routes.HISTORY),
-        ),
+                      onTap: () => Get.toNamed(Routes.history),        ),
       ],
     );
   }
@@ -80,7 +82,7 @@ class HomeView extends GetView<HomeController> {
           child: Icon(icon, size: 30),
         ),
         const SizedBox(height: 8),
-        Text(label, style: Get.textTheme.titleMedium),
+        Text(label, style: Theme.of(Get.context!).textTheme.titleMedium),
       ],
     );
   }
@@ -88,7 +90,7 @@ class HomeView extends GetView<HomeController> {
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
-      style: Get.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+      style: Theme.of(Get.context!).textTheme.titleLarge,
     );
   }
 
@@ -154,8 +156,7 @@ class HomeView extends GetView<HomeController> {
                   const SizedBox(height: 8),
                   Obx(() => Text(
                     'R\$ ${controller.monthlyTotal.value.toStringAsFixed(2)}',
-                    style: Get.textTheme.headlineSmall?.copyWith(color: Colors.green.shade700, fontWeight: FontWeight.bold),
-                  )),
+                                              style: Get.textTheme.headlineSmall?.copyWith(color: AppTheme.successColor, fontWeight: FontWeight.bold),                  )),
                 ],
               ),
             ),
@@ -217,12 +218,10 @@ class HomeView extends GetView<HomeController> {
       return Card(
         elevation: 2,
         child: ListTile(
-          leading: const Icon(Icons.receipt_long, color: Colors.blueAccent),
-          title: Text(purchase.name),
+                                    leading: const Icon(Icons.receipt_long, color: AppTheme.infoColor),          title: Text(purchase.name),
           subtitle: Text('Total: R\$ ${purchase.totalPrice.toStringAsFixed(2)}'),
           trailing: Text(DateFormat('dd/MM/yy').format(purchase.purchaseDate!)),
-          onTap: () => Get.toNamed(Routes.HISTORICAL_LIST_DETAILS, arguments: purchase),
-        ),
+                                    onTap: () => Get.toNamed(Routes.historicalListDetails, arguments: purchase),        ),
       );
     });
   }

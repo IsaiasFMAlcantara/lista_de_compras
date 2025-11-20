@@ -99,8 +99,7 @@ class ProductView extends GetView<ProductController> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.toNamed(Routes.MANAGE_PRODUCT);
-        },
+                            Get.toNamed(Routes.manageProduct);        },
         child: const Icon(Icons.add),
       ),
     );

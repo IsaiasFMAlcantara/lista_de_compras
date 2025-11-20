@@ -7,18 +7,25 @@ import 'package:lista_compras/app/features/shopping_list/controllers/shopping_li
 
 class HistoryController extends GetxController {
   final ShoppingListRepository repository;
-  HistoryController({required this.repository});
+  final FirebaseAuth auth;
+  HistoryController({required this.repository, required this.auth});
 
   final _historicalLists = Rx<List<ListModel>>([]);
   List<ListModel> get historicalLists => _historicalLists.value;
+  
+  final isLoading = true.obs;
 
-  String? get _userId => FirebaseAuth.instance.currentUser?.uid;
+  String? get _userId => auth.currentUser?.uid;
 
   @override
   void onInit() {
     super.onInit();
     if (_userId != null) {
       _historicalLists.bindStream(repository.getHistoricalLists(_userId!));
+      // Once the stream emits the first value, we set loading to false.
+      _historicalLists.listen((_) => isLoading.value = false);
+    } else {
+      isLoading.value = false;
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lista_compras/app/features/shopping_list/controllers/shopping_list_controller.dart';
+import 'package:lista_compras/app/theme/app_theme.dart'; // Adicionado
 
 class MembersView extends GetView<ShoppingListController> {
   const MembersView({super.key});
@@ -17,7 +18,7 @@ class MembersView extends GetView<ShoppingListController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // --- Formulário para adicionar novo membro ---
-            const Text('Adicionar Novo Membro', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Adicionar Novo Membro', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
             TextFormField(
               controller: controller.memberEmailController,
@@ -29,7 +30,7 @@ class MembersView extends GetView<ShoppingListController> {
             ),
             const SizedBox(height: 8),
             Obx(() => DropdownButtonFormField<String>(
-                  value: controller.selectedPermission.value,
+                  initialValue: controller.selectedPermission.value,
                   items: const [
                     DropdownMenuItem(value: 'viewer', child: Text('Pode Visualizar')),
                     DropdownMenuItem(value: 'editor', child: Text('Pode Editar')),
@@ -50,14 +51,14 @@ class MembersView extends GetView<ShoppingListController> {
               child: Obx(() => ElevatedButton(
                     onPressed: controller.isLoading.value ? null : () => controller.addMember(),
                     child: controller.isLoading.value
-                        ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white))
+                        ? SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.onPrimary))
                         : const Text('Adicionar'),
                   )),
             ),
             const Divider(height: 32),
 
             // --- Lista de membros atuais ---
-            const Text('Membros Atuais', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Membros Atuais', style: Theme.of(context).textTheme.titleMedium),
             Expanded(
               child: Obx(() {
                 final members = controller.currentList.value?.memberPermissions.entries.toList() ?? [];
@@ -75,7 +76,7 @@ class MembersView extends GetView<ShoppingListController> {
                       trailing: isOwner
                           ? null
                           : IconButton(
-                              icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
+                              icon: const Icon(Icons.remove_circle_outline, color: AppTheme.destructiveColor), // Alterado
                               onPressed: () => controller.removeMember(member.key), // Reverted to pass UID
                             ),
                     );

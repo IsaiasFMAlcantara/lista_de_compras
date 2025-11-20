@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lista_compras/app/theme/app_theme.dart';
 import 'package:lista_compras/app/data/models/list_model.dart';
 import 'package:lista_compras/app/data/models/list_item_model.dart';
 import 'package:lista_compras/app/data/models/product_model.dart';
@@ -17,7 +18,19 @@ class ShoppingListController extends GetxController {
 
   // --- General State ---
   final isLoading = false.obs;
-  String? get _userId => FirebaseAuth.instance.currentUser?.uid;
+  String? get _userId => FirebaseAuth.instance.currentUser?.uid; // Corrigido: Este getter é essencial.
+
+  // Novos getters para permissões
+  String? get currentUserPermission {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null || currentList.value == null) {
+      return null;
+    }
+    return currentList.value!.memberPermissions[userId];
+  }
+
+  bool get canEditList => currentUserPermission == 'owner' || currentUserPermission == 'editor';
+  bool get isViewer => currentUserPermission == 'viewer';
 
   // --- List Management State ---
   final _lists = Rx<List<ListModel>>([]);
@@ -55,7 +68,8 @@ class ShoppingListController extends GetxController {
   // --- List Management ---
   Future<void> addList() async {
     if (listNameController.text.isEmpty || _userId == null) {
-      Get.snackbar('Erro', 'O nome da lista é obrigatório.');
+      Get.snackbar('Erro', 'O nome da lista é obrigatório.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
       return;
     }
     isLoading.value = true;
@@ -75,9 +89,11 @@ class ShoppingListController extends GetxController {
       listNameController.clear();
       listCategoryController.clear();
       purchaseDate.value = null;
-      Get.snackbar('Sucesso', 'Lista "${newList.name}" criada!');
+      Get.snackbar('Sucesso', 'Lista "$newList.name" criada!',
+        backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível criar a lista.');
+      Get.snackbar('Erro', 'Não foi possível criar a lista.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
@@ -86,15 +102,18 @@ class ShoppingListController extends GetxController {
   Future<void> deleteList(String listId) async {
     try {
       await repository.deleteList(listId);
-      Get.snackbar('Sucesso', 'Lista excluída.');
+      Get.snackbar('Sucesso', 'Lista excluída.',
+        backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível excluir a lista.');
+      Get.snackbar('Erro', 'Não foi possível excluir a lista.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     }
   }
 
   Future<void> cloneList(ListModel originalList, String newName, DateTime? newDate) async {
     if (_userId == null) {
-      Get.snackbar('Erro', 'Você precisa estar logado para clonar uma lista.');
+      Get.snackbar('Erro', 'Você precisa estar logado para clonar uma lista.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
       return;
     }
     isLoading.value = true;
@@ -133,9 +152,11 @@ class ShoppingListController extends GetxController {
         await repository.addItemsBatch(newListId, clonedItems);
       }
 
-      Get.snackbar('Sucesso', 'Lista "${newName}" clonada com sucesso!');
+      Get.snackbar('Sucesso', 'Lista "$newName" clonada com sucesso!',
+        backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível clonar a lista. Tente novamente.');
+      Get.snackbar('Erro', 'Não foi possível clonar a lista. Tente novamente.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
@@ -154,7 +175,7 @@ class ShoppingListController extends GetxController {
 
   void selectListAndNavigate(ListModel list) {
     setList(list);
-    Get.toNamed(Routes.SHOPPING_LIST_DETAILS);
+    Get.toNamed(Routes.shoppingListDetails);
   }
 
   Future<void> addItemFromProduct(ProductModel product, double quantity) async {
@@ -201,9 +222,11 @@ class ShoppingListController extends GetxController {
 
       try {
         await repository.addItem(currentList.value!.id!, newItem);
-        Get.snackbar('Sucesso', '"${product.name}" adicionado à lista!');
+        Get.snackbar('Sucesso', '"${product.name}" adicionado à lista!',
+            backgroundColor: AppTheme.successColor, colorText: Colors.white);
       } catch (e) {
-        Get.snackbar('Erro', 'Não foi possível adicionar o item.');
+        Get.snackbar('Erro', 'Não foi possível adicionar o item.',
+            backgroundColor: AppTheme.errorColor, colorText: Colors.white);
       }
     }
   }
@@ -217,8 +240,8 @@ class ShoppingListController extends GetxController {
       );
       await repository.updateItem(currentList.value!.id!, updatedItem);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível atualizar o preço do item.');
-    }
+              Get.snackbar('Erro', 'Não foi possível atualizar o preço do item.',
+                  backgroundColor: AppTheme.errorColor, colorText: Colors.white);    }
   }
 
   Future<void> updateItemQuantity(ListItemModel item, double newQuantity) async {
@@ -230,10 +253,10 @@ class ShoppingListController extends GetxController {
         totalItemPrice: newQuantity * item.unitPrice,
       );
       await repository.updateItem(currentList.value!.id!, updatedItem);
-      Get.snackbar('Sucesso', 'Quantidade de "${item.productName}" atualizada!');
-    } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível atualizar a quantidade do item.');
-    }
+              Get.snackbar('Sucesso', 'Quantidade de "${item.productName}" atualizada!',
+                  backgroundColor: AppTheme.successColor, colorText: Colors.white);    } catch (e) {
+              Get.snackbar('Erro', 'Não foi possível atualizar a quantidade do item.',
+                  backgroundColor: AppTheme.errorColor, colorText: Colors.white);    }
   }
 
   Future<void> toggleItemCompletion(ListItemModel item) async {
@@ -242,25 +265,26 @@ class ShoppingListController extends GetxController {
       final updatedItem = item.copyWith(isCompleted: !item.isCompleted);
       await repository.updateItem(currentList.value!.id!, updatedItem);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível atualizar o item.');
-    }
+              Get.snackbar('Erro', 'Não foi possível atualizar o item.',
+                  backgroundColor: AppTheme.errorColor, colorText: Colors.white);    }
   }
 
   Future<void> deleteItem(ListItemModel item) async {
     if (currentList.value?.id == null || item.id == null) return;
     try {
       await repository.deleteItem(currentList.value!.id!, item.id!);
-      Get.snackbar('Sucesso', '"${item.productName}" removido da lista.');
-    } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível remover o item.');
-    }
+              Get.snackbar('Sucesso', '"${item.productName}" removido da lista.',
+                  backgroundColor: AppTheme.successColor, colorText: Colors.white);    } catch (e) {
+              Get.snackbar('Erro', 'Não foi possível remover o item.',
+                  backgroundColor: AppTheme.errorColor, colorText: Colors.white);    }
   }
 
   Future<void> finishShopping() async {
     if (currentList.value?.id == null) return;
 
     if (!canFinalize.value) {
-      Get.snackbar('Atenção', 'Marque pelo menos um item como comprado para finalizar a lista.');
+      Get.snackbar('Atenção', 'Marque pelo menos um item como comprado para finalizar a lista.',
+          backgroundColor: AppTheme.infoColor, colorText: Colors.white);
       return;
     }
 
@@ -296,9 +320,11 @@ class ShoppingListController extends GetxController {
       await repository.updateList(updatedList);
       currentList.value = updatedList; // Update the observable
       Get.back(); // Go back to the previous screen (ShoppingListOverviewView)
-      Get.snackbar('Sucesso', 'Compra "${updatedList.name}" finalizada com sucesso!');
+      Get.snackbar('Sucesso', 'Compra "${updatedList.name}" finalizada com sucesso!',
+          backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível finalizar a compra.');
+      Get.snackbar('Erro', 'Não foi possível finalizar a compra.',
+          backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
@@ -324,7 +350,8 @@ class ShoppingListController extends GetxController {
   Future<void> addMember() async {
     final email = memberEmailController.text.trim();
     if (email.isEmpty) {
-      Get.snackbar('Erro', 'Digite um e-mail válido.');
+      Get.snackbar('Erro', 'Digite um e-mail válido.',
+        backgroundColor: AppTheme.errorColor, colorText: Colors.white);
       return;
     }
     if (currentList.value == null) return;
@@ -334,12 +361,14 @@ class ShoppingListController extends GetxController {
     try {
       final userToAdd = await userRepository.findUserByEmail(email);
       if (userToAdd == null) {
-        Get.snackbar('Erro', 'Usuário não encontrado com este e-mail.');
+        Get.snackbar('Erro', 'Usuário não encontrado com este e-mail.',
+            backgroundColor: AppTheme.errorColor, colorText: Colors.white);
         isLoading.value = false;
         return;
       }
       if (list.memberUIDs.contains(userToAdd.id)) {
-        Get.snackbar('Info', 'Este usuário já é membro da lista.');
+        Get.snackbar('Info', 'Este usuário já é membro da lista.',
+            backgroundColor: AppTheme.infoColor, colorText: Colors.white);
         isLoading.value = false;
         return;
       }
@@ -353,9 +382,11 @@ class ShoppingListController extends GetxController {
       currentList.value = updatedList;
       _cacheMemberData([userToAdd.id]);
       memberEmailController.clear();
-      Get.snackbar('Sucesso', 'Membro adicionado!');
+      Get.snackbar('Sucesso', 'Membro adicionado!',
+          backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível adicionar o membro.');
+      Get.snackbar('Erro', 'Não foi possível adicionar o membro.',
+          backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
@@ -363,7 +394,8 @@ class ShoppingListController extends GetxController {
 
   Future<void> removeMember(String uid) async {
     if (uid == currentList.value?.ownerId) {
-      Get.snackbar('Erro', 'Você não pode remover o dono da lista.');
+      Get.snackbar('Erro', 'Você não pode remover o dono da lista.',
+          backgroundColor: AppTheme.errorColor, colorText: Colors.white);
       return;
     }
     if (currentList.value == null) return;
@@ -377,9 +409,11 @@ class ShoppingListController extends GetxController {
       );
       await repository.updateList(updatedList);
       currentList.value = updatedList;
-      Get.snackbar('Sucesso', 'Membro removido.');
+      Get.snackbar('Sucesso', 'Membro removido.',
+          backgroundColor: AppTheme.successColor, colorText: Colors.white);
     } catch (e) {
-      Get.snackbar('Erro', 'Não foi possível remover o membro.');
+      Get.snackbar('Erro', 'Não foi possível remover o membro.',
+          backgroundColor: AppTheme.errorColor, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
@@ -444,7 +478,7 @@ class ShoppingListController extends GetxController {
                 }
 
                 return DropdownButtonFormField<String>(
-                  value: selectedCategoryId,
+                  initialValue: selectedCategoryId,
                   decoration: const InputDecoration(
                     labelText: 'Categoria',
                     border: OutlineInputBorder(),
