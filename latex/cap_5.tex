@@ -1,0 +1,235 @@
+% ----------------------------------------------------------
+\chapter{Desenvolvimento}\label{cap:desenvolvimento}
+% ----------------------------------------------------------
+
+Este capítulo descreve o processo de implementação do aplicativo desenvolvido em \textit{Flutter}, com integração direta ao ecossistema \textit{Firebase}. O objetivo é detalhar as decisões técnicas, a estrutura do projeto e as principais funcionalidades que materializam a proposta de gerenciamento inteligente e colaborativo de listas de compras.
+
+O desenvolvimento seguiu uma abordagem incremental e iterativa, fundamentada nos princípios de engenharia de software moderna \parencite{pressman2016}, e na adoção de boas práticas arquiteturais, conforme recomendam \textcite{sommerville2011} e \textcite{bass2012}.
+
+\section{Apoio ao Desenvolvimento}
+
+\subsection{Estrutura e Arquitetura do Projeto}
+
+A arquitetura adotada é uma adaptação da Arquitetura Limpa (\textit{Clean Architecture}) \parencite{martin2017}, com forte ênfase na modularização por funcionalidade (\textit{feature}). O objetivo principal é separar o código em camadas com responsabilidades distintas. A regra mais importante é que as dependências apontam sempre para ``dentro'', ou seja, camadas externas conhecem as internas, mas as internas não conhecem as externas.
+
+\subsubsection{Camada de Apresentação (Presentation)}
+
+\begin{itemize}
+    \item \textbf{Localização:} Principalmente na pasta \texttt{app/features/}.
+    \item \textbf{Papel:} Parte visual e interativa da aplicação com a qual o usuário interage.
+    \item \textbf{Organização:} O projeto é dividido em módulos baseados em funcionalidades. Cada subpasta dentro de \texttt{features} (como \texttt{auth}, \texttt{home}, \texttt{product}, \texttt{shopping\_list}) é um módulo autônomo, contendo:
+    \begin{itemize}
+        \item \textbf{Views/Pages:} Telas que o usuário visualiza.
+        \item \textbf{Controllers:} Lógica que controla o estado da tela, responde a interações do usuário e busca os dados necessários para exibição.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Camada de Domínio (Domain)}
+
+\begin{itemize}
+    \item \textbf{Localização:} Mais conceitual; regras de negócio e orquestração ficam nos Controllers (dentro de \texttt{features}), e os contratos são definidos pelas abstrações dos Repositories.
+    \item \textbf{Papel:} Contém as regras de negócio puras e orquestra o fluxo de dados para a interface do usuário. O Controller de uma feature solicita os dados via interface de um Repository, sem conhecer a implementação concreta.
+    \item \textbf{Ponto-chave:} O Controller não sabe se os dados vêm do \textit{Firebase}, de uma API REST ou de um banco local; ele apenas solicita e confia no contrato do Repository.
+\end{itemize}
+
+\subsubsection{Camada de Dados (Data)}
+
+\begin{itemize}
+    \item \textbf{Localização:} Pasta \texttt{app/data/}.
+    \item \textbf{Papel:} Responsável por buscar, salvar e gerenciar dados, de fontes remotas ou locais.
+    \item \textbf{Organização:}
+    \begin{itemize}
+        \item \texttt{models}: Define os objetos e estruturas de dados (ex.: Produto com id, nome e preço).
+        \item \texttt{repositories}: Implementação concreta dos contratos. Contém a lógica de decidir de onde buscar os dados (cache ou fonte remota) usando os providers.
+        \item \texttt{providers}: Parte mais externa da aplicação, responsável pela comunicação direta com o mundo exterior (ex.: chamadas ao \textit{Firestore}, API do \textit{Firebase Auth}, etc.).
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Resumo do Fluxo e Organização}
+
+\begin{enumerate}
+    \item \textbf{Módulos por Feature:} A organização principal é por funcionalidade (\texttt{auth}, \texttt{home}, etc.), facilitando encontrar tudo relacionado a uma parte específica do aplicativo.
+    \item \textbf{Separação por Camadas:} Dentro dessa organização, aplicam-se os princípios da Arquitetura Limpa.
+    \item \textbf{Fluxo de Dependência:} Sempre \texttt{Controller (Feature)} $\rightarrow$ \texttt{Repository (Contrato)} $\rightarrow$ \texttt{Repository (Implementação)} $\rightarrow$ \texttt{Provider}. A interface do usuário depende da lógica de dados, mas a lógica de dados não depende da interface.
+\end{enumerate}
+
+\section{Modelagem de Dados}
+
+A modelagem segue um padrão NoSQL, otimizado para o Firestore, e é estruturada em coleções principais e sub-coleções, seguindo práticas recomendadas para bancos de dados não relacionais que priorizam a velocidade de leitura e a escalabilidade em detrimento da normalização de dados \parencite{sadalage2012}.
+
+\subsection{Coleção \texttt{users}}
+Esta coleção armazena o perfil público de cada usuário. O ID de cada documento é o mesmo UID fornecido pelo Firebase Authentication.
+
+\begin{itemize}
+    \item \texttt{id} (string): ID do usuário (o mesmo do Auth).
+    \item \texttt{name} (string): Nome do usuário.
+    \item \texttt{email} (string): Email do usuário.
+    \item \texttt{phone} (string, opcional): Telefone do usuário.
+    \item \texttt{photoUrl} (string, opcional): URL da foto de perfil.
+\end{itemize}
+
+\subsection{Coleção \texttt{categories}}
+Armazena as categorias que os usuários criam para organizar suas listas de compras.
+
+\begin{itemize}
+    \item \texttt{name} (string): Nome da categoria (ex: "Supermercado Mensal", "Churrasco").
+    \item \texttt{createdBy} (string): O ID do usuário que criou a categoria.
+    \item \texttt{createdAt}, \texttt{updatedAt} (timestamp): Datas de criação e atualização.
+\end{itemize}
+
+\subsection{Coleção \texttt{products}}
+Funciona como um catálogo de produtos pessoal para cada usuário.
+
+\begin{itemize}
+    \item \texttt{name} (string): Nome do produto (ex: "Arroz 5kg").
+    \item \texttt{description} (string): Descrição do produto.
+    \item \texttt{imageUrl} (string, opcional): URL da imagem do produto.
+    \item \texttt{ownerId} (string): O ID do usuário que cadastrou o produto.
+    \item \texttt{createdAt}, \texttt{updatedAt} (timestamp): Datas de criação e atualização.
+\end{itemize}
+
+\subsection{Coleção \texttt{shopping\_lists} (ou \texttt{lists})}
+A coleção central do aplicativo, contendo as listas de compras.
+
+\begin{itemize}
+    \item \texttt{name} (string): Nome da lista (ex: "Compras de Janeiro").
+    \item \texttt{ownerId} (string): O ID do usuário dono da lista.
+    \item \texttt{status} (string): O estado atual da lista (ex: "ativa", "finalizada").
+    \item \texttt{categoryId} (string): O ID da categoria à qual a lista pertence.
+    \item \texttt{memberUIDs} (array de strings): Lista com os IDs de todos os usuários que são membros desta lista.
+    \item \texttt{memberPermissions} (map): Mapeia o ID de um membro a sua permissão (ex: \{ "user\_id\_1": "editor" \}).
+    \item \texttt{totalPrice} (double): Valor total da lista, calculado.
+    \item \texttt{createdAt}, \texttt{purchaseDate} (timestamp): Datas de criação e da finalização da compra.
+\end{itemize}
+
+\subsection{Sub-coleção: \texttt{items}}
+Cada lista de compras possui uma sub-coleção chamada \texttt{items} em vez de armazenar os produtos dentro de um array no documento da lista.  
+A estrutura é: \texttt{shopping\_lists/\{id\_da\_lista\}/items/\{id\_do\_item\}}.
+
+Um documento em \texttt{items} representa um produto na lista e possui os seguintes campos:
+
+\begin{itemize}
+    \item \texttt{productId} (string): O ID do produto original da coleção \texttt{products}.
+    \item \texttt{productName}, \texttt{productImageUrl} (string): Dados duplicados (desnormalizados) do produto para acesso rápido sem outra consulta.
+    \item \texttt{quantity} (double): Quantidade do item na lista.
+    \item \texttt{unitPrice} (double): Preço unitário no momento da adição.
+    \item \texttt{totalItemPrice} (double): Preço total do item (\texttt{quantity * unitPrice}).
+    \item \texttt{isCompleted} (boolean): Indica se o item já foi "pego" no carrinho.
+\end{itemize}
+
+Essa abordagem com sub-coleção é mais escalável do que usar um array, permitindo que cada lista tenha um número virtualmente ilimitado de itens.
+
+\section{Funcionalidades Chave}
+
+\subsection{Autenticação e Gestão de Perfil}
+\begin{itemize}
+    \item \textbf{Cadastro de Conta:} Permite que novos usuários se cadastrem usando e-mail e senha.
+    \item \textbf{Login e Logout:} Acesso seguro à conta e capacidade de sair dela.
+    \item \textbf{Recuperação de Senha:} Funcionalidade de "esqueci minha senha" para redefini-la.
+    \item \textbf{Gerenciamento de Perfil:} O usuário pode visualizar e, potencialmente, editar suas informações, como nome e foto.
+\end{itemize}
+
+\subsection{Tela Principal (Home Page)}
+\begin{itemize}
+    \item \textbf{Visão Geral das Listas:} A tela principal serve como o painel central do usuário, exibindo um resumo de suas listas de compras ativas.
+    \item \textbf{Ponto de Partida:} É o ponto de partida para a maioria das interações, permitindo que o usuário navegue para uma lista existente ou inicie a criação de uma nova.
+    \item \textbf{Feedback Imediato:} Mostra o estado atual das listas, como o nome e o progresso geral, facilitando o acesso rápido às compras em andamento.
+\end{itemize}
+
+\subsection{Gestão de Listas de Compras}
+\begin{itemize}
+    \item \textbf{Criação de Listas:} O usuário pode criar múltiplas listas de compras, atribuindo um nome e uma categoria a elas.
+    \item \textbf{Adição de Itens:} É possível adicionar produtos do catálogo pessoal à lista, especificando a quantidade e o preço.
+    \item \textbf{Interação com a Lista:} Dentro de uma lista ativa, o usuário pode marcar/desmarcar itens como ``comprados'', e o sistema calcula o preço total em tempo real.
+    \item \textbf{Ciclo de Vida da Lista:} As listas possuem status (ex: ``ativa'', ``finalizada''), permitindo que sejam movidas para um histórico após a conclusão.
+\end{itemize}
+
+\subsection{Colaboração em Tempo Real}
+\begin{itemize}
+    \item \textbf{Compartilhamento de Listas:} O dono de uma lista pode convidar outros usuários para participarem dela.
+    \item \textbf{Gerenciamento de Membros:} O dono pode definir permissões para os membros (ex: apenas visualizar ou editar a lista).
+    \item \textbf{Sincronização Automática:} Todas as alterações feitas em uma lista compartilhada (como adicionar ou marcar um item) são refletidas em tempo real para todos os membros.
+\end{itemize}
+
+\subsection{Catálogo de Produtos Personalizado}
+\begin{itemize}
+    \item \textbf{Cadastro de Produtos:} Os usuários podem criar seu próprio catálogo de produtos, incluindo nome, descrição e uma foto.
+    \item \textbf{Reutilização de Produtos:} Facilita a adição de itens recorrentes às listas sem precisar digitar tudo novamente.
+    \item \textbf{Gerenciamento do Catálogo:} Permite editar ou remover produtos já cadastrados.
+\end{itemize}
+
+\subsection{Histórico e Análise de Gastos}
+\begin{itemize}
+    \item \textbf{Histórico de Compras:} O aplicativo mantém um registro de todas as listas que foram finalizadas.
+    \item \textbf{Análise de Despesas:} Oferece visualizações por meio de gráficos interativos que permitem ao usuário analisar seus gastos ao longo do tempo, filtrando por período ou categoria.
+\end{itemize}
+
+\section{Usabilidade e Navegação}
+
+\subsection{Tecnologia de Navegação: GetX}
+
+O projeto utiliza o pacote \textbf{GetX} para gerenciamento de estado e, principalmente, para a navegação. Essa escolha impacta diretamente a usabilidade e a manutenção do aplicativo:
+
+\begin{itemize}
+    \item \textbf{Navegação por Rotas Nomeadas:} Em vez de chamar uma tela diretamente, navegamos por nomes de rotas (ex.: \texttt{/home}, \texttt{/login}, \texttt{/lista/123}). Isso desacopla a lógica de navegação das telas, seguindo boas práticas de arquitetura.
+    \item \textbf{Centralização das Rotas:} Todas as rotas e suas transições estão definidas no arquivo: \texttt{/app} \texttt{/routes} \texttt{/app-pages.dart}, facilitando a manutenção e a visualização do fluxo do aplicativo.
+    \item \textbf{Sintaxe Simplificada:} GetX permite navegar sem a necessidade de \textbf{BuildContext}, usando comandos como \textbf{Get.toNamed('/detalhes')} para avançar e \textbf{Get.back()} para retornar.
+\end{itemize}
+
+\subsection{Padrões de Navegação do Usuário}
+
+A experiência do usuário é construída com base em padrões de navegação bem estabelecidos:
+
+\begin{enumerate}
+    \item \textbf{Menu de Navegação Principal (Drawer):} O aplicativo utiliza um menu lateral como hub principal, acessível de qualquer tela principal. Permite navegar para áreas-chave como:
+    \begin{itemize}
+        \item Home (tela inicial de listas)
+        \item Produtos (catálogo)
+        \item Categorias
+        \item Histórico de Compras
+        \item Análise de Gastos
+        \item Perfil
+    \end{itemize}
+
+    \item \textbf{Navegação em Pilha (Stack Navigation):} Padrão comum para fluxos de tarefas, em que cada nova tela é "empilhada" sobre a anterior.
+    \begin{itemize}
+        \item Exemplo: Usuário na tela Home $\rightarrow$ toca em uma lista específica $\rightarrow$ a tela de Detalhes da Lista é empilhada $\rightarrow$ ao voltar, retorna para Home.
+        \item Esse padrão cria um fluxo lógico e previsível, garantindo que o botão "voltar" do dispositivo funcione conforme esperado.
+    \end{itemize}
+
+    \item \textbf{Navegação por Abas (TabBar):} Em certas telas, como Home ou Histórico, podem ser utilizadas abas para alternar entre visualizações relacionadas.
+    \begin{itemize}
+        \item Exemplo: Na tela de listas, abas para ``Listas Ativas'' e ``Listas Finalizadas'' permitem alternar rapidamente sem sair da tela principal.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Resumo da Usabilidade de Navegação}
+
+A combinação de \textbf{Drawer} para navegação global, \textbf{Stack Navigation} para tarefas específicas e \textbf{abas} para conteúdo secundário cria uma arquitetura de informação clara e uma experiência intuitiva. O uso de \textbf{GetX} garante que essa navegação seja implementada de forma robusta e de fácil manutenção.
+
+\subsection{Gerenciamento de Erros e Segurança}
+
+A robustez do aplicativo é garantida por uma estratégia de segurança multicamada e um sistema de tratamento de erros projetado para fornecer feedback claro ao usuário.
+
+\subsubsection{Tratamento de Erros}
+
+O gerenciamento de erros é implementado principalmente na camada de \textbf{Controller}, que atua como intermediário entre a interface do usuário e a camada de dados. A abordagem adotada é a seguinte:
+
+\begin{itemize}
+    \item \textbf{Captura de Exceções Específicas:} Em operações críticas, como login e cadastro, o código utiliza blocos \texttt{try...catch} para capturar exceções específicas da plataforma Firebase, como \texttt{FirebaseAuthException}. Isso permite identificar erros comuns (ex: "e-mail já em uso", "senha inválida", "usuário não encontrado") e exibir mensagens personalizadas e informativas.
+
+    \item \textbf{Feedback ao Usuário:} Os erros são comunicados ao usuário de forma não intrusiva através de \texttt{Get.snackbar} (do pacote GetX). Essa abordagem fornece feedback imediato sem interromper o fluxo de navegação, informando o usuário sobre o que deu errado (por exemplo, "Erro no Login: Senha inválida.").
+
+    \item \textbf{Falha Silenciosa na Camada de Dados:} Na camada de repositório, como no \texttt{UserRepository}, as operações de leitura que falham (por exemplo, ao buscar um usuário que não existe ou devido a um problema de rede) são projetadas para retornar \texttt{null} em vez de propagar uma exceção. O Controller que chamou a função é então responsável por tratar o caso nulo, aumentando a resiliência do sistema a falhas de leitura.
+\end{itemize}
+
+\subsubsection{Estratégia de Segurança}
+
+A segurança dos dados do usuário é uma prioridade e é garantida por meio de práticas recomendadas para aplicações baseadas em nuvem:
+
+\begin{itemize}
+    \item \textbf{Autenticação Delegada:} O aplicativo utiliza o \textbf{Firebase Authentication} para todo o gerenciamento de ciclo de vida de autenticação. Isso significa que nenhuma senha é armazenada ou manipulada diretamente pelo aplicativo. O Firebase gerencia de forma segura o armazenamento de credenciais (usando hashing e salting) e a emissão de tokens de sessão, seguindo os padrões de segurança da indústria.
+
+    \item \textbf{Regras de Segurança do Firestore (Server-Side):} A principal linha de defesa do aplicativo está nas regras de segurança definidas no arquivo \texttt{firestore.rules}. Essas regras são aplicadas diretamente nos servidores do Firebase e garantem que as operações de leitura e escrita nos dados só sejam permitidas para usuários autenticados e autorizados. Por exemplo, as regras garantem que um usuário só possa modificar suas próprias listas de compras e que apenas o proprietário de uma lista possa convidar ou remover membros. Isso impede que um usuário mal-intencionado acesse ou modifique dados de outros usuários, mesmo que o código do aplicativo seja comprometido.
+
+    \item \textbf{Validação de Entrada:} A validação de dados de entrada, como o formato do e-mail e a força da senha, é atualmente delegada ao Firebase. O aplicativo captura e exibe os erros de validação retornados pelo serviço de autenticação, informando ao usuário sobre a necessidade de correção dos dados.

@@ -1,0 +1,28 @@
+% ----------------------------------------------------------
+\chapter{Resultados e Discussões}\label{cap:resultados}
+% ----------------------------------------------------------
+
+Os resultados obtidos durante a fase de testes validaram a proposta do sistema e demonstraram que o aplicativo atendeu de forma satisfatória aos objetivos funcionais e não funcionais definidos no planejamento. A aplicação manteve latências baixas, estabilidade sob uso simultâneo e apresentou comportamento previsível em cenários reais de colaboração. As análises qualitativas e quantitativas evidenciam a consistência técnica e a coerência das decisões de arquitetura adotadas.
+
+\section{Síntese dos Resultados Funcionais}
+O aplicativo suportou autenticação de usuários via \textit{Firebase Authentication}, criação e compartilhamento de listas entre múltiplos participantes, sincronização imediata de modificações e controle de permissões por nível de acesso. Também foi possível realizar o acompanhamento de gastos agregados, categorizados por tipo de item e período, oferecendo indicadores úteis para análise de consumo.  
+Essas funcionalidades confirmam o cumprimento dos requisitos levantados na fase de análise, evidenciando maturidade do produto enquanto \textit{MVP} funcional e usável.
+
+\section{Desempenho e Estabilidade}
+Durante os testes de desempenho, o sistema foi submetido a cenários com múltiplos usuários editando simultaneamente uma mesma lista. As atualizações foram refletidas quase instantaneamente entre os dispositivos, com tempo médio de propagação inferior a 300 milissegundos. Não foram observados conflitos de escrita, demonstrando a eficácia do modelo reativo do \textit{Cloud Firestore} e das regras de segurança aplicadas.  
+A arquitetura baseada em \textit{streams} e \textit{listeners} manteve a responsividade da interface, mesmo sob condições de rede instáveis, preservando a consistência dos dados. O consumo de recursos foi considerado adequado para o porte do aplicativo, com impacto energético moderado, típico de aplicações em tempo real.
+
+\section{Usabilidade e Aderência}
+Os testes de usabilidade indicaram boa aceitação por parte dos usuários participantes. As principais tarefas — criação de listas, adição de itens, marcação de compras e exclusão de registros — foram realizadas com baixo esforço cognitivo e número reduzido de interações.  
+A interface, construída com base nas diretrizes do \textit{Material Design}, proporcionou experiência fluida e consistente entre plataformas Android e Web. A curva de aprendizado foi curta, e o sistema mostrou-se intuitivo mesmo para usuários com pouca familiaridade tecnológica. Esse fator reforça o potencial de adoção do aplicativo em ambientes domésticos e colaborativos.
+
+\section{Análise Crítica}
+A combinação entre \textit{Flutter} e \textit{Firebase} demonstrou ser eficiente para o desenvolvimento ágil de um produto multiplataforma, reduzindo o \textit{time-to-market} e facilitando a manutenção. A integração nativa entre autenticação, banco de dados e hospedagem simplificou a infraestrutura e minimizou o esforço de configuração.  
+Entretanto, foram observadas limitações inerentes à arquitetura proposta: dependência de conectividade contínua para garantir a sincronização de dados, ausência de suporte nativo a operação \textit{offline-first} e leve aumento no consumo de energia em dispositivos móveis devido à manutenção constante de \textit{listeners} ativos.  
+Essas restrições não comprometem a viabilidade do sistema, mas apontam oportunidades claras de otimização e evolução tecnológica.
+
+\section{Implicações Práticas}
+Os resultados obtidos reforçam o impacto prático da solução, tanto em aspectos técnicos quanto sociais. O sistema demonstrou potencial para otimizar a organização doméstica, promover o controle financeiro compartilhado e estimular o consumo consciente, ao oferecer transparência sobre hábitos de compra e padrões de gasto.  
+Além disso, o projeto evidencia como tecnologias acessíveis e de rápido desenvolvimento podem ser aplicadas a problemas cotidianos com impacto real. A integração entre mobilidade, colaboração e nuvem representa uma tendência consolidada no desenvolvimento de soluções orientadas à praticidade e à conectividade constante.
+
+Em síntese, os testes confirmaram a consistência da proposta e a maturidade técnica do protótipo desenvolvido. O desempenho obtido, aliado à boa experiência de uso, comprova a viabilidade do modelo e consolida a base para avanços futuros, tanto em funcionalidades quanto em abrangência de público e integração tecnológica.

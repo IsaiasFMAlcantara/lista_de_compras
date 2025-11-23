@@ -1,0 +1,44 @@
+% ----------------------------------------------------------
+\chapter{Conclusão e Contribuições do Trabalho}\label{cap:conclusao}
+% ----------------------------------------------------------
+
+O desenvolvimento deste projeto comprovou a viabilidade técnica e prática de um aplicativo multiplataforma, colaborativo e escalável para gestão de listas de compras, utilizando o \textit{framework Flutter} e os serviços em nuvem do \textit{Firebase}. A solução atendeu aos objetivos propostos, demonstrando eficiência na sincronização de dados, boa experiência de uso e potencial de expansão funcional. O sistema validou o conceito de um ambiente unificado para controle e colaboração em compras domésticas, entregando valor tanto técnico quanto social.
+
+\section{Contribuições Técnicas}
+\begin{itemize}
+    \item Implementação de uma arquitetura modular baseada em estado reativo, integrando autenticação, persistência de dados e mensageria em tempo real;
+    \item Uso de \textit{listeners} do Firestore para sincronização imediata entre dispositivos, com regras de segurança e controle de acesso definidas de forma consistente;
+    \item Adoção de boas práticas de usabilidade e \textit{Material Design}, resultando em uma interface intuitiva e responsiva;
+    \item Criação de uma base escalável para evolução futura do sistema, permitindo novas integrações e funcionalidades.
+\end{itemize}
+
+\section{Contribuições Sociais e Aplicadas}
+\begin{itemize}
+    \item Facilitação da colaboração entre membros de um mesmo núcleo familiar, promovendo organização e divisão de responsabilidades nas compras;
+    \item Apoio ao consumo consciente, fornecendo visibilidade de gastos, itens recorrentes e padrões de compra;
+    \item Inclusão digital por meio do acesso multiplataforma, possibilitando o uso em diferentes dispositivos e contextos;
+    \item Estímulo à adoção de soluções tecnológicas simples e acessíveis para gestão doméstica.
+\end{itemize}
+
+\section{Limitações}
+O sistema ainda depende de conectividade constante para funcionamento, não implementando um modelo \textit{offline-first}, o que restringe o uso em ambientes sem internet. Além disso, há consumo de energia levemente superior em dispositivos móveis devido aos \textit{listeners} contínuos. Por fim, o aplicativo ainda não possui integração direta com catálogos de supermercados nem recursos avançados de análise de consumo.
+
+\section{Trabalhos Futuros}
+\begin{itemize}
+    \item Implementar suporte a modo \textit{offline-first}, com sincronização posterior automática;
+    \item Implementar mecanismos de recomendação baseados em histórico;
+    \item Adicionar um painel web administrativo com relatórios e métricas de uso;
+    \item Incorporar funcionalidades de acessibilidade, suporte multilíngue e notificações inteligentes.
+\end{itemize}
+
+\subsection{Considerações sobre Escalabilidade Futura}
+
+A arquitetura de software adotada no projeto foi escolhida não apenas para a implementação dos requisitos atuais, mas também com a escalabilidade futura em mente. A estrutura baseada nos princípios da Arquitetura Limpa (\textit{Clean Architecture}) e a organização do código por funcionalidades (\textit{features}) são fatores-chave que facilitam a evolução e manutenção do sistema.
+
+A estrita separação entre as camadas de Apresentação, Domínio e Dados permite que futuras alterações sejam feitas de forma isolada. Por exemplo, a implementação de um modo \textit{offline-first} (um dos trabalhos futuros propostos) pode ser realizada majoritariamente na camada de \textbf{Dados}, modificando os repositórios para que busquem dados de um cache local (como um banco de dados SQLite ou Isar) antes de consultar o Firestore, sem a necessidade de reescrever a lógica de negócio ou a interface do usuário.
+
+Da mesma forma, a modelagem de dados no Firestore, que utiliza sub-coleções para os itens das listas, é inerentemente escalável, suportando um número virtualmente ilimitado de itens por lista sem degradação de desempenho ou risco de exceder os limites de tamanho de documento.
+
+Essas decisões arquiteturais garantem que a adição de novas funcionalidades complexas, como sistemas de recomendação ou painéis administrativos, possa ser feita de maneira modular, minimizando o débito técnico e permitindo que o aplicativo cresça de forma sustentável para atender a uma base de usuários maior e a requisitos mais exigentes.
+
+Em síntese, o trabalho apresenta um \textit{MVP} tecnicamente sólido, com valor social evidente e potencial real de escalabilidade. As soluções desenvolvidas demonstram aplicabilidade imediata e fornecem uma base robusta para continuidade em projetos de pesquisa, inovação ou produto comercial.

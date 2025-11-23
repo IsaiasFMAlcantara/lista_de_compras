@@ -1,0 +1,186 @@
+% ------------------------------------------------------------------------
+% Modelo de TCC do curso de Engenharia de Controle e Automação - UFSC/Campus Blumenau
+% ------------------------------------------------------------------------
+
+\documentclass[
+12pt,
+oneside,
+a4paper,
+chapter=TITLE,
+section=TITLE,
+english,
+brazil
+]{abntex2}
+
+% ------------------------------------------------------------------------
+% PACOTES BÁSICOS E CONFIGURAÇÕES
+% ------------------------------------------------------------------------
+\usepackage[T1]{fontenc}            % UTF-8 robusto
+\usepackage[utf8]{inputenc}
+
+\usepackage{configs/eca_ufsc_bnu}   % personalização ABNTEX2
+
+% --- GLOSSARIES (resolve erro do sort=...) ---
+\usepackage[acronym]{glossaries}
+\makeglossaries
+
+% --- LISTINGS (código-fonte) ---
+\usepackage{listings}
+\usepackage{listingsutf8}
+\usepackage{xcolor}
+
+% Estilo + normalização de UTF-8 dentro de listings
+\lstset{
+  inputencoding=utf8,
+  extendedchars=true,
+  literate=%
+   {á}{{\'a}}1 {Á}{{\'A}}1
+   {à}{{\`a}}1 {À}{{\`A}}1
+   {â}{{\^a}}1 {Â}{{\^A}}1
+   {ã}{{\~a}}1 {Ã}{{\~A}}1
+   {é}{{\'e}}1 {É}{{\'E}}1
+   {ê}{{\^e}}1 {Ê}{{\^E}}1
+   {í}{{\'i}}1 {Í}{{\'I}}1
+   {ó}{{\'o}}1 {Ó}{{\'O}}1
+   {ô}{{\^o}}1 {Ô}{{\^O}}1
+   {õ}{{\~o}}1 {Õ}{{\~O}}1
+   {ú}{{\'u}}1 {Ú}{{\'U}}1
+   {ç}{{\c c}}1 {Ç}{{\c C}}1
+   {–}{{-}}1 {—}{{-}}1 {“}{{``}}1 {”}{{''}}1 {…}{{...}}1,
+  basicstyle=\footnotesize\ttfamily,
+  backgroundcolor=\color{gray!10},
+  frame=single,
+  breaklines=true,
+  captionpos=b,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  xleftmargin=1em,
+  xrightmargin=1em,
+  showstringspaces=false,
+  tabsize=2,
+  columns=fullflexible,
+  keywordstyle=\bfseries\color{blue!70!black},
+  commentstyle=\itshape\color{gray!80!black},
+  stringstyle=\color{orange!70!black}
+}
+
+% Linguagem Dart (listings não traz nativo)
+\lstdefinelanguage{Dart}{
+  sensitive=true,
+  morekeywords={abstract,as,assert,async,await,break,case,catch,class,const,continue,
+  default,deferred,do,dynamic,else,enum,export,extends,extension,external,factory,false,
+  final,finally,for,Function,get,hide,if,implements,import,in,interface,is,late,library,
+  mixin,new,null,on,operator,part,required,rethrow,return,set,show,static,super,switch,
+  sync,this,throw,true,try,typedef,var,void,while,with,yield},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+}
+
+% (Opcional) Python reforçado
+\lstdefinelanguage{MyPython}[]{Python}{
+  morekeywords={self, as, with, async, await},
+}
+
+\addbibresource{pos_textual/referencias.bib}
+
+% ------------------------------------------------------------------------
+% DADOS BÁSICOS DO TCC
+% ------------------------------------------------------------------------
+\autor{ISAIAS FÉLIX MACHADO DE ALCANTARA}
+\titulo{DESENVOLVIMENTO DE UM APLICATIVO MULTIPLATAFORMA PARA GERENCIAMENTO INTELIGENTE DE LISTAS DE COMPRAS COM FLUTTER E FIREBASE}
+\subtitulo{DA COLABORAÇÃO EM TEMPO REAL À ANÁLISE DE GASTOS: UMA SOLUÇÃO PARA OTIMIZAÇÃO DA ROTINA E DO ORÇAMENTO FAMILIAR}
+\orientador{Andrey Alencar Quadros}
+\dia{06}
+\mes{outubro}
+\ano{2025}
+\local{Ariquemes}
+\formacao{Analista e Desenvolvedor de Sistemas}
+\bancaa{Prof. Mestre Andrey Alencar Quadros (orientador)}
+\bancab{Prof. Mestre Luciano Topolniak}
+\bancac{Prof. Especialista Marcos Alves Faino}
+
+\resumotcc{O presente trabalho apresenta o desenvolvimento de um aplicativo multiplataforma para gerenciamento inteligente de listas de compras, implementado com o framework Flutter e o conjunto de serviços Firebase. A proposta busca oferecer uma solução prática e colaborativa para o controle de compras domésticas, permitindo que múltiplos usuários criem, editem e compartilhem listas em tempo real, otimizando tanto o processo de aquisição de produtos quanto o acompanhamento de gastos familiares. Para atingir esse objetivo, foi adotada uma abordagem de desenvolvimento ágil, com autenticação via Firebase Authentication, armazenamento em Cloud Firestore e gráficos dinâmicos para análise de consumo. O resultado é um sistema funcional, escalável e reativo, com sincronização em tempo real e experiência de uso consistente em Android}
+\palavraschave{Flutter. Firebase. Aplicativo multiplataforma. Lista de compras. Colaboração em tempo real.}
+
+\abstracttcc{This work presents the development of a multiplatform application for intelligent shopping list management, implemented using the Flutter framework and the Firebase service suite. The proposed solution aims to provide a practical and collaborative tool for household shopping control, allowing multiple users to create, edit, and share lists in real time while optimizing product acquisition and family expense tracking. An agile development approach was adopted, integrating Firebase Authentication for user login, Cloud Firestore for data storage, and dynamic charts for consumption analysis. The resulting system is functional, scalable, and reactive, offering real-time synchronization and a consistent user experience across Android devices.}
+\keywords{Flutter. Firebase. Cross-platform application. Shopping list. Real-time collaboration.}
+
+\agradecimentostcc{
+Agradeço primeiramente a Deus, pela força e sabedoria concedidas ao longo desta jornada.\\
+À minha família, pelo apoio incondicional, paciência e incentivo constantes.\\
+Ao meu orientador, Prof. Andrey Alencar Quadros, pela orientação precisa, disponibilidade e pelas valiosas contribuições que tornaram este trabalho possível.
+}
+\dedicatoriatcc{}
+
+\contemquadros{}
+\contemsiglas{sim}
+\contemsimbolos{sim}
+
+% ------------------------------------------------------------------------
+% CONFIGURAÇÕES ADICIONAIS
+% ------------------------------------------------------------------------
+\setitemize{topsep=0pt,itemsep=0pt,leftmargin=\parindent+\labelwidth-\labelsep}
+\setenumerate{topsep=0pt,itemsep=0pt,leftmargin=\parindent+\labelwidth-\labelsep}
+
+% ------------------------------------------------------------------------
+% CONFIGURAÇÕES PDF E HYPERREF
+% ------------------------------------------------------------------------
+\definecolor{blue}{RGB}{41,5,195}
+\hypersetup{
+	pdftitle={\@title}, 
+	pdfauthor={\@author},
+	pdfsubject={\imprimirpreambulo},
+	pdfcreator={LaTeX with abnTeX2},
+	pdfkeywords={Flutter, Firebase, listas de compras, multiplataforma}, 
+	colorlinks=true,
+	linkcolor=black,
+	citecolor=black,
+	filecolor=black,
+	urlcolor=blue,
+	bookmarksdepth=4
+}
+
+% --- (opcional, mas útil) carrega definições de siglas/símbolos antes do doc ---
+\input{pre_textual/siglas_simbolos}
+
+% ------------------------------------------------------------------------
+% INÍCIO DO DOCUMENTO
+% ------------------------------------------------------------------------
+\begin{document}
+
+\selectlanguage{brazil}
+\frenchspacing 
+\OnehalfSpacing
+
+\input{pre_textual/pretextual}
+
+\textual
+
+% 1 - Introdução
+\include{capitulos/cap_1}
+
+% 2 - Objetivos
+\include{capitulos/cap_2}
+
+% 3 - Fundamentação Teórica
+\include{capitulos/cap_3}
+
+% 4 - Metodologia
+\include{capitulos/cap_4}
+
+% 5 - Desenvolvimento
+\include{capitulos/cap_5}
+
+% 6 - Resultados e Discussão
+\include{capitulos/cap_6}
+
+% 7 - Conclusão e Contribuições
+\include{capitulos/cap_7}
+
+\postextual
+\begingroup
+\printbibliography[title=REFERÊNCIAS]
+\endgroup
+
+\end{document}

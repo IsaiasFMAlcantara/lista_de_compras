@@ -1,0 +1,107 @@
+% ----------------------------------------------------------
+\chapter{Metodologia}\label{cap:metodologia}
+% ----------------------------------------------------------
+
+A metodologia adotada para o desenvolvimento deste trabalho foi orientada por princípios ágeis, priorizando entregas incrementais e a validação contínua das funcionalidades implementadas. Essa abordagem buscou conciliar flexibilidade e controle, garantindo evolução iterativa do produto com foco em valor entregue ao usuário final.
+
+O processo contemplou as etapas de planejamento, levantamento de requisitos, modelagem, implementação, testes e análise crítica. A natureza iterativa dessa metodologia possibilitou o refinamento progressivo da aplicação, com revisões contínuas de código, arquitetura e experiência de uso.
+
+\section{Abordagem de Desenvolvimento}
+
+A condução do projeto seguiu práticas inspiradas no framework \textit{Scrum}, amplamente utilizado em projetos de software que demandam adaptação rápida e foco em resultados tangíveis. Foram definidos ciclos curtos de desenvolvimento (\textit{sprints}) com duração média de uma a duas semanas, cada um abrangendo planejamento, execução e retrospectiva.
+
+As principais práticas adotadas incluíram:
+\begin{itemize}
+\item \textbf{Planejamento de Sprints:} definição de tarefas prioritárias a partir do \textit{product backlog};
+\item \textbf{Revisões Periódicas:} análise dos incrementos entregues e ajustes de escopo conforme a viabilidade técnica e os testes de usabilidade;
+\item \textbf{Integração Contínua:} versionamento constante de código no \textit{GitHub}, garantindo rastreabilidade e reversão rápida em caso de falhas;
+\item \textbf{Validação Contínua:} execução de testes funcionais e revisão de interface a cada ciclo de entrega.
+\end{itemize}
+
+Essa abordagem reforçou os princípios de adaptabilidade e comunicação contínua, aspectos centrais das metodologias ágeis \parencite{pressman2016, sommerville2011}. A divisão do trabalho em incrementos curtos permitiu verificar rapidamente o impacto das decisões técnicas e de design, minimizando retrabalho e fortalecendo a coesão entre as camadas da aplicação.
+
+\section{Ferramentas e Tecnologias}
+
+O desenvolvimento utilizou tecnologias e frameworks que suportam aplicações móveis modernas, de alta responsividade e integradas a serviços em nuvem. A Tabela~\ref{tab:ferramentas} sintetiza as principais ferramentas empregadas e suas respectivas funções no projeto.
+
+\begin{table}[htbp]
+\centering
+\caption{Ferramentas e tecnologias utilizadas}
+\label{tab:ferramentas}
+\begin{tabular}{p{4cm} p{9cm}}
+\toprule
+\textbf{Ferramenta/Tecnologia} & \textbf{Função Principal} \\ 
+\midrule
+\textit{Flutter}/\textit{Dart} & Desenvolvimento do aplicativo móvel multiplataforma e interface responsiva. \\ 
+\textit{Firebase Authentication} & Autenticação de usuários e gerenciamento seguro de sessões. \\ 
+\textit{Cloud Firestore} & Armazenamento de dados em tempo real, estruturado em coleções e documentos. \\ 
+\textit{Git/GitHub} & Controle de versão, integração contínua e histórico de desenvolvimento. \\ 
+\bottomrule
+\end{tabular}
+\end{table}
+
+A escolha desse conjunto de ferramentas foi motivada pela integração nativa entre os serviços Firebase e o framework Flutter, reduzindo a complexidade da configuração e aumentando a eficiência no desenvolvimento e na manutenção.
+
+\section{Arquitetura Lógica}
+
+A arquitetura do sistema foi estruturada de forma modular, adotando o padrão MVC (\textit{Model--View--Controller}) combinado com princípios reativos providos pelo \textit{GetX}. Essa escolha visou garantir desacoplamento entre camadas e escalabilidade no crescimento da base de código.
+
+As camadas principais foram definidas da seguinte forma:
+\begin{itemize}
+\item \textbf{Apresentação (View):} telas e componentes visuais implementados em \textit{Flutter}, responsáveis pela interação com o usuário e pela exibição de dados;
+\item \textbf{Controle (Controller):} gerenciamento do estado da aplicação e coordenação entre interface e lógica de negócio, utilizando o pacote \textit{GetX} para reatividade;
+\item \textbf{Modelo (Model):} representação das entidades de domínio e mapeamento de dados persistidos no \textit{Firestore}.
+\end{itemize}
+
+Essa organização possibilita manutenção independente das camadas, além de favorecer a aplicação de testes unitários e a reutilização de componentes. A reatividade do Firestore garante atualização automática da interface sempre que há alteração nos dados remotos.
+
+\section{Etapas Executadas}
+
+O desenvolvimento foi dividido em etapas bem definidas, interdependentes e documentadas para garantir rastreabilidade das decisões técnicas:
+
+\begin{enumerate}
+\item \textbf{Planejamento e Levantamento de Requisitos:} identificação das funcionalidades essenciais e das restrições técnicas;
+\item \textbf{Prototipação:} construção de interfaces no \textit{Figma} e definição dos fluxos de navegação principais;
+\item \textbf{Implementação Incremental:} codificação modular, com commits versionados e entregas parciais validadas a cada sprint;
+\item \textbf{Integração com Serviços Firebase:} autenticação, armazenamento em nuvem;
+\item \textbf{Testes Funcionais e de Usabilidade:} execução em dispositivos físicos e emuladores, com foco na estabilidade e responsividade;
+\item \textbf{Ajustes e Otimizações:} refinamento do desempenho, correção de inconsistências e melhorias de interface;
+\item \textbf{Validação Final:} revisão da experiência do usuário e adequação dos critérios de qualidade definidos.
+\end{enumerate}
+
+Cada uma dessas fases foi iterada com revisões constantes, permitindo adaptar o produto à medida que o entendimento das necessidades evoluía.
+
+\section{Critérios de Avaliação}
+
+A validação dos resultados considerou métricas objetivas e subjetivas, de modo a avaliar o desempenho técnico e a experiência do usuário de forma equilibrada.
+
+\begin{itemize}
+\item \textbf{Desempenho:} medição de latência percebida e tempo de resposta nas operações de leitura e escrita no \textit{Firestore};
+\item \textbf{Estabilidade:} observação de falhas, travamentos e comportamento sob múltiplas conexões simultâneas;
+\item \textbf{Usabilidade:} análise da clareza dos fluxos, consistência visual e esforço de navegação;
+\item \textbf{Satisfação:} coleta de feedback qualitativo de usuários sobre a facilidade de uso e utilidade percebida;
+    \item \textbf{Segurança:} verificação das regras de acesso e conformidade com práticas recomendadas de autenticação.
+\end{itemize}
+
+Esses critérios garantiram uma visão abrangente da eficácia do sistema tanto do ponto de vista técnico quanto da experiência do usuário, consolidando a qualidade do produto final.
+
+\subsection{Estratégia de Testes e Validação}
+
+A validação do aplicativo foi realizada por meio de uma abordagem pragmática focada em testes manuais e de usabilidade, garantindo que o produto final atendesse aos requisitos funcionais e de experiência do usuário. Dada a natureza do projeto como um Protótipo de Mínima Viabilidade (MVP), a prioridade foi a validação em cenários de uso real.
+
+A estratégia foi dividida em duas frentes principais:
+
+\begin{itemize}
+    \item \textbf{Testes Funcionais Manuais:} Para cada ciclo de desenvolvimento (\textit{sprint}), foi executada uma série de testes manuais para verificar o comportamento das funcionalidades implementadas. Os cenários de teste críticos incluíam:
+    \begin{itemize}
+        \item Fluxo completo de autenticação: cadastro, login, logout e recuperação de senha.
+        \item Ciclo de vida das listas: criação, adição/remoção de itens, marcação de itens como comprados e finalização da lista.
+        \item Colaboração em tempo real: compartilhamento de uma lista com outro usuário e verificação da sincronização de dados (adição de item por um usuário refletindo na tela do outro).
+        \item Geração de análises: verificação se os gráficos de gastos eram gerados corretamente após a finalização de uma lista.
+    \end{itemize}
+    Esses testes foram realizados em múltiplos ambientes, incluindo emuladores do Android Studio e dispositivos físicos (Android), para garantir a consistência do comportamento.
+
+    \item \textbf{Testes de Usabilidade:} Após a estabilização das funcionalidades principais, foram conduzidas sessões de teste de usabilidade com um grupo de 5 usuários-alvo, número que, segundo \textcite{nielsen2000}, é suficiente para revelar a maioria dos problemas de usabilidade de uma interface. O objetivo era avaliar a intuitividade da interface e a facilidade de aprendizado. Durante as sessões, os usuários foram convidados a realizar um conjunto de tarefas (como criar uma lista, convidar um amigo e finalizar uma compra) sem receber instruções detalhadas. O feedback qualitativo, como comentários e dificuldades observadas, foi coletado e utilizado para refinar a interface e o fluxo de navegação antes da versão final.
+\end{itemize}
+
+A ausência de testes automatizados (unitários, de widget e de integração) é reconhecida como uma limitação técnica, típica de fases iniciais de desenvolvimento. No entanto, a abordagem de testes manuais e de usabilidade se mostrou eficaz para garantir a qualidade, a estabilidade e a aderência do MVP aos objetivos do projeto.

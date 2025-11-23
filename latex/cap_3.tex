@@ -1,0 +1,58 @@
+% ----------------------------------------------------------
+\chapter{Fundamentação Teórica}\label{cap:fundamentacao}
+% ----------------------------------------------------------
+
+O desenvolvimento de aplicações móveis modernas está diretamente relacionado à capacidade de criar soluções acessíveis, performáticas e compatíveis com múltiplas plataformas. Com o avanço das tecnologias de computação em nuvem e dos \textit{frameworks} multiplataforma, tornou-se possível desenvolver sistemas colaborativos em tempo real, com custos reduzidos e alta escalabilidade.  
+Nesta seção são abordados os conceitos fundamentais que embasam o desenvolvimento do aplicativo proposto, envolvendo desenvolvimento multiplataforma, computação em nuvem, sincronização em tempo real e princípios de usabilidade.
+
+\section{Desenvolvimento Multiplataforma e o Ecossistema Flutter}
+
+O desenvolvimento multiplataforma tem como objetivo permitir que uma única base de código seja executada em diferentes sistemas operacionais, como Android, iOS, Web e Desktop, reduzindo tempo e custo de desenvolvimento. Essa abordagem é especialmente relevante em contextos onde a agilidade de entrega e a uniformidade da experiência do usuário são fatores críticos \parencite{sommerville2011}.  
+
+O \textit{Flutter}, \textit{framework} de código aberto mantido pela Google, utiliza a linguagem \textit{Dart} e o motor gráfico \textit{Skia} para renderização direta da interface, dispensando a ponte com componentes nativos (\textit{bridge}) e, consequentemente, entregando desempenho próximo ao nativo \parencite{googleflutter, derivaz2020}.  
+Entre seus diferenciais, destacam-se o recurso de \textit{hot reload}, que permite a atualização instantânea da interface sem reinicialização do aplicativo, e a forte aderência ao \textit{Material Design}, garantindo consistência visual e responsividade entre plataformas.
+
+Segundo \textcite{pressman2016}, frameworks modernos como o Flutter possibilitam maior produtividade ao abstrair detalhes de baixo nível do sistema operacional, permitindo ao desenvolvedor concentrar-se na lógica de negócio e na experiência do usuário.  
+Além disso, o ecossistema Flutter fornece uma ampla gama de bibliotecas oficiais e comunitárias, integrando-se facilmente a serviços externos como \textit{Firebase}, APIs REST e bancos de dados locais.
+
+O uso dessa tecnologia, portanto, oferece uma combinação de desempenho, portabilidade e agilidade, elementos fundamentais para o desenvolvimento do aplicativo proposto.
+
+\section{Firebase e Computação em Nuvem}
+
+A computação em nuvem, segundo \textcite{armbrust2010}, é o paradigma tecnológico que permite o acesso a recursos computacionais sob demanda, de forma escalável e distribuída. Essa abordagem elimina a necessidade de infraestrutura local, promovendo elasticidade e alta disponibilidade.  
+
+O \textit{Firebase}, plataforma da Google baseada em nuvem, oferece um conjunto integrado de serviços voltados para o desenvolvimento de aplicações modernas, incluindo autenticação de usuários, banco de dados em tempo real, armazenamento de arquivos, notificações e hospedagem \parencite{googlefirebase}.  
+Seu banco de dados principal, o \textit{Cloud Firestore}, utiliza um modelo NoSQL orientado a documentos, o que proporciona flexibilidade estrutural e baixa latência para operações de leitura e escrita.
+
+Além disso, o \textit{Firebase Authentication} simplifica a implementação de mecanismos de login seguros.  
+Essas características tornam o \textit{Firebase} uma escolha estratégica para aplicações móveis colaborativas, reduzindo a complexidade do back-end e facilitando o desenvolvimento de funcionalidades em tempo real.
+
+Segundo \textcite{sommerville2011}, a adoção de plataformas em nuvem é uma tendência consolidada na engenharia de software moderna, pois combina agilidade de desenvolvimento com escalabilidade operacional. No contexto deste trabalho, o uso do \textit{Firebase} contribui diretamente para a redução de custos, simplificação da arquitetura e viabilização de recursos colaborativos.
+
+\section{Sincronização em Tempo Real e Colaboração Digital}
+
+Aplicações colaborativas exigem sincronização imediata dos dados entre diferentes dispositivos e usuários. Esse comportamento é garantido por tecnologias que implementam o conceito de reatividade, onde o sistema responde instantaneamente a mudanças de estado.  
+No caso do \textit{Firebase}, o \textit{Cloud Firestore} disponibiliza \textit{listeners} para documentos e coleções, notificando automaticamente os clientes sobre alterações em tempo real. Esse modelo de atualização contínua evita inconsistências e elimina a necessidade de requisições manuais de atualização.
+
+De acordo com \textcite{pressman2016}, a colaboração digital efetiva depende da integração entre camadas de software e do feedback imediato entre módulos, o que promove transparência e confiança no uso do sistema.  
+Em aplicações domésticas ou corporativas, esse tipo de arquitetura reativa favorece o trabalho conjunto e o compartilhamento de informações, reduzindo o esforço de coordenação e aumentando a eficiência.
+
+A sincronização em tempo real também está diretamente ligada à experiência do usuário, pois influencia a sensação de fluidez e a percepção de confiabilidade da aplicação.  
+Com a combinação de eventos assíncronos, autenticação segura e controle de permissões, torna-se possível oferecer um ambiente colaborativo robusto, adequado para o gerenciamento conjunto de listas de compras, como proposto neste trabalho.
+
+\section{Usabilidade, Experiência do Usuário e Análise de Consumo}
+
+A usabilidade é um dos pilares da qualidade de software e está diretamente associada à facilidade com que o usuário realiza suas tarefas no sistema.  
+Segundo \textcite{nielsen1994}, um produto é considerado usável quando possibilita que usuários específicos alcancem objetivos determinados com eficácia, eficiência e satisfação em um contexto de uso definido.  
+
+Princípios de design centrado no usuário, como visibilidade do estado do sistema, consistência, prevenção de erros e feedback imediato, foram aplicados na concepção da interface do aplicativo.  
+O uso das diretrizes do \textit{Material Design} contribuiu para uniformidade visual, hierarquia de informações clara e responsividade em diferentes dispositivos.
+
+Além disso, a integração de análises de consumo dentro da aplicação promove uma camada de valor adicional, pois permite ao usuário compreender seus padrões de compra e identificar oportunidades de economia.  
+Essas análises, quando associadas a visualizações gráficas interativas, ajudam na formação de hábitos de consumo mais conscientes e na organização financeira familiar, alinhando-se à proposta social do sistema desenvolvido.
+
+\section{Considerações Finais da Fundamentação}
+
+A literatura e os conceitos apresentados sustentam as decisões técnicas e arquiteturais tomadas no desenvolvimento deste projeto.  
+A combinação entre desenvolvimento multiplataforma, computação em nuvem e sincronização em tempo real compõe um ecossistema eficiente, escalável e de rápida entrega.  
+Ao integrar usabilidade e análise de dados, o sistema transcende o papel de simples aplicativo de lista de compras, posicionando-se como uma ferramenta de apoio à gestão colaborativa e ao consumo consciente.
