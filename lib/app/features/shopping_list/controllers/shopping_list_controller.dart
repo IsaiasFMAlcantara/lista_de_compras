@@ -315,7 +315,7 @@ class ShoppingListController extends GetxController {
       final updatedList = currentList.value!.copyWith(
         status: 'finalizada',
         totalPrice: total,
-        purchaseDate: DateTime.now(), // Define a data da compra
+        finalizedDate: DateTime.now(), // Define a data de finalização da compra
       );
       await repository.updateList(updatedList);
       currentList.value = updatedList; // Update the observable

@@ -9,6 +9,7 @@ class ListModel extends Equatable {
   final String categoryId;
   final DateTime createdAt;
   final DateTime? purchaseDate;
+  final DateTime? finalizedDate;
   final List<String> memberUIDs;
   final Map<String, String> memberPermissions;
   final double totalPrice;
@@ -21,6 +22,7 @@ class ListModel extends Equatable {
     required this.categoryId,
     required this.createdAt,
     this.purchaseDate,
+    this.finalizedDate,
     required this.memberUIDs,
     required this.memberPermissions,
     this.totalPrice = 0.0,
@@ -35,6 +37,7 @@ class ListModel extends Equatable {
         categoryId,
         createdAt,
         purchaseDate,
+        finalizedDate,
         memberUIDs,
         memberPermissions,
         totalPrice,
@@ -48,6 +51,7 @@ class ListModel extends Equatable {
     String? categoryId,
     DateTime? createdAt,
     DateTime? purchaseDate,
+    DateTime? finalizedDate,
     List<String>? memberUIDs,
     Map<String, String>? memberPermissions,
     double? totalPrice,
@@ -60,6 +64,7 @@ class ListModel extends Equatable {
       categoryId: categoryId ?? this.categoryId,
       createdAt: createdAt ?? this.createdAt,
       purchaseDate: purchaseDate ?? this.purchaseDate,
+      finalizedDate: finalizedDate ?? this.finalizedDate,
       memberUIDs: memberUIDs ?? this.memberUIDs,
       memberPermissions: memberPermissions ?? this.memberPermissions,
       totalPrice: totalPrice ?? this.totalPrice,
@@ -74,6 +79,7 @@ class ListModel extends Equatable {
       'categoryId': categoryId,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'purchaseDate': purchaseDate?.millisecondsSinceEpoch,
+      'finalizedDate': finalizedDate?.millisecondsSinceEpoch,
       'memberUIDs': memberUIDs,
       'memberPermissions': memberPermissions,
       'totalPrice': totalPrice,
@@ -90,6 +96,9 @@ class ListModel extends Equatable {
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
       purchaseDate: map['purchaseDate'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['purchaseDate'])
+          : null,
+      finalizedDate: map['finalizedDate'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['finalizedDate'])
           : null,
       memberUIDs: List<String>.from(map['memberUIDs'] ?? []),
       memberPermissions: Map<String, String>.from(map['memberPermissions'] ?? {}),

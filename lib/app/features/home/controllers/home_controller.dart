@@ -79,10 +79,10 @@ class HomeController extends GetxController {
 
       // 4. Find last purchase
       history.sort((a, b) {
-        if (a.purchaseDate == null && b.purchaseDate == null) return 0;
-        if (a.purchaseDate == null) return 1; // Consider nulls as older
-        if (b.purchaseDate == null) return -1;
-        return b.purchaseDate!.compareTo(a.purchaseDate!);
+        if (a.finalizedDate == null && b.finalizedDate == null) return 0;
+        if (a.finalizedDate == null) return 1; // Consider nulls as older
+        if (b.finalizedDate == null) return -1;
+        return b.finalizedDate!.compareTo(a.finalizedDate!);
       });
       lastPurchase.value = history.first;
 
@@ -90,9 +90,9 @@ class HomeController extends GetxController {
       final now = DateTime.now();
       final currentMonthLists = history
           .where((list) =>
-              list.purchaseDate != null &&
-              list.purchaseDate!.year == now.year &&
-              list.purchaseDate!.month == now.month)
+              list.finalizedDate != null &&
+              list.finalizedDate!.year == now.year &&
+              list.finalizedDate!.month == now.month)
           .toList();
 
       monthlyTotal.value = currentMonthLists.fold(0.0, (sum, list) => sum + list.totalPrice);

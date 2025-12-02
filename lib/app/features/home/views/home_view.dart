@@ -17,7 +17,7 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: const Center(child: Text('Dashboard')),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -220,7 +220,7 @@ class HomeView extends GetView<HomeController> {
         child: ListTile(
                                     leading: const Icon(Icons.receipt_long, color: AppTheme.infoColor),          title: Text(purchase.name),
           subtitle: Text('Total: R\$ ${purchase.totalPrice.toStringAsFixed(2)}'),
-          trailing: Text(DateFormat('dd/MM/yy').format(purchase.purchaseDate!)),
+          trailing: Text(purchase.finalizedDate != null ? DateFormat('dd/MM/yy').format(purchase.finalizedDate!) : ''),
                                     onTap: () => Get.toNamed(Routes.historicalListDetails, arguments: purchase),        ),
       );
     });
